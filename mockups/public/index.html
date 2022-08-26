@@ -12,24 +12,33 @@
       <span class="site-title">HackerFlix.net</span>
     </header>
     <main class="page page__homepage">
-      <section class="hero">
-        hero -- find a bg image, and use a light purple filter
-      </section>
-      <section class="results-grid">
-        <div class="results-grid__settings">
-          <div class="results-grid__filters">
-            Filters
+      <div class="row">
+        <section class="hero">
+          <h1>Search The Largest Database of Hacker Films Online</h1>
+          <form class="hero__form">
+            <input type="text" class="hero__form__input" placeholder="Search...">
+            <button class="hero__form__button">Search</button>
+          </form>
+        </section>
+      </div>
+      <div class="row">
+        <section class="results-grid">
+          <div class="results-grid__settings">
+            <div class="results-grid__filters">
+              Filters
+            </div>
+            <div class="results-grid__sort">
+              Sort
+            </div>
           </div>
-          <div class="results-grid__sort">
-            Sort
+          <div class="results-grid__grid">
+            <div class="results-grid__card">
+              <div class="results-grid__card-poster"></div> 
+              <div class="results-grid__card-headline">Card</div>
+            </div>
           </div>
-        </div>
-        <div class="results-grid__grid">
-          <div class="results-grid__card">
-            card
-          </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </main>
     <script src="data.js"></script>
     <script src="index.js"></script>
