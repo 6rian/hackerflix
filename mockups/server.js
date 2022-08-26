@@ -5,7 +5,6 @@ const app = express();
 const port = 8088;
 
 app.use(sassMiddleware({
-  /* Options */
   src: path.join(__dirname, 'public'),
   dest: path.join(__dirname, 'public'),
   indentedSyntax: false, // use .scss

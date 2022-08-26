@@ -1,0 +1,9 @@
+{
+  "restartable": "rs",
+  "verbose": true,
+  "watch": ["src/", "mockups/"],
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "ext": "js,json,html,scss"
+}
