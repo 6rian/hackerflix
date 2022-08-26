@@ -1,0 +1,41 @@
+$white: #fff;
+
+* {
+  --purple-300: #08050E;
+  --purple-100: #7E4AE6;
+  --background-color: var(--purple-300);
+  --primary-text-color: $white;
+  --border-radius-sm: 0.25em;
+  --border-radius-md: 0.5em;
+  --border-radius-lg: 0.75em;
+}
+
+body {
+  background: var(--background-color);
+  color: var(--primary-text-color);
+  padding: 0;
+  margin: 0;
+}
+
+.site-header {
+  background-color: var(--purple-100);
+  color: var(--purple-300);
+}
+
+.site-title {
+  font-size: 2rem;
+  padding: 0.5em;
+  display: inline-block;
+}
+
+.page {
+  padding: 1em;
+}
+
+.hero {
+  background: var(--purple-100);
+  color: var(--purple-300);
+  padding: 1em;
+  height: 250px;
+  border-radius: var(--border-radius-md);
+}
