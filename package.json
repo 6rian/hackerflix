@@ -9,6 +9,9 @@
     "start:dev": "nodemon",
     "start:mockups": "DEBUG=mockups:* nodemon ./mockups/server.js"
   },
+  "engines": {
+    "node": ">= 16.15.0"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
