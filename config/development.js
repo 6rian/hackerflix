@@ -6,4 +6,8 @@ module.exports = {
     access_token: process.env.TMDB_ACCESS_TOKEN,
     api_url: 'https://api.themoviedb.org/3/',
   },
+  redis: {
+    host: 'localhost',
+    port: '6379',
+  },
 };
