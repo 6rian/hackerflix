@@ -1,5 +1,7 @@
 node_modules/
 dist/
 logs/
+config/
 
+.env
 mockups/public/style.css*

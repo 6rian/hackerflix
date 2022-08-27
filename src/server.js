@@ -1,9 +1,11 @@
+require('dotenv').config();
 import express from 'express';
+import config from 'config';
 import morgan from 'morgan';
 import logger from './lib/logger';
 
 const app = express();
-const port = 3000;
+const port = config.get('port');
 
 const httpLogFormat = ':method :url :status :res[content-length] - :response-time ms';
 const httpLogger = morgan(httpLogFormat, { stream: logger.stream });
