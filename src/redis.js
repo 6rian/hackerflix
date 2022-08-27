@@ -1,13 +1,10 @@
-import { createClient } from 'redis';
+import { Client } from 'redis-om';
 import config from 'config';
 
-const redisClient = createClient({
-  host: config.get('redis.host'),
-  port: config.get('redis.port'),
-});
+const client = new Client();
 
 (async () => {
-  await redisClient.connect();
+  await client.open();
 })();
 
-export default redisClient;
+export default client;
