@@ -1,7 +1,10 @@
 $black: #000;
 $white: #fff;
 $purple-300: #08050E;
+$purple-200: #4b2bc4;
 $purple-100: #7E4AE6;
+$green-100: #a6e12d;
+$blue-100: #00d7ff;
 $background-color: $purple-300;
 $primary-text-color: $white;
 $primary-text-color-inverted: $purple-300;
@@ -14,10 +17,14 @@ $border-radius-sm: 0.25em;
 $border-radius-md: 0.5em;
 $border-radius-lg: 0.75em;
 
+$primary-font-stack: 'Roboto', 'Open Sans', Helvetica, Arial, sans-serif;
+$monospace-font-stack: 'Inconsolata', 'Roboto Mono', monospace;
+
 // @import-normalize;
 
 body {
   margin: 0;
+  font-family: $primary-font-stack;
 }
 
 body * {
@@ -50,6 +57,7 @@ body {
 
 .site-title {
   font-size: 2rem;
+  font-family: $monospace-font-stack;
   padding: 0.5em;
   display: inline-block;
 }
@@ -113,39 +121,46 @@ body {
   }
 
   &__settings {
-    border: 1px solid yellow;
+    display: none;
 
     @media (min-width: $screen-bp-md) {
       width: 40%;
       max-width: 350px;
     }
+
+    & div {
+      border: 1px solid $white;
+      height: 200px;
+      margin-bottom: 1em;
+      background-color: $purple-200;
+    }
   }
 
   &__grid {
-    border: 1px solid lime;
     display: flex;
     flex-wrap: wrap;
-    flex-grow: 1;
     gap: 1em;
-    padding: 1rem;
+    justify-content: center;
   }
 
   &__card {
     border: 1px solid $white;
-    height: 375px;
+    height: 500px;
     width: 100%;
     background-color: $white;
     color: $primary-text-color-inverted;
+    border-radius: $border-radius-md;
+    overflow: hidden;
 
     @media (min-width: $screen-bp-md) {
-      width: 250px;
+      width: 300px;
     }
 
     &-poster {
       background-size: cover;
       background-position: center center;
       width: 100%;
-      height: 300px;
+      height: 400px;
     }
 
     &-headline {
