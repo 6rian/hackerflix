@@ -47,7 +47,7 @@ body {
 }
 
 .row {
-  margin: 1em auto;
+  margin: 1em;
 }
 
 .site-header {
@@ -63,7 +63,6 @@ body {
 }
 
 .page {
-  padding: 1em;
   color: $primary-text-color;
 }
 
@@ -79,19 +78,6 @@ body {
   font-weight: 700;
   text-align: center;
   text-shadow: 2px 2px 0 $black;
-  border-radius: $border-radius-md;
-
-  @media (min-width: $screen-bp-md) {
-    max-width: 700px;
-  }
-
-  @media (min-width: $screen-bp-lg) {
-    max-width: 900px;
-  }
-
-  @media (min-width: $screeen-bp-xl) {
-    max-width: 1100px;
-  }
 
   &__form {
     display: flex;
@@ -145,7 +131,7 @@ body {
 
   &__card {
     border: 1px solid $white;
-    height: 500px;
+    min-height: 470px;
     width: 100%;
     background-color: $white;
     color: $primary-text-color-inverted;

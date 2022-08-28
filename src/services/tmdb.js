@@ -28,10 +28,10 @@ export default class TMDB {
   }
 
   async getMovie(id) {
-    return await this.#request(`${this.API_URL}movie/${id}`);
+    return await this.#request(`${this.API_URL}movie/${id}?&append_to_response=videos,images`);
   }
 
   async getShow(id) {
-    return await this.#request(`${this.API_URL}tv/${id}`);
+    return await this.#request(`${this.API_URL}tv/${id}?&append_to_response=videos,images`);
   }
 }
