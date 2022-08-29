@@ -6,5 +6,6 @@ module.exports = {
   tmdb: {
     access_token: process.env.TMDB_ACCESS_TOKEN,
     api_url: 'https://api.themoviedb.org/3/',
+    list_id: '8214827',
   },
 };

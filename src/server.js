@@ -5,6 +5,9 @@ import morgan from 'morgan';
 import logger from './lib/logger';
 import devRoutes from './routes/dev';
 import errorHandler from './lib/error.handler';
+// import { bootstrap } from './lib/bootstrap';
+// Run the bootstrap to preload data for homepage from TMDB
+// bootstrap();
 
 const app = express();
 const port = config.get('port');
