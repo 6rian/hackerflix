@@ -1,11 +1,7 @@
 import TMDB from '../services/tmdb';
 import config from 'config';
-
-// TODO: move these to TMDB class?
-const TMDB_MEDIA_TYPES = {
-  MOVIE: 'movie',
-  TV: 'tv',
-};
+import logger from './logger';
+import { createFlick } from '../services/cache';
 
 const transformListResponse = (item) => {
   const transformed = {
@@ -18,25 +14,27 @@ const transformListResponse = (item) => {
     backdropPath: item.backdrop_path,
   };
 
-  if (item.media_type === TMDB_MEDIA_TYPES.MOVIE) {
+  if (item.media_type === TMDB.MEDIA_TYPES.MOVIE) {
     transformed.title = item.title;
-    transformed.releaseDate = item.release_date;
-  } else if (item.media_type === TMDB_MEDIA_TYPES.TV) {
+    transformed.releaseDate = new Date(item.release_date);
+  } else if (item.media_type === TMDB.MEDIA_TYPES.TV) {
     transformed.title = item.name;
-    transformed.firstAirDate = item.first_air_date;
+    transformed.firstAirDate = new Date(item.first_air_date);
   }
 
   return transformed;
 };
 
 export const bootstrap = async () => {
-  const tmdb = new TMDB();
-  const list = await tmdb.getList(config.get('tmdb.list_id'));
-  console.log(list);
-  const transformed = list.items.map(transformListResponse);
-  console.log(transformed);
+  try {
+    // Fetch list data from TMDB
+    const tmdb = new TMDB();
+    const list = await tmdb.getList(config.get('tmdb.list_id'));
 
-  // NEXT
-  // store date fields as new Date(item.release_date)
-  // store each in Redis by creating a Flick();
+    // Transform it and save the flicks to cache
+    const transformed = list.items.map(transformListResponse);
+    transformed.map(createFlick);
+  } catch (e) {
+    logger.error('Bootstrap Failure: ' + e.message);
+  }
 };

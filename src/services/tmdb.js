@@ -3,6 +3,11 @@ import fetch from 'node-fetch';
 import logger from '../lib/logger';
 
 export default class TMDB {
+  static MEDIA_TYPES = {
+    MOVIE: 'movie',
+    TV: 'tv',
+  };
+
   constructor() {
     try {
       this.ACCESS_TOKEN = config.get('tmdb.access_token');
