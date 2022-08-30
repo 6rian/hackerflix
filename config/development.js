@@ -8,4 +8,8 @@ module.exports = {
     api_url: 'https://api.themoviedb.org/3/',
     list_id: '8214827',
   },
+  gcp: {
+    sheet_id: process.env.GOOGLE_SHEET_ID,
+    data_range: process.env.GOOGLE_SHEET_DATA_RANGE,
+  },
 };

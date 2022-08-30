@@ -1,6 +1,7 @@
 node_modules/
 dist/
 logs/
+private/
 
 .env
 mockups/public/style.css*
