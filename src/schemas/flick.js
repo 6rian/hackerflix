@@ -3,9 +3,11 @@ import { Entity, Schema } from 'redis-om';
 class Flick extends Entity {}
 
 const flickSchema = new Schema(Flick, {
-  hasAllDetails: { type: 'boolean', },
+  hasAllDetails: { type: 'boolean' },
   title: { type: 'string' },
+  slug: { type: 'string' },
   mediaType: { type: 'string' },
+  tmdbMediaType: { type: 'string' },
   tmdbId: { type: 'string' },
   imdbId: { type: 'string' },
   overview: { type: 'text' },
