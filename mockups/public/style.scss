@@ -5,6 +5,7 @@ $purple-200: #4b2bc4;
 $purple-100: #7E4AE6;
 $green-100: #a6e12d;
 $blue-100: #00d7ff;
+$pink-100: #be2ec6;
 $background-color: $purple-300;
 $primary-text-color: $white;
 $primary-text-color-inverted: $purple-300;
@@ -67,6 +68,33 @@ body {
   }
 }
 
+.site-footer {
+  background-color: #000;
+  color: $white;
+  padding: 5em 1em;
+  margin-top: 5em;
+
+  a {
+    color: $pink-100;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__attribution {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    font-size: 0.9rem;
+
+    img {
+      max-width: 250px;
+    }
+  }
+}
+
 .page {
   color: $primary-text-color;
 }
@@ -113,7 +141,7 @@ body {
     }
 
     &__button {
-      background-color: $purple-100;
+      background-color: $green-100;
       color: $purple-300;
       border: 1px solid $white;
       padding: 0.5rem 1.25rem;
@@ -124,7 +152,7 @@ body {
       letter-spacing: 0.04rem;
 
       &:hover {
-        background-color: $blue-100;
+        background-color: $purple-100;
         cursor: pointer;
       }
     }
@@ -167,7 +195,7 @@ body {
   &__grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 1em;
+    gap: 1.25em;
     justify-content: center;
   }
 
@@ -180,6 +208,7 @@ body {
     color: $primary-text-color-inverted;
     border-radius: $border-radius-md;
     overflow: hidden;
+    transition: box-shadow 0.5s;
 
     @media (min-width: $screen-bp-md) {
       width: 300px;
@@ -189,6 +218,7 @@ body {
       background-color: $green-100;
       border-color: $green-100;
       cursor: pointer;
+      box-shadow: 0 0 15px $green-100;
 
       #{$this}-poster {
         height: 100%;
