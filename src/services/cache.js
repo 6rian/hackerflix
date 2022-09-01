@@ -1,6 +1,10 @@
 import Flick from '../models/Flick';
 import logger from '../lib/logger';
 
+export const getFlicks = async () => {
+  return await Flick.search().returnAll();
+};
+
 // Since IDs for Movies and TV shows can overlap in TMDB,
 // locating a record requires the TMDB ID + Media Type.
 export const getFlickById = async (tmdbId, tmdbMediaType) => {
