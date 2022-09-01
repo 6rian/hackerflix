@@ -21,8 +21,11 @@ export const getFlickDTO = (flick) => ({
   posterImages: flick.posterImages,
 });
 
-
 export const getFlicksResponseDTO = (flicks) => ({
   data: flicks.map(getFlickDTO),
   count: flicks.length,
+});
+
+export const getFlickResponseDTO = (flick) => ({
+  data: getFlickDTO(flick)
 });
