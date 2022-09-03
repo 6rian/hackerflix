@@ -14,6 +14,10 @@ const extract = async (tmdbId, tmdbMediaType) => {
   return response;
 };
 
+const getImageFilePath = (image) => {
+  return image.file_path;
+}
+
 const transform = (data, type) => {
   const transformed = {
     tmdbId: data.id,
@@ -22,10 +26,11 @@ const transform = (data, type) => {
     overview: data.overview,
     rating: data.vote_average,
     tagline: data.tagline,
+    posterImages: data.images.posters.map(getImageFilePath),
+    backdropImages: data.images.backdrops.map(getImageFilePath),
+    logoImages: data.images.logos.map(getImageFilePath),
   };
 
-  // TODO: save images and videos
-  
   if (type === TMDB.MEDIA_TYPES.MOVIE) {
     transformed.title = data.title;
     transformed.imdbId = data.imdb_id;
@@ -35,7 +40,7 @@ const transform = (data, type) => {
     transformed.title = data.name;
     transformed.firstAirDate = new Date(data.first_air_date);
     transformed.lastAirDate = new Date(data.last_air_date);
-    // transformed.episodeRunTime = data.episode_run_time;
+    transformed.episodeRunTime = data.episode_run_time[0];
     transformed.numberOfEpisodes = data.number_of_episodes;
     transformed.numberOfSeasons = data.number_of_seasons;
   }
