@@ -66,6 +66,7 @@ export const updateFlick = async (flickJson) => {
   const saved = await Flick.save(flick);
   if (saved) {
     logger.info(`Updated cache entry for: ${flick.title}`);
+    return saved;
   }
 
   return false;
