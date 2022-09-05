@@ -43,8 +43,6 @@
       const grid = document.querySelector(`.${GRID_CLASS}`);
 
       flicks.forEach(flick => {
-        console.log({title: flick.title, posterPath: flick.posterPath});
-
         const card = document.createElement('a');
         card.className = CARD_CLASS;
         card.href = `/flick/${flick.slug}`;

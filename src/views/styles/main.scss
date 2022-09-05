@@ -51,9 +51,25 @@ body {
   margin: 1em;
 }
 
+.ribbon {
+  height: 15px;
+  width: 100%;
+  top: 0;
+  background-color: $purple-100;
+  display: none;
+
+  &.sticky {
+    position: fixed;
+    display: block;
+  }
+}
+
 .site-header {
   background-color: $purple-100;
   color: $purple-300;
+  height: 85px;
+  display: flex;
+  align-items: center;
 }
 
 .site-title {
