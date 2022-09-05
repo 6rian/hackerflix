@@ -21,8 +21,7 @@ export const getFlickById = async (tmdbId, tmdbMediaType) => {
     .equals(tmdbId)
     .and('tmdbMediaType')
     .equals(tmdbMediaType)
-    .return
-    .first();
+    .return.first();
 };
 
 export const flickExists = async (tmdbId, tmdbMediaType) => {
@@ -37,13 +36,17 @@ export const createFlick = async (flickJson) => {
 
   if (!exists) {
     const flick = await Flick.createAndSave(flickJson);
-    if (flick) {
-      logger.info(`Added cache entry for: ${flickJson.title}`);
-      return true;
+    if (!flick) {
+      logger.error(`Failed adding to cache: ${flickJson.title}`);
+      return false;
     }
+
+    logger.info(`Added cache entry for: ${flickJson.title}`);
+    return true;
   }
 
-  return false;
+  // Returning true because the cache entry already exists
+  return true;
 };
 
 // Update an existing Flick.
@@ -52,6 +55,8 @@ export const updateFlick = async (flickJson) => {
   const flick = await getFlickById(tmdbId, tmdbMediaType);
 
   if (!flick) {
+    logger.error(`Could not find flick in cache to update: ${flickJson.title}`);
+    console.log(flickJson);
     return false;
   }
 
@@ -64,10 +69,11 @@ export const updateFlick = async (flickJson) => {
   });
 
   const saved = await Flick.save(flick);
-  if (saved) {
-    logger.info(`Updated cache entry for: ${flick.title}`);
-    return saved;
+  if (!saved) {
+    logger.error(`Failed updating cache entry for: ${flickJson.title}`);
+    return false;
   }
 
-  return false;
+  logger.info(`Updated cache entry for: ${flick.title}`);
+  return true;
 };

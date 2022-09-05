@@ -27,15 +27,20 @@ const transform = (row) => {
 };
 
 const load = async (flick) => {
-  updateFlick(flick);
-}
+  return await updateFlick(flick);
+};
 
 export const runGoogleSheetETL = async () => {
+  logger.info('Starting Google Sheet ETL');
+
   try {
     const sheet = await extract();
     const transformed = sheet.filter((row) => validate(row)).map(transform);
-    transformed.forEach(load);
+    await Promise.all(transformed.map(load));
   } catch (e) {
     logger.error(`Failure during Google Sheet ETL: ${e.message}`);
   }
+
+  logger.info('Finished Google Sheet ETL');
+  return true;
 };

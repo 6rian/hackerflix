@@ -6,10 +6,16 @@ export const bootstrap = async () => {
   logger.info('Starting Bootstrap');
 
   // STEP 1: Extract data from TMDB and load into Cache
-  runListETL();
+  const listETL = await runListETL();
 
   // STEP 2: Extract data from Google Sheet and load into Cache
-  runGoogleSheetETL();
+  const googleSheetETL = await runGoogleSheetETL();
 
   logger.info('Bootstrap Complete');
+
+  if (!listETL || !googleSheetETL) {
+    return false;
+  }
+
+  return true;
 };

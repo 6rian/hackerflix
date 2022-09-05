@@ -31,15 +31,20 @@ const transform = (item) => {
 };
 
 const load = async (flick) => {
-  createFlick(flick);
-}
+  return await createFlick(flick);
+};
 
 export const runListETL = async () => {
+  logger.info('Starting TMDB List ETL');
+
   try {
     const list = await extract();
     const transformed = list.items.map(transform);
-    transformed.forEach(load);
+    await Promise.all(transformed.map(load));
   } catch (e) {
     logger.error(`TMDB List ETL Failure: ${e.message}`);
   }
+
+  logger.info('Finished TMDB List ETL');
+  return true;
 };
