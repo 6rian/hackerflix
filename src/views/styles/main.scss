@@ -112,6 +112,7 @@ body {
   background-size: cover;
   background-position: center;
   background-blend-mode: multiply;
+  border-bottom: 1px solid $blue-100;
   padding: 1em;
   margin: 0 auto 1.5em auto;
   min-height: 275px;
@@ -201,16 +202,18 @@ body {
   &__card {
     $this: &;
     border: 1px solid $white;
-    min-height: 470px;
+    min-height: 480px;
     width: 100%;
     background-color: $white;
     color: $primary-text-color-inverted;
+    text-decoration: none;
     border-radius: $border-radius-md;
     overflow: hidden;
     transition: box-shadow 0.5s;
 
     @media (min-width: $screen-bp-md) {
       width: 300px;
+      min-height: 510px;
     }
 
     &:hover {
