@@ -5,15 +5,37 @@
       </div>
     </footer>
     <script>
-      window.onscroll = () => {
-        const ribbon = document.querySelector('.ribbon');
-        const RIBBON_START = 85;
-        if (document.body.scrolTop >= RIBBON_START || document.documentElement.scrollTop >= RIBBON_START) {
-          ribbon.classList.add('sticky');
-        } else {
-          ribbon.classList.remove('sticky');
+      (function(){
+        function bindNavButtons() {
+          const navOpenButton = document.querySelector('.open-nav-button');
+          navOpenButton.addEventListener('click', function() {
+            document.getElementById("nav-menu").style.height = "100%";
+          });
+    
+          const navCloseButton = document.querySelector('.nav-menu__close');
+          navCloseButton.addEventListener('click', function() {
+            document.getElementById("nav-menu").style.height = "0%";
+          });
         }
-      };
+  
+        function bindRibbon() {
+          /* Show color ribbon on scroll past header */
+          window.onscroll = () => {
+            const ribbon = document.querySelector('.ribbon');
+            const RIBBON_START = 85;
+            if (document.body.scrolTop >= RIBBON_START || document.documentElement.scrollTop >= RIBBON_START) {
+              ribbon.classList.add('sticky');
+            } else {
+              ribbon.classList.remove('sticky');
+            }
+          };
+        }
+        
+        window.onload = function() {
+          bindNavButtons();
+          bindRibbon();
+        };
+      })();
     </script>
   </body>
 </html>
