@@ -56,6 +56,7 @@ body {
   width: 100%;
   top: 0;
   background-color: $purple-100;
+  box-shadow: 0 0 10px $pink-100;
   display: none;
 
   &.sticky {
@@ -71,15 +72,20 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 0.25em 0.5em;
+
+  @media (min-width: $screen-bp-lg) {
+    padding: 0.25em 1em;
+  }
 
   .open-nav-button {
-    padding-right: 1em;
-    width: 3rem;
+    width: 2.5rem;
 
     div {
       height: 0.25rem;
       background-color: $blue-100;
       margin: 0.5rem 0;
+      border-radius: 5px;
     }
   }
 }
@@ -88,12 +94,7 @@ body {
   font-family: $monospace-font-stack;
   font-size: 2.5rem;
   font-weight: 700;
-  padding: 0.25em;
   display: inline-block;
-
-  @media (min-width: $screen-bp-md) {
-    padding: 0.5em;
-  }
 }
 
 .nav-menu {
@@ -151,6 +152,7 @@ body {
 .site-footer {
   background-color: $black;
   color: $white;
+  border-top: 1px solid $blue-100;
   padding: 5em 1em;
   margin-top: 5em;
 
