@@ -36,8 +36,16 @@
 
   (async () => {
     try {
+      let url;
       const API_ENDPOINT = '/api/flick';
-      const data = await fetch(API_ENDPOINT);
+      const mediaTypeFilter = '<%- mediaType -%>';
+
+      url = API_ENDPOINT;
+      if (mediaTypeFilter) {
+        url = `${API_ENDPOINT}?type=${mediaTypeFilter}`;
+      }
+      
+      const data = await fetch(url);
       const {data: flicks} = await data.json();
 
       const grid = document.querySelector(`.${GRID_CLASS}`);
