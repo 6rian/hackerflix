@@ -1,12 +1,22 @@
 import { Router } from 'express';
 import apiRoutes from './api';
 import devRoutes from './dev';
-import { isValidMediaType } from '../lib/utils';
+import { isValidMediaType, isDevelopment } from '../lib/utils';
 
 const router = Router();
 
 router.use('/api', apiRoutes);
-router.use('/dev', devRoutes);
+router.use(
+  '/dev',
+  (req, res, next) => {
+    if (!isDevelopment()) {
+      const error = new Error('This route is restricted to development environments only.');
+      next(error);
+    }
+    next();
+  },
+  devRoutes
+);
 
 const GLOBAL_PAGE_PARAMS = {
   title: 'HackerFlix.net',
