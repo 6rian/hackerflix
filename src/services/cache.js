@@ -5,6 +5,10 @@ export const getFlicks = async () => {
   return await Flick.search().returnAll();
 };
 
+export const getFlicksByType = async (type) => {
+  return await Flick.search().where('mediaType').equals(type).returnAll();
+};
+
 export const getFlickBySlug = async (slug) => {
   return await Flick.search()
     .where('slug')

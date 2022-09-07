@@ -2,12 +2,21 @@ import { Router } from 'express';
 import * as cache from '../services/cache';
 import { getFlicksResponseDTO, getFlickResponseDTO } from '../dtos/flick';
 import { runDetailsETL } from '../etls/tmdb/details';
+import { isValidMediaType } from '../lib/utils';
 
 const router = Router();
 
 router.get('/flick', async (req, res, next) => {
   try {
-    const data = await cache.getFlicks();
+    let data;
+    const { type } = req.query || null;
+
+    if (type && isValidMediaType(type)) {
+      data = await cache.getFlicksByType(type);
+    } else {
+      data = await cache.getFlicks();
+    }
+
     res.json(getFlicksResponseDTO(data));
   } catch (e) {
     next(e);
