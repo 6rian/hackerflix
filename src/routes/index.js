@@ -23,7 +23,7 @@ const GLOBAL_PAGE_PARAMS = {
 };
 
 router.get('/', (req, res, next) => {
-  res.render('index', GLOBAL_PAGE_PARAMS);
+  res.render('index', { ...GLOBAL_PAGE_PARAMS, mediaType: '' });
 });
 
 router.get('/flick/:slug', (req, res, next) => {
