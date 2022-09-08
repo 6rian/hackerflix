@@ -254,26 +254,6 @@ body {
   flex-direction: column;
   gap: 2em;
 
-  @media (min-width: $screen-bp-md) {
-    flex-direction: row;
-  }
-
-  &__settings {
-    display: none;
-
-    @media (min-width: $screen-bp-md) {
-      width: 40%;
-      max-width: 350px;
-    }
-
-    & div {
-      border: 1px solid $white;
-      height: 200px;
-      margin-bottom: 1em;
-      background-color: $purple-200;
-    }
-  }
-
   &__grid {
     display: flex;
     flex-wrap: wrap;
@@ -325,6 +305,27 @@ body {
       font-size: 1.5rem;
       font-family: $monospace-font-stack;
       padding: 0.5em;
+    }
+  }
+
+  &__load-more-button {
+    width: fit-content;
+    margin: 0 auto;
+    padding: 0.5em 1.5em;
+    font-size: 1.5rem;
+    background-color: $green-100;
+    color: $purple-300;
+    font-family: $primary-font-stack;
+    text-transform: uppercase;
+    border: 1px solid $white;
+    transition: 0.5s;
+
+    &:hover {
+      background-color: $purple-200;
+      color: $white;
+      box-shadow: 0 0 10px $purple-100;
+      scale: 1.1;
+      cursor: pointer;
     }
   }
 }

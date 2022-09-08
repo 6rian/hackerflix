@@ -68,28 +68,32 @@
       grid.appendChild(card);
     };
 
-    try {
-      const flicks = await fetchFlicks();
-      const rendered = [];
+    const renderBatch = (size = 10) => {
       let current = 0;
 
-      while (current < PAGE_SIZE) {
-        const flick = flicks.shift();
+      while (current < size) {
+        const flick = window.flicks.shift();
         if (!flick) {
           // There are no more flicks to render
+          const loadMoreButton = document.querySelector(`.${LOAD_MORE_BUTTON_CLASS}`);
+          loadMoreButton.remove();
           break;
         }
 
         renderCard(flick);
-        rendered.push(flick);
+        window.rendered.push(flick);
         current++;
       }
+    };
 
-      console.log({
-        totalFlicks: flicks.length,
-        totalRendered: rendered.length,
-        total: flicks.length + rendered.length,
-      });
+    try {
+      window.flicks = await fetchFlicks();
+      window.rendered = [];
+
+      renderBatch(PAGE_SIZE);
+
+      const loadMoreButton = document.querySelector(`.${LOAD_MORE_BUTTON_CLASS}`);
+      loadMoreButton.addEventListener('click', () => renderBatch(PAGE_SIZE));
     } catch (e) {
       console.error('Major Failure: Could not load flicks: ', e);
     }
