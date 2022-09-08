@@ -4,26 +4,19 @@
   <section class="hero">
     <h1>Search The Largest Database of Hacker Films Online</h1>
     <form class="hero__form">
-      <input type="text" class="hero__form__input" placeholder="Search...">
+      <input type="text" class="hero__form__input" placeholder="Search..." />
       <button class="hero__form__button">Search</button>
     </form>
   </section>
   <div class="row">
     <section class="results-grid">
-      <!-- <div class="results-grid__settings">
-        <div class="results-grid__filters">
-          Filters
-        </div>
-        <div class="results-grid__sort">
-          Sort
-        </div>
-      </div> -->
       <div class="results-grid__grid">
         <!-- <div class="results-grid__card">
           <div class="results-grid__card-poster"></div> 
           <div class="results-grid__card-headline">Card</div>
         </div> -->
       </div>
+      <button class="results-grid__load-more-button">Load More</button>
     </section>
   </div>
 </main>
@@ -32,10 +25,12 @@
   const GRID_CLASS = 'results-grid__grid';
   const CARD_CLASS = 'results-grid__card';
   const CARD_POSTER_CLASS = 'results-grid__card-poster';
-  const CARD_HEADLINE_CLASS = 'results-grid__card-headline'; 
+  const CARD_HEADLINE_CLASS = 'results-grid__card-headline';
+  const LOAD_MORE_BUTTON_CLASS = 'results-grid__load-more-button';
+  const PAGE_SIZE = 10;
 
   (async () => {
-    try {
+    const fetchFlicks = async () => {
       let url;
       const API_ENDPOINT = '/api/flick';
       const mediaTypeFilter = '<%- mediaType -%>';
@@ -44,33 +39,57 @@
       if (mediaTypeFilter) {
         url = `${API_ENDPOINT}?type=${mediaTypeFilter}`;
       }
-      
+
       const data = await fetch(url);
-      const {data: flicks} = await data.json();
+      const { data: flicks } = await data.json();
 
+      return flicks;
+    };
+
+    const renderCard = (flick) => {
       const grid = document.querySelector(`.${GRID_CLASS}`);
+      const card = document.createElement('a');
+      card.className = CARD_CLASS;
+      card.href = `/flick/${flick.slug}`;
+      card.title = flick.title;
 
-      flicks.forEach(flick => {
-        const card = document.createElement('a');
-        card.className = CARD_CLASS;
-        card.href = `/flick/${flick.slug}`;
-        card.title = flick.title;
+      const poster = document.createElement('div');
+      poster.classList.add(CARD_POSTER_CLASS);
+      poster.style.backgroundImage = flick.posterPath
+        ? `url(https://image.tmdb.org/t/p/w500${flick.posterPath})`
+        : `url(https://dummyimage.com/400x660/fff/aaa)`;
+      card.appendChild(poster);
 
-        const poster = document.createElement('div');
-        poster.classList.add(CARD_POSTER_CLASS);
-        poster.style.backgroundImage = flick.posterPath
-          ? `url(https://image.tmdb.org/t/p/w500${flick.posterPath})`
-          : `url(https://dummyimage.com/400x660/fff/aaa)`;
-        card.appendChild(poster);
+      const headline = document.createElement('div');
+      headline.classList.add(CARD_HEADLINE_CLASS);
+      headline.textContent = flick.title;
+      card.appendChild(headline);
 
-        const headline = document.createElement('div');
-        headline.classList.add(CARD_HEADLINE_CLASS);
-        headline.textContent = flick.title;
-        card.appendChild(headline);
+      grid.appendChild(card);
+    };
 
-        grid.appendChild(card);
+    try {
+      const flicks = await fetchFlicks();
+      const rendered = [];
+      let current = 0;
+
+      while (current < PAGE_SIZE) {
+        const flick = flicks.shift();
+        if (!flick) {
+          // There are no more flicks to render
+          break;
+        }
+
+        renderCard(flick);
+        rendered.push(flick);
+        current++;
+      }
+
+      console.log({
+        totalFlicks: flicks.length,
+        totalRendered: rendered.length,
+        total: flicks.length + rendered.length,
       });
-
     } catch (e) {
       console.error('Major Failure: Could not load flicks: ', e);
     }
