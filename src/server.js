@@ -1,5 +1,4 @@
 require('dotenv').config();
-const sassMiddleware = require('node-sass-middleware');
 import express from 'express';
 import config from 'config';
 import morgan from 'morgan';
@@ -26,20 +25,9 @@ import { bootstrap } from './lib/bootstrap';
   const httpLogger = morgan(httpLogFormat, { stream: logger.stream });
   app.use(httpLogger);
 
-  app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'ejs');
-
-  // Temporary
-  app.use(
-    sassMiddleware({
-      src: path.join(__dirname, 'views'),
-      dest: path.join(__dirname, 'views'),
-      indentedSyntax: false, // use .scss
-      debug: true,
-      // outputStyle: 'compressed',
-      sourceMap: true,
-    })
-  );
+  app.use(express.static(path.join(__dirname, 'dist')));
+  app.set('views', path.join(__dirname, 'views'));
 
   app.use('/', routes);
 
