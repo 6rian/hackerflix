@@ -6,7 +6,7 @@ module.exports = {
   tmdb: {
     access_token: process.env.TMDB_ACCESS_TOKEN,
     api_url: 'https://api.themoviedb.org/3/',
-    list_id: '8214827',
+    list_id: process.env.TMDB_LIST_ID,
   },
   gcp: {
     sheet_id: process.env.GOOGLE_SHEET_ID,
