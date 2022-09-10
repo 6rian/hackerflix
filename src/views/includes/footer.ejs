@@ -4,39 +4,14 @@
         <a href="https://www.themoviedb.org/"><img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_long_1-8ba2ac31f354005783fab473602c34c3f4fd207150182061e425d366e4f34596.svg" /></a>
       </div>
     </footer>
+    <script src="/bundle.js"></script>
     <script>
       (function(){
-        function bindNavButtons() {
-          const navOpenButton = document.querySelector('.open-nav-button');
-          navOpenButton.addEventListener('click', function() {
-            document.getElementById("nav-menu").style.height = "100%";
-          });
-    
-          const navCloseButton = document.querySelector('.nav-menu__close');
-          navCloseButton.addEventListener('click', function() {
-            document.getElementById("nav-menu").style.height = "0%";
-          });
-        }
-  
-        function bindRibbon() {
-          /* Show color ribbon on scroll past header */
-          window.onscroll = () => {
-            const ribbon = document.querySelector('.ribbon');
-            const RIBBON_START = 85;
-            if (document.body.scrolTop >= RIBBON_START || document.documentElement.scrollTop >= RIBBON_START) {
-              ribbon.classList.add('sticky');
-            } else {
-              ribbon.classList.remove('sticky');
-            }
-          };
-        }
-        
-        window.onload = function() {
-          bindNavButtons();
-          bindRibbon();
-        };
+        // Run global client initlization (binds nav menu controls, etc.)
+        window.client.init();
+        // Run page initlization (loads content, and view-specific functionality)
+        window.client.initPage(window.viewLocals.view);
       })();
     </script>
-    <script src="/bundle.js"></script>
   </body>
 </html>

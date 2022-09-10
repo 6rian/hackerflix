@@ -1,18 +1,58 @@
 import './css/main.scss';
 
-const GRID_CLASS = 'results-grid__grid';
-const CARD_CLASS = 'results-grid__card';
-const CARD_POSTER_CLASS = 'results-grid__card-poster';
-const CARD_HEADLINE_CLASS = 'results-grid__card-headline';
-const LOAD_MORE_BUTTON_CLASS = 'results-grid__load-more-button';
-const PAGE_SIZE = 10;
+const init = () => {
+  const bindNavButtons = () => {
+    const navOpenButton = document.querySelector('.open-nav-button');
+    navOpenButton.addEventListener('click', function () {
+      document.getElementById('nav-menu').style.height = '100%';
+    });
 
-(async () => {
+    const navCloseButton = document.querySelector('.nav-menu__close');
+    navCloseButton.addEventListener('click', function () {
+      document.getElementById('nav-menu').style.height = '0%';
+    });
+  };
+
+  const bindRibbon = () => {
+    /* Show color ribbon on scroll past header */
+    window.onscroll = () => {
+      const ribbon = document.querySelector('.ribbon');
+      const RIBBON_START = 85;
+      if (
+        document.body.scrolTop >= RIBBON_START ||
+        document.documentElement.scrollTop >= RIBBON_START
+      ) {
+        ribbon.classList.add('sticky');
+      } else {
+        ribbon.classList.remove('sticky');
+      }
+    };
+  };
+
+  window.onload = () => {
+    bindNavButtons();
+    bindRibbon();
+  };
+};
+
+const initPage = (view) => {
+  if (view === 'index') {
+    initIndexPage();
+  }
+};
+
+const initIndexPage = async () => {
+  const GRID_CLASS = 'results-grid__grid';
+  const CARD_CLASS = 'results-grid__card';
+  const CARD_POSTER_CLASS = 'results-grid__card-poster';
+  const CARD_HEADLINE_CLASS = 'results-grid__card-headline';
+  const LOAD_MORE_BUTTON_CLASS = 'results-grid__load-more-button';
+  const PAGE_SIZE = 10;
+
   const fetchFlicks = async () => {
     let url;
     const API_ENDPOINT = '/api/flick';
-    // const mediaTypeFilter = '<%- mediaType -%>';
-    const mediaTypeFilter = '';
+    const mediaTypeFilter = window.viewLocals.mediaType || '';
 
     url = API_ENDPOINT;
     if (mediaTypeFilter) {
@@ -76,4 +116,9 @@ const PAGE_SIZE = 10;
   } catch (e) {
     console.error('Major Failure: Could not load flicks: ', e);
   }
-})();
+};
+
+window.client = {
+  init,
+  initPage,
+};
