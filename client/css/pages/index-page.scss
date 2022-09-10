@@ -1,0 +1,148 @@
+.page__homepage .hero {
+  // background-image: url(https://images.unsplash.com/photo-1592609931095-54a2168ae893?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3570&q=80);
+  // background-image: url(https://images.unsplash.com/photo-1563089145-599997674d42?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3570&q=80);
+  // background-image: url(https://images.unsplash.com/photo-1511447333015-45b65e60f6d5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3655&q=80);
+  // background-image: url(https://images.unsplash.com/photo-1619796404374-aff912b43cd2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3628&q=80);
+  // background-image: url(https://images.unsplash.com/photo-1609524400197-21b5840e038b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3570&q=80);
+  // background-image: url(https://images.unsplash.com/photo-1608501078713-8e445a709b39?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3570&q=80);
+  // background-image: url(https://images.unsplash.com/photo-1559818447-969ea3aa2fbd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2148&q=80);
+  background-image: url(https://images.unsplash.com/photo-1496942299866-9e7ab403e614?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3570&q=80);
+  background-color: $purple-100;
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: multiply;
+  border-bottom: 1px solid $blue-100;
+  padding: 1em;
+  margin: 0 auto 1.5em auto;
+  min-height: 275px;
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  text-shadow: 2px 2px 0 $black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  gap: 1.5em;
+
+  &__form {
+    display: flex;
+    max-width: 650px;
+    width: 100%;
+    align-self: center;
+
+    &__input {
+      flex-grow: 1;
+      border: 0;
+      font-size: 1.25rem;
+      font-family: $monospace-font-stack;
+      padding: 0.5em;
+    }
+
+    &__button {
+      background-color: $green-100;
+      color: $purple-300;
+      border: 1px solid $white;
+      padding: 0.5rem 1.25rem;
+      font-weight: 700;
+      font-size: 1rem;
+      font-family: $monospace-font-stack;
+      text-transform: uppercase;
+      letter-spacing: 0.04rem;
+
+      &:hover {
+        background-color: $purple-100;
+        cursor: pointer;
+      }
+    }
+
+    &__input,
+    &__button {
+      &:active,
+      &:focus {
+        outline-color: $blue-100;
+      }
+    }
+  }
+}
+
+.results-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+
+  &__grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25em;
+    justify-content: center;
+  }
+
+  &__card {
+    $this: &;
+    border: 1px solid $white;
+    min-height: 480px;
+    width: 100%;
+    background-color: $white;
+    color: $primary-text-color-inverted;
+    text-decoration: none;
+    border-radius: $border-radius-md;
+    overflow: hidden;
+    transition: box-shadow 0.5s;
+
+    @media (min-width: $screen-bp-md) {
+      width: 300px;
+      min-height: 510px;
+    }
+
+    &:hover {
+      background-color: $green-100;
+      border-color: $green-100;
+      cursor: pointer;
+      box-shadow: 0 0 15px $green-100;
+
+      #{$this}-poster {
+        height: 100%;
+      }
+
+      #{$this}-headline {
+        display: none;
+      } 
+    }
+
+    &-poster {
+      background-size: cover;
+      background-position: center center;
+      width: 100%;
+      height: 400px;
+      transition: height 0.5s;
+    }
+
+    &-headline {
+      font-size: 1.5rem;
+      font-family: $monospace-font-stack;
+      padding: 0.5em;
+    }
+  }
+
+  &__load-more-button {
+    width: fit-content;
+    margin: 0 auto;
+    padding: 0.5em 1.5em;
+    font-size: 1.5rem;
+    background-color: $green-100;
+    color: $purple-300;
+    font-family: $primary-font-stack;
+    text-transform: uppercase;
+    border: 1px solid $white;
+    transition: 0.5s;
+
+    &:hover {
+      background-color: $purple-200;
+      color: $white;
+      box-shadow: 0 0 10px $purple-100;
+      scale: 1.1;
+      cursor: pointer;
+    }
+  }
+}
