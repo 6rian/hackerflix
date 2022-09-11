@@ -15,7 +15,7 @@
       display: grid;
       grid-template-rows: 2;
       grid-template-columns: 2;
-      row-gap: 1em;
+      gap: 1em;
 
       @media (min-width: $screen-bp-md) {
         column-gap: 1.5em;
@@ -40,6 +40,14 @@
     
     &__year {
       font-weight: 300;
+
+      &::before {
+        content: '(';
+      }
+
+      &::after {
+        content: ')';
+      }
     }
 
     &__thumbnail {
@@ -52,6 +60,7 @@
       img {
         width: 100px;
         height: 165px;
+        box-shadow: 0 0 10px $green-100;
 
         @media (min-width: $screen-bp-md) {
           width: 200px;
@@ -71,6 +80,10 @@
       padding: 0;
       font-size: 1.25rem;
 
+      display: grid;
+      grid-template-columns: 50% 50%;
+      grid-template-rows: repeat(4, min-content);
+
       @media (min-width: $screen-bp-md) {
         grid-column: 2;
       }
@@ -87,7 +100,7 @@
           margin-bottom: 0;
         }
 
-        span {
+        span:first-child {
           font-weight: 700;
           font-family: $monospace-font-stack;
           color: $green-100;

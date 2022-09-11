@@ -6,19 +6,43 @@
       <div class="hero__thumbnail">
         <img src="<%- utils.renderPosterUrl(locals.flick.posterPath) -%>" />
       </div>
-      <h1 class="hero__title"><%- locals.flick.title -%> <span class="hero__year">(1995x)</span></h1>
+      <h1 class="hero__title">
+        <%- locals.flick.title -%>
+        <span class="hero__year"><% if (locals.flick.tmdbMediaType == 'movie') { %><%- utils.renderYear(locals.flick.releaseDate) -%><% } else { %><%- utils.renderYear(locals.flick.firstAirDate) -%><% } %></span>
+      </h1>
       <ul class="hero__details">
-        <li><span>Type</span><%- locals.flick.mediaType -%></li>
-        <li>
-          <% if (locals.flick.tmdbMediaType == 'movie') { %>
+        <li><span>Type</span><span class="u-capitalize"><%- locals.flick.mediaType -%></span></li>
+        <% if (locals.flick.tmdbMediaType == 'movie') { %>
+          <li>
             <span>Released</span>
             <%- utils.renderDate(locals.flick.releaseDate) -%>
-          <% } else { %>
+          </li>
+          <li>
+            <span>Runtime</span>
+            <%- utils.renderRuntime(locals.flick.runtime) -%>
+          </li>
+        <% } else { %>
+          <li>
             <span>First Aired</span>
             <%- utils.renderDate(locals.flick.firstAirDate) -%>
-          <% } %>
-        </li>
-        <li><span>Runtime</span><%- utils.renderRuntime(locals.flick.runtime) -%></li>
+          </li>
+          <li>
+            <span>Last Aired</span>
+            <%- utils.renderDate(locals.flick.lastAirDate) -%>
+          </li>
+          <li>
+            <span>Ep. Runtime</span>
+            <%- utils.renderRuntime(locals.flick.episodeRunTime) -%>
+          </li>
+          <li>
+            <span># Seasons</span>
+            <%- locals.flick.numberOfSeasons -%>
+          </li>
+          <li>
+            <span># Episodes</span>
+            <%- locals.flick.numberOfEpisodes -%>
+          </li>          
+        <% } %>
         <!-- <li><span>Production Country</span>US</li> -->
       </ul>
     </div>
