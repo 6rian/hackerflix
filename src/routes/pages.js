@@ -21,26 +21,26 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/flick/:slug', (req, res, next) => {
-  const locals = makeLocals();
-  res.render('flick', locals);
+  const view = 'flick';
+  const locals = makeLocals({
+    view,
+    slug: req.params.slug,
+  });
+  res.render(view, locals);
 });
 
 router.get('/browse/:type', (req, res, next) => {
-  try {
-    const { type } = req.params;
-    if (!type || !isValidMediaType(type)) {
-      throw new Error(`Invlid media type: ${type}`);
-    }
-
-    const locals = makeLocals({
-      view: 'index',
-      mediaType: type,
-    });
-
-    res.render('index', locals);
-  } catch (e) {
-    next(e);
+  const { type } = req.params;
+  if (!type || !isValidMediaType(type)) {
+    throw new Error(`Invlid media type: ${type}`);
   }
+
+  const locals = makeLocals({
+    view: 'index',
+    mediaType: type,
+  });
+
+  res.render('index', locals);
 });
 
 export default router;

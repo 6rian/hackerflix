@@ -1,25 +1,11 @@
+import { fetchFlicks } from '../services/api';
+
 const GRID_CLASS = 'results-grid__grid';
 const CARD_CLASS = 'results-grid__card';
 const CARD_POSTER_CLASS = 'results-grid__card-poster';
 const CARD_HEADLINE_CLASS = 'results-grid__card-headline';
 const LOAD_MORE_BUTTON_CLASS = 'results-grid__load-more-button';
 const PAGE_SIZE = 10;
-
-const fetchFlicks = async () => {
-  let url;
-  const API_ENDPOINT = '/api/flick';
-  const mediaTypeFilter = window.viewLocals.mediaType || '';
-
-  url = API_ENDPOINT;
-  if (mediaTypeFilter) {
-    url = `${API_ENDPOINT}?type=${mediaTypeFilter}`;
-  }
-
-  const data = await fetch(url);
-  const { data: flicks } = await data.json();
-
-  return flicks;
-};
 
 const renderCard = (flick) => {
   const grid = document.querySelector(`.${GRID_CLASS}`);
@@ -64,7 +50,7 @@ const renderBatch = (size = 10) => {
 const bindLoadMoreButton = () => {
   const button = document.querySelector(`.${LOAD_MORE_BUTTON_CLASS}`);
   button.addEventListener('click', () => renderBatch(PAGE_SIZE));
-}
+};
 
 export default async () => {
   try {

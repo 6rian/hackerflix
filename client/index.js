@@ -4,10 +4,13 @@ import { bindNavButtons } from './components/nav';
 import { bindRibbon } from './components/ribbon';
 
 import IndexPage from './pages/index-page';
+import FlickPage from './pages/flick-page';
 
 const initPage = (view) => {
   if (view === 'index') {
     IndexPage();
+  } else if (view === 'flick') {
+    FlickPage();
   }
 };
 
