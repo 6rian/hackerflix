@@ -6,6 +6,7 @@ import path from 'path';
 import logger from './lib/logger';
 import routes from './routes';
 import errorHandler from './lib/error.handler';
+import viewUtils from './lib/view.utils';
 import { bootstrap } from './lib/bootstrap';
 
 (async () => {
@@ -28,6 +29,8 @@ import { bootstrap } from './lib/bootstrap';
   app.set('view engine', 'ejs');
   app.use(express.static(path.join(__dirname, 'dist')));
   app.set('views', path.join(__dirname, 'views'));
+  // Pass helper functions to the view engine
+  app.locals.utils = viewUtils;
 
   app.use('/', routes);
 
