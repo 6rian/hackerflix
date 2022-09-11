@@ -49,29 +49,29 @@
   </section>
   <div class="row">
     <% if (locals.flick.tagline) { %>
-      <div class="page-section">
-        <p class="tagline">
+      <div class="details-section">
+        <p class="details-section__tagline">
           <%- locals.flick.tagline -%>
         </p>
       </div>
     <% } %>
     <% if (locals.flick.overview) { %>
-      <div class="page-section">
-        <h2 class="section-heading">💬 Overview</h2>
-        <p class="overview">
+      <div class="details-section">
+        <h2 class="details-section__heading">💬 Overview</h2>
+        <p class="details-section__overview">
           <%- locals.flick.overview -%>
         </p>
       </div>
     <% } %>
     <!--
-    <div class="page-section">
-      <h2 class="section-heading">🎥 Trailer</h2>
+    <div class="details-section">
+      <h2 class="details-section__heading">🎥 Trailer</h2>
       <div class="trailer">
         <iframe class="trailer__player" src="https://www.youtube-nocookie.com/embed/Rn2cf_wJ4f4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>          
       </div>
     </div>
-    <div class="page-section">
-      <h2 class="section-heading">📷 Images</h2>
+    <div class="details-section">
+      <h2 class="details-section__heading">📷 Images</h2>
       <img src="https://www.themoviedb.org/t/p/original/4Z5o376Fiw6r10vxqZ4jg5P1Mq7.jpg" class="flick-image" />
     </div>        
     -->

@@ -33,7 +33,15 @@
       grid-column: 2;
       font-size: 1.75rem;
 
+      @media (min-width: $screen-bp-md) {
+        font-size: 2rem;
+      }
+
       @media (min-width: $screen-bp-lg) {
+        font-size: 2.25rem;
+      }
+
+      @media (min-width: $screen-bp-xl) {
         font-size: 2.5rem;
       }
     }
@@ -95,6 +103,19 @@
         flex-direction: column;
         gap: 0.5em;
         font-weight: 300;
+        font-size: 1.25rem;
+
+        @media (min-width: $screen-bp-md) {
+          font-size: 1.5rem;
+        }
+
+        @media (min-width: $screen-bp-lg) {
+          font-size: 1.75rem;
+        }
+
+        @media (min-width: $screen-bp-xl) {
+          font-size: 2rem;
+        }
 
         &:last-child {
           margin-bottom: 0;
@@ -105,10 +126,6 @@
           font-family: $monospace-font-stack;
           color: $green-100;
 
-          // &::before {
-          //   content: './';
-          // }
-
           &::after {
             content: ':';
           }
@@ -116,23 +133,62 @@
       }
     }
   }
-
-  .section-heading {
-    margin-bottom: 1em;
-    font-family: $monospace-font-stack;
-    color: $blue-100;
-  }
-
-  .tagline {
+  
+  .details-section {
+    margin-bottom: 2em;
     font-size: 1.25rem;
     font-weight: 300;
-    font-style: italic;
-    margin-bottom: 1.5em;
-  }
 
-  .overview {
-    font-size: 1.25rem;
-    font-weight: 300;
+    &:first-child {
+      margin-top: 3em;
+    }
+
+    @media (min-width: $screen-bp-md) {
+      font-size: 1.5rem;
+    }
+
+    @media (min-width: $screen-bp-lg) {
+      max-width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+      font-size: 1.75rem;
+    }
+
+    @media (min-width: $screen-bp-xl) {
+      max-width: 70%;
+      font-size: 2rem;
+    }
+
+    &__heading {
+      margin-bottom: 0.55em;
+      font-family: $monospace-font-stack;
+      font-size: 2rem;
+      font-weight: 700;
+      color: $blue-100;
+
+      @media (min-width: $screen-bp-md) {
+        font-size: 2.25rem;
+      }
+
+      @media (min-width: $screen-bp-lg) {
+        font-size: 2.5rem;
+      }
+
+      @media (min-width: $screen-bp-xl) {
+        font-size: 2.75rem;
+      }
+    }
+
+    &__tagline {
+      font-style: italic;
+      font-size: 2rem;
+      text-align: center;
+      color: $pink-100;
+
+      @media (min-width: $screen-bp-lg) {
+        font-size: 2.5rem;
+      }
+    }
   }
 
   .trailer {

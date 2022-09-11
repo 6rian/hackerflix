@@ -56,6 +56,10 @@ body {
   .open-nav-button {
     width: 2.5rem;
 
+    &:hover {
+      cursor: pointer;
+    }
+
     div {
       height: 0.25rem;
       background-color: $blue-100;
@@ -147,8 +151,4 @@ body {
 
 .page {
   color: $primary-text-color;
-}
-
-.page-section {
-  margin-bottom: 2.5em;
 }
