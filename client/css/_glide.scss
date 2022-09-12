@@ -1,0 +1,10 @@
+.glide__arrow {
+  color: $green-100;
+  top: unset;
+  bottom: -70px;
+
+  &:hover {
+    background-color: $green-100;
+    color: $purple-300;
+  }
+}

@@ -17,6 +17,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@glidejs/glide": "^3.5.2",
     "config": "^3.3.7",
     "dotenv": "^16.0.1",
     "ejs": "^3.1.8",

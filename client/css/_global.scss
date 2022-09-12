@@ -33,6 +33,7 @@ body {
   background-color: $purple-100;
   box-shadow: 0 0 10px $pink-100;
   display: none;
+  z-index: 9999;
 
   &.sticky {
     position: fixed;

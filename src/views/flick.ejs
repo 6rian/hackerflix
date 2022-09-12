@@ -70,11 +70,27 @@
         <iframe class="trailer__player" src="https://www.youtube-nocookie.com/embed/Rn2cf_wJ4f4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>          
       </div>
     </div>
-    <div class="details-section">
-      <h2 class="details-section__heading">📷 Images</h2>
-      <img src="https://www.themoviedb.org/t/p/original/4Z5o376Fiw6r10vxqZ4jg5P1Mq7.jpg" class="flick-image" />
-    </div>        
     -->
+    <% if (locals.flick.posterImages) { %>
+      <div class="details-section">
+        <h2 class="details-section__heading">🎨 Posters</h2>       
+        <div class="glide details-section__posters">
+          <div class="glide__track" data-glide-el="track">
+            <ul class="glide__slides">
+              <% locals.flick.posterImages.forEach(function(path) { %>
+                <li class="glide__slide details-section__poster">
+                  <img src="<%- utils.renderPosterUrl(path) -%>" class="u-img-responsive">
+                </li>
+              <% }); %>
+            </ul>
+          </div>
+          <div class="glide__arrows" data-glide-el="controls">
+            <button class="glide__arrow glide__arrow--left" data-glide-dir="<">prev</button>
+            <button class="glide__arrow glide__arrow--right" data-glide-dir=">">next</button>
+          </div>        
+        </div>
+      </div>
+    <% } %>
   </div>
 </main>
 

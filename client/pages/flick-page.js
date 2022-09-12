@@ -1,14 +1,23 @@
-import { fetchFlick } from '../services/api';
+import Glide from '@glidejs/glide';
+
+const initPosters = () => {
+  const options = {
+    type: 'slider',
+    rewind: true,
+    startAt: 0,
+    perView: 3,
+    breakpoints: {
+      768: {
+        perView: 2,
+      },
+      500: {
+        perView: 1,
+      },
+    },
+  };
+  new Glide('.details-section__posters', options).mount();
+};
 
 export default async () => {
-  // try {
-  //   const { slug } = window.viewLocals;
-  //   const flick = await fetchFlick(slug);
-  //   if (!flick) {
-  //     throw new Error(`Could not load flick: ${slug}`);
-  //   }
-  //   window.viewLocals.flick = flick.data;
-  // } catch (e) {
-  //   console.error(e);
-  // }
+  initPosters();
 };
