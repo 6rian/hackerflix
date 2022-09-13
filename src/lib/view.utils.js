@@ -1,3 +1,13 @@
+import TMDB from '../services/tmdb';
+
+const isMovie = (flick) => {
+  return flick.tmdbMediaType === TMDB.MEDIA_TYPES.MOVIE;
+};
+
+const isTv = (flick) => {
+  return flick.tmdbMediaType === TMDB.MEDIA_TYPES.TV;
+}
+
 const renderBackdropUrl = (path) => {
   return path
     ? `https://www.themoviedb.org/t/p/original${path}`
@@ -39,6 +49,8 @@ const renderRuntime = (runtime) => {
 };
 
 export default {
+  isMovie,
+  isTv,
   renderBackdropUrl,
   renderDate,
   renderPosterUrl,

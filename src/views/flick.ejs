@@ -91,6 +91,33 @@
         </div>
       </div>
     <% } %>
+    <% if (locals.flick.cast || locals.flick.crew) { %>
+      <div class="details-section">
+        <h2 class="details-section__heading">📜 Credits</h2>
+        <ul class="credits">
+          <% if (locals.flick.cast) { %>
+            <% locals.flick.cast.forEach(function(cast) { %>
+              <li class="credits__credit credits__credit--cast">
+                <span class="credits__role">
+                  <%- utils.isMovie(locals.flick) ? cast.character : cast.roles[0].character; -%>
+                </span>
+                <span class="credits__name"><%- cast.name -%></span>
+              </li>
+            <% }); %>
+          <% } %>
+          <% if (locals.flick.cast) { %>   
+            <% locals.flick.crew.forEach(function(crew) { %>
+              <li class="credits__credit credits__credit--crew">
+                <span class="credits__role">
+                  <%- utils.isMovie(locals.flick) ? crew.job : crew.jobs[0].job; -%>
+                </span>
+                <span class="credits__name"><%- crew.name -%></span>
+              </li>
+            <% }); %>
+          <% } %>
+        </ul>
+      </div>
+    <% } %>     
   </div>
 </main>
 

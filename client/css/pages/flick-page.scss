@@ -196,4 +196,30 @@
     justify-content: center;
     align-items: center;
   }
+
+  .credits {
+    list-style: none;
+    padding-left: 0;
+
+    &__credit {
+      display: grid;
+      grid-template-columns: 50% 50%;
+      gap: 1em;
+      margin-bottom: 0.5em;
+
+      &:hover {
+        text-shadow: 0 0 5px $pink-100;
+      }
+    }
+
+    &__role {
+      text-align: right;
+      font-family: $monospace-font-stack;
+      color: $pink-100;
+    }
+
+    &__name {
+      font-weight: 700;
+    }
+  }
 }
