@@ -17,6 +17,14 @@ p {
   margin: 0;
 }
 
+ul,
+ol,
+li {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   background: $background-color;
   color: $primary-text-color;

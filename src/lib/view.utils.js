@@ -14,6 +14,10 @@ const renderBackdropUrl = (path) => {
     : `https://images.unsplash.com/photo-1496942299866-9e7ab403e614?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1600&q=80`;
 };
 
+const renderHeadshotUrl = (castMember) => {
+  return renderPosterUrl(castMember.profile_path, 200);
+};
+
 const renderPosterUrl = (path, width = 400) => {
   return path
     ? `https://image.tmdb.org/t/p/w${width}${path}`
@@ -53,6 +57,7 @@ export default {
   isTv,
   renderBackdropUrl,
   renderDate,
+  renderHeadshotUrl,
   renderPosterUrl,
   renderRuntime,
   renderYear,
