@@ -19,6 +19,9 @@ export const getFlickDTO = (flick) => ({
   numberOfSeasons: flick.numberOfSeasons,
   backdropImages: flick.backdropImages,
   posterImages: flick.posterImages,
+  cast: flick.cast.map(JSON.parse),
+  crew: flick.crew.map(JSON.parse),
+  tmdbKeywords: flick.tmdbKeywords,
 });
 
 export const getFlicksResponseDTO = (flicks) => ({

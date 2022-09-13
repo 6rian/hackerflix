@@ -26,6 +26,9 @@ const flickSchema = new Schema(Flick, {
   backdropImages: { type: 'string[]' },
   logoImages: { type: 'string[]' },
   posterImages: { type: 'string[]' },
+  cast: { type: 'string[]' },
+  crew: { type: 'string[]' },
+  tmdbKeywords: { type: 'string[]' },
 });
 
 export default flickSchema;

@@ -18,6 +18,10 @@ const getImageFilePath = (image) => {
   return image.file_path;
 }
 
+const getKeywordName = (keyword) => {
+  return keyword.name;
+}
+
 const transform = (data, type) => {
   const transformed = {
     tmdbId: data.id,
@@ -36,6 +40,9 @@ const transform = (data, type) => {
     transformed.imdbId = data.imdb_id;
     transformed.releaseDate = new Date(data.release_date);
     transformed.runtime = data.runtime;
+    transformed.cast = data.credits.cast.map(JSON.stringify),
+    transformed.crew =  data.credits.crew.map(JSON.stringify),
+    transformed.tmdbKeywords = data.keywords.keywords.map(getKeywordName);
   } else if (type === TMDB.MEDIA_TYPES.TV) {
     transformed.title = data.name;
     transformed.firstAirDate = new Date(data.first_air_date);
@@ -43,6 +50,9 @@ const transform = (data, type) => {
     transformed.episodeRunTime = data.episode_run_time[0];
     transformed.numberOfEpisodes = data.number_of_episodes;
     transformed.numberOfSeasons = data.number_of_seasons;
+    transformed.cast = data.aggregate_credits.cast.map(JSON.stringify),
+    transformed.crew = data.aggregate_credits.crew.map(JSON.stringify),
+    transformed.tmdbKeywords = data.keywords.results.map(getKeywordName);
   }
 
   return transformed;
