@@ -62,6 +62,15 @@
         </p>
       </div>
     <% } %>
+    <% if (locals.flick.tmdbKeywords.length) { %>
+      <div class="details-section">
+        <ul class="keywords">
+          <% locals.flick.tmdbKeywords.forEach(function(keyword){ %>
+            <li class="keywords__keyword"><%- keyword -%></li>
+          <% }); %>
+        </ul>
+      </div>
+    <% } %>    
     <% if (locals.flick.cast.length) { %>
       <div class="details-section">
         <h2 class="details-section__heading">🧑 Top Cast</h2>

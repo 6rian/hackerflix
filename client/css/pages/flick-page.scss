@@ -197,6 +197,21 @@
     align-items: center;
   }
 
+  .keywords {
+    margin: -2rem 0 -1rem 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+
+    &__keyword {
+      padding: 0.5em;
+      font-size: 1rem;
+      background-color: $purple-200;
+      color: $white;
+      border-radius: $border-radius-md;
+    }
+  }
+
   .topcast {
     &__card {
       max-width: 150px;
