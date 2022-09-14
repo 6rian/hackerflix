@@ -9,7 +9,10 @@
     "dev": "npm run clean && npm-run-all -l -p dev:server dev:client",
     "dev:client": "webpack --config webpack.development.js --watch",
     "dev:server": "nodemon",
-    "build:server": "babel ./src --out-dir dist/ --ignore ./node_modules,./.babelrc,./nodemon.json,./package.json,./npm-debug.log,./mockups --copy-files && copyfiles -a config/* dist"
+    "build:server": "babel ./src --out-dir dist/ --ignore ./node_modules,./.babelrc,./nodemon.json,./package.json,./npm-debug.log,./mockups --copy-files && copyfiles -a config/* dist",
+    "prepare": "husky install",
+    "pretty-quick": "pretty-quick",
+    "pre-commit": "pretty-quick --staged"
   },
   "engines": {
     "node": ">= 16.15.0"
@@ -38,11 +41,14 @@
     "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.1",
+    "husky": "^8.0.1",
     "mini-css-extract-plugin": "^2.6.1",
     "node-sass": "^7.0.3",
     "node-sass-middleware": "^1.0.1",
     "nodemon": "^2.0.19",
     "npm-run-all": "^4.1.5",
+    "prettier": "^2.7.1",
+    "pretty-quick": "^3.1.3",
     "redis": "^4.3.0",
     "rimraf": "^3.0.2",
     "sass-loader": "^13.0.2",

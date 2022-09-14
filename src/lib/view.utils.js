@@ -6,7 +6,7 @@ const isMovie = (flick) => {
 
 const isTv = (flick) => {
   return flick.tmdbMediaType === TMDB.MEDIA_TYPES.TV;
-}
+};
 
 const renderBackdropUrl = (path) => {
   return path

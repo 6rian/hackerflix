@@ -1,7 +1,7 @@
-import TMDB from "../../services/tmdb";
+import TMDB from '../../services/tmdb';
 import config from 'config';
-import logger from "../../lib/logger";
-import { createFlick } from "../../services/cache";
+import logger from '../../lib/logger';
+import { createFlick } from '../../services/cache';
 
 const extract = async () => {
   const tmdb = new TMDB();

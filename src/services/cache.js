@@ -10,12 +10,8 @@ export const getFlicksByType = async (type) => {
 };
 
 export const getFlickBySlug = async (slug) => {
-  return await Flick.search()
-    .where('slug')
-    .equals(slug)
-    .return
-    .first();
-}
+  return await Flick.search().where('slug').equals(slug).return.first();
+};
 
 // Since IDs for Movies and TV shows can overlap in TMDB,
 // locating a record requires the TMDB ID + Media Type.

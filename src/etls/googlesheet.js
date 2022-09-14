@@ -1,6 +1,6 @@
 import logger from '../lib/logger';
 import { fetchSheet } from '../services/google';
-import { updateFlick } from "../services/cache";
+import { updateFlick } from '../services/cache';
 
 const extract = async () => {
   return await fetchSheet();

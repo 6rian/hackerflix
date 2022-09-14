@@ -30,5 +30,5 @@ export const getFlicksResponseDTO = (flicks) => ({
 });
 
 export const getFlickResponseDTO = (flick) => ({
-  data: getFlickDTO(flick)
+  data: getFlickDTO(flick),
 });

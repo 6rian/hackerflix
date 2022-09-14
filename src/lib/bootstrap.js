@@ -1,4 +1,4 @@
-import logger from './logger'
+import logger from './logger';
 import { runListETL } from '../etls/tmdb/list';
 import { runGoogleSheetETL } from '../etls/googlesheet';
 

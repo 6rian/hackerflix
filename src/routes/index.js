@@ -19,7 +19,7 @@ router.use(
     }
     next();
   },
-  devRoutes
+  devRoutes,
 );
 
 export default router;
