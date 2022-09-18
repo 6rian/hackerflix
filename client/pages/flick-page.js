@@ -1,10 +1,17 @@
 import Glide from '@glidejs/glide';
 
+const GLOBAL_GLIDE_OPTIONS = {
+  type: 'slider',
+  rewind: 'true',
+  startAt: 0,
+  perTouch: 1,
+  keyboard: false,
+  bound: true,
+};
+
 const initTopCast = () => {
   const options = {
-    type: 'slider',
-    rewind: true,
-    startAt: 0,
+    ...GLOBAL_GLIDE_OPTIONS,
     perView: 5,
     breakpoints: {
       768: {
@@ -20,9 +27,7 @@ const initTopCast = () => {
 
 const initPosters = () => {
   const options = {
-    type: 'slider',
-    rewind: true,
-    startAt: 0,
+    ...GLOBAL_GLIDE_OPTIONS,
     perView: 3,
     breakpoints: {
       768: {
