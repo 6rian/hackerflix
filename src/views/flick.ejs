@@ -98,16 +98,20 @@
           </div>        
         </div>        
       </div>
-    <% } %>    
-    <!--
-    <div class="details-section">
-      <h2 class="details-section__heading">🎥 Trailer</h2>
-      <div class="trailer">
-        <iframe class="trailer__player" src="https://www.youtube-nocookie.com/embed/Rn2cf_wJ4f4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>          
+    <% } %>
+    <% if (locals.flick.videos.length) { %>
+      <div class="details-section">
+        <h2 class="details-section__heading">🎥 Videos</h2>
+        <ul class="videos">
+          <% locals.flick.videos.forEach(function(video) { %>
+            <li class="videos__video-wrapper">
+              <%- include('includes/youtube', {videoId: video.key, videoTitle: video.name}); -%>
+            </li>
+          <% }); %>          
+        </ul>
       </div>
-    </div>
-    -->
-    <% if (locals.flick.posterImages) { %>
+    <% } %>
+    <% if (locals.flick.posterImages.length) { %>
       <div class="details-section">
         <h2 class="details-section__heading">🎨 Posters</h2>       
         <div class="glide glide--posters">
@@ -127,7 +131,7 @@
         </div>
       </div>
     <% } %>
-    <% if (locals.flick.cast || locals.flick.crew) { %>
+    <% if (locals.flick.cast.length || locals.flick.crew.length) { %>
       <div class="details-section">
         <h2 class="details-section__heading">📜 Credits</h2>
         <ul class="credits">

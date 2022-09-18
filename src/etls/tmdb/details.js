@@ -30,9 +30,10 @@ const transform = (data, type) => {
     overview: data.overview,
     rating: data.vote_average,
     tagline: data.tagline,
-    posterImages: data.images.posters.map(getImageFilePath),
-    backdropImages: data.images.backdrops.map(getImageFilePath),
-    logoImages: data.images.logos.map(getImageFilePath),
+    posterImages: data.images.posters ? data.images.posters.map(getImageFilePath) : null,
+    backdropImages: data.images.backdrops ? data.images.backdrops.map(getImageFilePath) : null,
+    logoImages: data.images.logos ? data.images.logos.map(getImageFilePath) : null,
+    videos: data.videos.results ? data.videos.results.map(JSON.stringify) : null,
   };
 
   if (type === TMDB.MEDIA_TYPES.MOVIE) {
@@ -47,7 +48,7 @@ const transform = (data, type) => {
     transformed.title = data.name;
     transformed.firstAirDate = new Date(data.first_air_date);
     transformed.lastAirDate = new Date(data.last_air_date);
-    transformed.episodeRunTime = data.episode_run_time[0];
+    transformed.episodeRunTime = data.episode_run_time.length ? data.episode_run_time[0] : null;
     transformed.numberOfEpisodes = data.number_of_episodes;
     transformed.numberOfSeasons = data.number_of_seasons;
     transformed.cast = data.aggregate_credits.cast.map(JSON.stringify);
@@ -65,7 +66,9 @@ const load = async (flickJson) => {
 export const runDetailsETL = async (tmdbId, tmdbMediaType) => {
   try {
     const detailsResponse = await extract(tmdbId, tmdbMediaType);
+    console.log(detailsResponse);
     const transformed = transform(detailsResponse, tmdbMediaType);
+    console.log(transformed);
     return await load(transformed);
   } catch (e) {
     throw new Error(`Failed fetching details for ${tmdbMediaType}-${tmdbId}: ${e.message}`);

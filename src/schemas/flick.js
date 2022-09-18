@@ -29,6 +29,7 @@ const flickSchema = new Schema(Flick, {
   cast: { type: 'string[]' },
   crew: { type: 'string[]' },
   tmdbKeywords: { type: 'string[]' },
+  videos: { type: 'string[]' },
 });
 
 export default flickSchema;

@@ -193,12 +193,6 @@
     }
   }
 
-  .trailer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
   .keywords {
     margin: -2rem 0 -1rem 0;
     display: flex;
@@ -240,6 +234,33 @@
 
     &__name {
       font-weight: 700;
+    }
+  }
+
+  .videos {
+    display: flex;
+    overflow: auto;
+    white-space: nowrap;
+    gap: 1em;
+
+    &__video-embed {
+      width: 390px;
+      height: 219px;
+
+      @media (min-width: $screen-bp-md) {
+        width: 500px;
+        height: 281px;
+      }
+
+      @media (min-width: $screen-bp-lg) {
+        width: 700px;
+        height: 394px;
+      }
+
+      @media (min-width: $screen-bp-xl) {
+        width: 1000px;
+        height: 562px;
+      }
     }
   }
 
