@@ -264,14 +264,26 @@
     }
   }
 
+  .credits-outter {
+    height: 500px;
+    border: 1px dashed $blue-100;
+    border-radius: $border-radius-md;
+    overflow-y: scroll;
+  }
+  
   .credits {
     list-style: none;
-    padding-left: 0;
+    padding: 500px 0 0 0;
+    animation: scroll-credits 30s linear infinite;
+
+    &:hover {
+      animation-play-state: paused;
+    }
 
     &__credit {
       display: grid;
-      grid-template-columns: 50% 50%;
-      gap: 1em;
+      grid-template-columns: 45% 55%;
+      gap: 0.5em;
       margin-bottom: 0.5em;
 
       &:hover {
@@ -288,5 +300,14 @@
     &__name {
       font-weight: 700;
     }
+  }
+}
+
+@keyframes scroll-credits {
+  from {
+    transform: translateY(0%);
+  }
+  to {
+    transform: translateY(-100%);
   }
 }
