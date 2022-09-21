@@ -137,14 +137,21 @@ body {
   border-top: 1px solid $blue-100;
   padding: 5em 1em;
   margin-top: 5em;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 2em;
+
+  @media (min-width: $screen-bp-md) {
+    flex-direction: row;
+    justify-content: space-between;
+    padding-left: 3em;
+    padding-right: 3em;
+  }
 
   a {
     color: $pink-100;
     text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
+    font-size: 1.5rem;
   }
 
   &__attribution {
@@ -152,10 +159,17 @@ body {
     flex-direction: column;
     gap: 0.5em;
     font-size: 0.9rem;
+    font-style: italic;
+    text-align: center;
+    justify-content: center;
 
     img {
-      max-width: 250px;
+      width: 200px;
     }
+  }
+
+  &__nav {
+    text-align: center;
   }
 }
 
