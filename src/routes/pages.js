@@ -75,4 +75,11 @@ router.get('/browse/:type', (req, res, next) => {
   res.render('index', locals);
 });
 
+router.get('/about', (req, res, next) => {
+  const locals = makeLocals({
+    view: 'about',
+  });
+  res.render('about', locals);
+});
+
 export default router;
