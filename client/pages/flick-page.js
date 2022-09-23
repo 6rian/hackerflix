@@ -41,6 +41,15 @@ const initPosters = () => {
   new Glide('.glide--posters', options).mount();
 };
 
+const initCredits = () => {
+  const credits = [...window.viewLocals.flick.cast, ...window.viewLocals.flick.crew];
+  if (credits.length > 10) {
+    const creditsEl = document.querySelector('.credits');
+    creditsEl.style.setProperty('--scroll-credits-duration', `${credits.length}s`);
+    creditsEl.classList.add('credits--scroll-on');
+  }
+};
+
 export default async () => {
   try {
     initTopCast();
@@ -52,5 +61,11 @@ export default async () => {
     initPosters();
   } catch (e) {
     console.log('Could not initialize posters slider');
+  }
+
+  try {
+    initCredits();
+  } catch (e) {
+    console.log('Could not initialize credits');
   }
 };
