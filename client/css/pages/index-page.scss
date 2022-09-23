@@ -67,6 +67,7 @@
 }
 
 .results-grid {
+  $grid: &;
   display: flex;
   flex-direction: column;
   gap: 2em;
@@ -143,6 +144,25 @@
       box-shadow: 0 0 10px $purple-100;
       scale: 1.1;
       cursor: pointer;
+    }
+  }
+
+  &__error {
+    text-align: center;
+    font-size: 2rem;
+    font-style: italic;
+    color: $pink-100;
+    display: none;
+  }
+
+  &--error {
+    #{$grid}__error {
+      display: block;
+    }
+
+    #{$grid}__grid,
+    #{$grid}__load-more-button {
+      display: none;
     }
   }
 }

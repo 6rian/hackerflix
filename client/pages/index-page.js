@@ -1,5 +1,8 @@
 import { fetchFlicks } from '../services/api';
 
+const GRID_WRAPPER_CLASS = 'results-grid';
+const GRID_ERROR_CLASS = 'results-grid__error';
+const GRID_ERROR_STATE_CLASS = 'results-grid--error';
 const GRID_CLASS = 'results-grid__grid';
 const CARD_CLASS = 'results-grid__card';
 const CARD_POSTER_CLASS = 'results-grid__card-poster';
@@ -52,12 +55,24 @@ const bindLoadMoreButton = () => {
   button.addEventListener('click', () => renderBatch(PAGE_SIZE));
 };
 
+const showError = (message) => {
+  const error = document.querySelector(`.${GRID_ERROR_CLASS}`);
+  error.innerText = message;
+  const container = document.querySelector(`.${GRID_WRAPPER_CLASS}`);
+  container.classList.add(GRID_ERROR_STATE_CLASS);
+};
+
 export default async () => {
   try {
     window.flicks = await fetchFlicks();
     window.rendered = [];
-    renderBatch(PAGE_SIZE);
-    bindLoadMoreButton();
+
+    if (!window.flicks.length) {
+      showError('We could not find any flicks matching your search.');
+    } else {
+      renderBatch(PAGE_SIZE);
+      bindLoadMoreButton();
+    }
   } catch (e) {
     console.error('Major Failure: Could not load flicks: ', e);
   }
