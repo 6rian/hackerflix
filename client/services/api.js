@@ -2,10 +2,14 @@ export const fetchFlicks = async () => {
   let url;
   const API_ENDPOINT = '/api/flick';
   const mediaTypeFilter = window.viewLocals.mediaType || '';
+  const searchQuery = window.viewLocals.query || '';
 
   url = API_ENDPOINT;
   if (mediaTypeFilter) {
     url = `${API_ENDPOINT}?type=${mediaTypeFilter}`;
+  }
+  if (searchQuery) {
+    url = `${API_ENDPOINT}?q=${searchQuery}`;
   }
 
   const data = await fetch(url);

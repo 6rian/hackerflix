@@ -4,7 +4,7 @@ class Flick extends Entity {}
 
 const flickSchema = new Schema(Flick, {
   hasAllDetails: { type: 'boolean' },
-  title: { type: 'string' },
+  title: { type: 'text' },
   slug: { type: 'string' },
   mediaType: { type: 'string' },
   tmdbMediaType: { type: 'string' },

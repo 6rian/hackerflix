@@ -8,6 +8,7 @@ const router = Router();
 
 const GLOBAL_PAGE_PARAMS = {
   title: 'HackerFlix.net',
+  query: '',
 };
 
 const makeLocals = (locals) => ({
@@ -19,6 +20,7 @@ router.get('/', (req, res, next) => {
   const locals = makeLocals({
     view: 'index',
     mediaType: '',
+    query: req.query.q ?? '',
   });
   res.render('index', locals);
 });

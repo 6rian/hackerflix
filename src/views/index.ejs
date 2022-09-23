@@ -3,8 +3,8 @@
 <main class="page page__homepage">
   <section class="hero">
     <h1>Search The Largest Database of Hacker Films Online</h1>
-    <form class="hero__form">
-      <input type="text" class="hero__form__input" placeholder="Search..." />
+    <form class="hero__form" method="get" action="/">
+      <input type="text" name="q" class="hero__form__input" placeholder="Search..." value="<%- query -%>" />
       <button class="hero__form__button">Search</button>
     </form>
   </section>

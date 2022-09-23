@@ -29,6 +29,15 @@ export const flickExists = async (tmdbId, tmdbMediaType) => {
   return flick !== null ? true : false;
 };
 
+export const search = async (query) => {
+  return await Flick.search()
+    .where('title')
+    .matches(query)
+    .or('tmdbKeywords')
+    .contains(query)
+    .returnAll();
+};
+
 // Create Flick if it does not already exist in the cache.
 export const createFlick = async (flickJson) => {
   const { tmdbId, tmdbMediaType } = flickJson;

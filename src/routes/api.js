@@ -9,9 +9,11 @@ const router = Router();
 router.get('/flick', async (req, res, next) => {
   try {
     let data;
-    const { type } = req.query || null;
+    const { type, q: query } = req.query || null;
 
-    if (type && isValidMediaType(type)) {
+    if (query) {
+      data = await cache.search(query);
+    } else if (type && isValidMediaType(type)) {
       data = await cache.getFlicksByType(type);
     } else {
       data = await cache.getFlicks();
