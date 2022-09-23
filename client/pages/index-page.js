@@ -52,7 +52,9 @@ const renderBatch = (size = 10) => {
 
 const bindLoadMoreButton = () => {
   const button = document.querySelector(`.${LOAD_MORE_BUTTON_CLASS}`);
-  button.addEventListener('click', () => renderBatch(PAGE_SIZE));
+  if (button) {
+    button.addEventListener('click', () => renderBatch(PAGE_SIZE));
+  }
 };
 
 const showError = (message) => {
