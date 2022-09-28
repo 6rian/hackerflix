@@ -10,6 +10,8 @@ import viewUtils from './lib/view.utils';
 import { bootstrap } from './lib/bootstrap';
 
 (async () => {
+  console.log(`Starting application in ${process.env.NODE_ENV} mode`);
+
   // Run the bootstrap to preload data for homepage from TMDB
   const bootstrapResult = await bootstrap();
   if (!bootstrapResult) {
