@@ -4,7 +4,11 @@ import config from 'config';
 const client = new Client();
 
 (async () => {
-  await client.open();
+  try {
+    await client.open(config.get('redis_url'));
+  } catch (e) {
+    console.error('Could not connect to redis:', e);
+  }
 })();
 
 export default client;
