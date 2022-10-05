@@ -30,6 +30,16 @@ body {
   color: $primary-text-color;
 }
 
+a,
+a:visited {
+  color: $purple-100;
+
+  &:hover,
+  &:active {
+    color: $green-100;
+  }
+}
+
 .row {
   margin: 1em;
 }
@@ -157,11 +167,16 @@ body {
   &__attribution {
     display: flex;
     flex-direction: column;
-    gap: 0.5em;
-    font-size: 0.9rem;
-    font-style: italic;
+    gap: 1em;
     text-align: center;
     justify-content: center;
+
+    &-source {
+      & > div {
+        font-size: 0.9rem;
+        font-style: italic;
+      }
+    }
 
     img {
       width: 200px;
