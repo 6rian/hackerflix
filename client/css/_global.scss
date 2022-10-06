@@ -33,10 +33,13 @@ body {
 a,
 a:visited {
   color: $purple-100;
+  text-decoration: none;
+  transition: .3s;
 
   &:hover,
   &:active {
     color: $green-100;
+    text-shadow: 0 0 5px $green-100;
   }
 }
 
