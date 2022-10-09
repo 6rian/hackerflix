@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="/main.css">
     <script>
       try {
-        window.viewLocals = JSON.parse(`<%- JSON.stringify(locals) -%>`);
+        window.viewLocals = <%- JSON.stringify(locals) -%>;
       } catch (e) {
         console.error(e);
       }
