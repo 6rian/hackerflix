@@ -115,6 +115,10 @@
       }
     }
 
+    &:visited {
+      color: $primary-text-color-inverted;
+    }
+
     &-poster {
       background-size: cover;
       background-position: center center;

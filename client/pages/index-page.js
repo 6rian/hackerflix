@@ -16,6 +16,7 @@ const renderCard = (flick) => {
   card.className = CARD_CLASS;
   card.href = `/flick/${flick.slug}`;
   card.title = flick.title;
+  card.target = '_blank';
 
   const poster = document.createElement('div');
   poster.classList.add(CARD_POSTER_CLASS);
