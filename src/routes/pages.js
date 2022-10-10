@@ -54,6 +54,7 @@ router.get('/flick/:slug', async (req, res, next) => {
     const view = 'flick';
     const locals = makeLocals({
       view,
+      title: `${flickData.title} | HackerFlix.net`,
       slug: req.params.slug,
       flick: flickData,
     });
@@ -80,6 +81,7 @@ router.get('/browse/:type', (req, res, next) => {
 router.get('/about', (req, res, next) => {
   const locals = makeLocals({
     view: 'about',
+    title: 'About HackerFlix'
   });
   res.render('about', locals);
 });
