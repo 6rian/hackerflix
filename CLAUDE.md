@@ -25,9 +25,9 @@ Homepage features a hero section with a configurable featured title, followed by
 
 ## Config
 
-A config file (not env vars) stores non-secret values: TMDB list ID, featured content ID (default: *Hackers*, 1995), default theme, etc.
+A config file (not env vars) stores non-secret values: TMDB list ID, featured content ID (default: _Hackers_, 1995), default theme, etc.
 
-TMDB API key is provided via `.env`. No user auth — reviews and ratings come directly from TMDB.
+TMDB API Access Token is provided via `.env`. No user auth — reviews and ratings come directly from TMDB.
 
 ## Deployment
 
@@ -38,11 +38,13 @@ Target: DigitalOcean Droplet (~$6–18/mo) running Docker. Cloudflare sits in fr
 GitHub Actions pipelines:
 
 **On pull request:**
+
 - Lint, type-check
 - Japa backend tests
 - Vitest frontend tests
 
 **On merge to `v2`:**
+
 - All of the above
 - Build Docker image and push to GitHub Container Registry (GHCR)
 - SSH into the Droplet and run `docker-compose pull && docker-compose up -d`
@@ -50,6 +52,7 @@ GitHub Actions pipelines:
 ## Git Hooks
 
 A pre-commit hook (via `husky` + `lint-staged`) runs on every commit:
+
 - **Prettier** on changed files
 - **Type-check** (`tsc --noEmit`)
 - **Lint** (`eslint`)

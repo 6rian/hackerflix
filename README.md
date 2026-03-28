@@ -1,31 +1,54 @@
-# hackerflix
+# HackerFlix
 
-[HackerFlix](http://www.hackerflix.net/) is a curated directory of documentaries, docuseries, movies, and tv shows about computers, hacking, technology, privacy, cyberpunk and Internet culture. Most of the imagery and data is provided via The Movie DB.
+A curated directory of movies, TV shows, and documentaries about AI, hacking, cybersecurity, programming, and digital culture. Built with AdonisJS, React, and Inertia.js.
 
-## Development
+## Prerequisites
 
-### Prerequisites
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- [pnpm](https://pnpm.io/installation) (for local tooling / pre-commit hooks)
 
-- NodeJS v16+
-- Docker Desktop
+## Local Development
 
-### Setup
+1. Clone the repo
+2. Copy the env file and fill in required values:
+   ```sh
+   cp .env.example .env
+   ```
+   Generate an `APP_KEY`:
+   ```sh
+   pnpm exec node ace generate:key
+   ```
+3. Install dependencies (sets up git hooks):
+   ```sh
+   pnpm install
+   ```
+4. Start the dev server:
+   ```sh
+   docker compose up
+   ```
+5. Open [http://localhost:3333](http://localhost:3333)
 
-1. Clone this repository.
-1. Copy `.env.example` to `.env` and add config values.
-1. Create a `private` directory and add the GCP service account credentials file.
-1. Install dependencies: `npm install`
-1. Start Redis: `docker-compose up -d`
-1. Start the dev server: `npm run dev`
+## Running Tests
 
-Upon a successful start of the application, the console will show:
-
+```sh
+pnpm test        # backend (Japa)
 ```
-[dev:server] Application listening on port 3000
+
+## Useful Commands
+
+```sh
+pnpm dev         # start dev server without Docker
+pnpm build       # production build
+pnpm lint        # ESLint
+pnpm typecheck   # TypeScript type check
+pnpm format      # Prettier (all files)
 ```
 
-To access the site visit:
-http://localhost:3000/
+## Branching
 
-To access Redis visit:
-http://localhost:8001/
+`v2` is the active development branch. Branch off `v2` for all features and bug fixes.
+
+```sh
+git checkout v2
+git checkout -b feat/your-feature
+```
