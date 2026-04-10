@@ -12,7 +12,7 @@ v2 is the active branch. Branch off `v2` for all features and bug fixes. `main` 
 
 - **Backend**: AdonisJS + TypeScript
 - **Frontend**: React + TypeScript + Tailwind CSS, via Inertia.js (SSR)
-- **Database**: SQLite — TMDB data cached locally and refreshed on a schedule
+- **Database**: PostgreSQL via Supabase — TMDB data cached and refreshed on a schedule
 - **Dev environment**: Docker + docker-compose
 - **Package manager**: pnpm
 - **Testing**: Japa (backend), Vitest (frontend)
@@ -28,6 +28,17 @@ Homepage features a hero section with a configurable featured title, followed by
 A config file (not env vars) stores non-secret values: TMDB list ID, featured content ID (default: _Hackers_, 1995), default theme, etc.
 
 TMDB API Access Token is provided via `.env`. No user auth — reviews and ratings come directly from TMDB.
+
+## Database
+
+Single Supabase project with schema-based environment separation:
+
+- **Dev / staging**: `dev` schema — set `DB_SCHEMA=dev`
+- **Production**: `public` schema — set `DB_SCHEMA=public`
+
+The `dev` schema must exist in Supabase before running migrations. Create it once via the Supabase SQL editor: `CREATE SCHEMA IF NOT EXISTS dev;`
+
+Connection is configured via `DATABASE_URL` (full PostgreSQL connection string) and `DB_SCHEMA`. CI/CD tests run against a local Postgres service container (no Supabase credentials needed).
 
 ## Deployment
 

@@ -8,6 +8,20 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: hackerflix
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v4
 
@@ -34,7 +48,8 @@ jobs:
         env:
           NODE_ENV: test
           APP_KEY: ${{ secrets.APP_KEY || 'a-test-app-key-32-chars-minimum!' }}
-          DB_CONNECTION: sqlite
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hackerflix
+          DB_SCHEMA: public
           SESSION_DRIVER: memory
 
       - name: Log in to GHCR
