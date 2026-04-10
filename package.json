@@ -71,9 +71,9 @@
     "@adonisjs/vite": "^4.0.0",
     "@inertiajs/react": "^3.0.0",
     "@vinejs/vine": "^3.0.1",
-    "better-sqlite3": "^12.8.0",
     "edge.js": "^6.2.1",
     "luxon": "^3.7.2",
+    "pg": "^8.20.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "reflect-metadata": "^0.2.2"
@@ -92,7 +92,6 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "@swc/core",
-      "better-sqlite3",
       "esbuild"
     ],
     "patchedDependencies": {

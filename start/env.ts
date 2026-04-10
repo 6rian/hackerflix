@@ -20,6 +20,14 @@ export default await Env.create(new URL('../', import.meta.url), {
 
   /*
   |----------------------------------------------------------
+  | Variables for configuring database
+  |----------------------------------------------------------
+  */
+  DATABASE_URL: Env.schema.string(),
+  DB_SCHEMA: Env.schema.string(),
+
+  /*
+  |----------------------------------------------------------
   | Variables for configuring session package
   |----------------------------------------------------------
   */

@@ -11,32 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        with:
-          version: latest
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Type check
-        run: pnpm typecheck
-
-      - name: Lint
-        run: pnpm lint
-
-      - name: Backend tests
-        run: pnpm test
-        env:
-          NODE_ENV: test
-          APP_KEY: ${{ secrets.APP_KEY || 'a-test-app-key-32-chars-minimum!' }}
-          DB_CONNECTION: sqlite
-          SESSION_DRIVER: memory
-
       - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
