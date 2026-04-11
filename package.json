@@ -12,7 +12,9 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
-    "prepare": "husky"
+    "prepare": "husky",
+    "dev:import-data": "dotenv -e .env.dev -- node ace data:import",
+    "prod:import-data": "dotenv -e .env.prod -- node ace data:import"
   },
   "imports": {
     "#controllers/*": "./app/controllers/*.js",
@@ -47,6 +49,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^4.7.0",
     "autoprefixer": "^10.4.27",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9.26.0",
     "hot-hook": "^0.4.0",
     "husky": "^9.1.7",
