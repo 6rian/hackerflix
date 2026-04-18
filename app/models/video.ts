@@ -35,10 +35,10 @@ export default class Video extends BaseModel {
   @column()
   declare publishedAt: DateTime | null;
 
-  @column()
+  @column({ columnName: 'iso_639_1' })
   declare iso6391: string | null;
 
-  @column()
+  @column({ columnName: 'iso_3166_1' })
   declare iso31661: string | null;
 
   @column()

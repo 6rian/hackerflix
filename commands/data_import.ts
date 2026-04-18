@@ -51,12 +51,11 @@ export default class DataImport extends BaseCommand {
     const moviesImporter = new MoviesImporter(client);
     const tvImporter = new TvImporter(client, moviesImporter);
 
-    // ── Fetch list ─────────────────────────────────────────────────────────
+    // ── Fetch list (all pages) ─────────────────────────────────────────────
     this.logger.info(`[LIST] Fetching TMDB list ${tmdbConfig.listId}...`);
-    let listItems: Awaited<ReturnType<TmdbClient['getList']>>['items'];
+    let listItems: Awaited<ReturnType<TmdbClient['getAllListItems']>>;
     try {
-      const list = await client.getList(tmdbConfig.listId);
-      listItems = list.items;
+      listItems = await client.getAllListItems(tmdbConfig.listId);
       this.logger.info(`[LIST] Fetched ${listItems.length} items from TMDB list`);
     } catch (err) {
       this.logger.error(`[LIST] Failed to fetch TMDB list: ${(err as Error).message}`);

@@ -51,7 +51,7 @@ export default class TvSeries extends BaseModel {
   @column()
   declare originalLanguage: string | null;
 
-  @column()
+  @column({ prepare: (v: string[] | null) => (v !== null ? JSON.stringify(v) : null) })
   declare originCountry: string[] | null;
 
   @column()
@@ -69,10 +69,12 @@ export default class TvSeries extends BaseModel {
   @column()
   declare numberOfEpisodes: number | null;
 
-  @column()
+  @column({ prepare: (v: number[] | null) => (v !== null ? JSON.stringify(v) : null) })
   declare episodeRunTime: number[] | null;
 
-  @column()
+  @column({
+    prepare: (v: Record<string, unknown>[] | null) => (v !== null ? JSON.stringify(v) : null),
+  })
   declare createdBy: Record<string, unknown>[] | null;
 
   @column()

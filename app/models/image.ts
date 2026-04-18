@@ -32,7 +32,7 @@ export default class Image extends BaseModel {
   @column()
   declare voteCount: number | null;
 
-  @column()
+  @column({ columnName: 'iso_639_1' })
   declare iso6391: string | null;
 
   @column()

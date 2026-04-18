@@ -14,6 +14,8 @@ export interface TmdbListResponse {
   id: number;
   items: TmdbListItem[];
   total_results: number;
+  page: number;
+  total_pages: number;
 }
 
 export interface TmdbMovieDetails {
@@ -302,8 +304,18 @@ export class TmdbClient {
 
   // ── List ─────────────────────────────────────────────────────────────────
 
-  async getList(listId: number): Promise<TmdbListResponse> {
-    return this.fetch<TmdbListResponse>(`/list/${listId}`);
+  async getList(listId: number, page = 1): Promise<TmdbListResponse> {
+    return this.fetch<TmdbListResponse>(`/list/${listId}`, { page: String(page) });
+  }
+
+  async getAllListItems(listId: number): Promise<TmdbListItem[]> {
+    const first = await this.getList(listId, 1);
+    const items = [...first.items];
+    for (let page = 2; page <= first.total_pages; page++) {
+      const next = await this.getList(listId, page);
+      items.push(...next.items);
+    }
+    return items;
   }
 
   // ── Movies ───────────────────────────────────────────────────────────────

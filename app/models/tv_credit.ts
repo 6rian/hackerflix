@@ -17,10 +17,14 @@ export default class TvCredit extends BaseModel {
   @column()
   declare roleType: 'cast' | 'crew';
 
-  @column()
+  @column({
+    prepare: (v: Record<string, unknown>[] | null) => (v !== null ? JSON.stringify(v) : null),
+  })
   declare roles: Record<string, unknown>[] | null;
 
-  @column()
+  @column({
+    prepare: (v: Record<string, unknown>[] | null) => (v !== null ? JSON.stringify(v) : null),
+  })
   declare jobs: Record<string, unknown>[] | null;
 
   @column()

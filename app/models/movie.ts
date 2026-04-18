@@ -44,7 +44,7 @@ export default class Movie extends BaseModel {
   @column()
   declare originalLanguage: string | null;
 
-  @column()
+  @column({ prepare: (v: string[] | null) => (v !== null ? JSON.stringify(v) : null) })
   declare originCountry: string[] | null;
 
   @column()
