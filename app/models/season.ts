@@ -29,6 +29,6 @@ export default class Season extends BaseModel {
   @column()
   declare episodeCount: number | null;
 
-  @column()
+  @column.dateTime()
   declare lastUpdated: DateTime;
 }

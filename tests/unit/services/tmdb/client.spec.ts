@@ -92,6 +92,84 @@ test.group('TmdbClient', (group) => {
     assert.equal(capturedHeaders['Authorization'], 'Bearer my-secret-token');
   });
 
+  // ── Pagination ────────────────────────────────────────────────────────────
+
+  test('getAllListItems fetches all pages and concatenates items', async ({ assert }) => {
+    const capturedUrls: string[] = [];
+    globalThis.fetch = async (url) => {
+      const urlStr = url.toString();
+      capturedUrls.push(urlStr);
+      const page = new URL(urlStr).searchParams.get('page');
+      if (page === '1') {
+        return makeResponse(200, {
+          id: 1,
+          page: 1,
+          total_pages: 3,
+          total_results: 6,
+          items: [
+            { id: 10, media_type: 'movie' },
+            { id: 11, media_type: 'movie' },
+          ],
+        });
+      }
+      if (page === '2') {
+        return makeResponse(200, {
+          id: 1,
+          page: 2,
+          total_pages: 3,
+          total_results: 6,
+          items: [
+            { id: 20, media_type: 'tv' },
+            { id: 21, media_type: 'tv' },
+          ],
+        });
+      }
+      return makeResponse(200, {
+        id: 1,
+        page: 3,
+        total_pages: 3,
+        total_results: 6,
+        items: [
+          { id: 30, media_type: 'movie' },
+          { id: 31, media_type: 'tv' },
+        ],
+      });
+    };
+
+    const items = await makeClient().getAllListItems(1);
+
+    assert.equal(capturedUrls.length, 3);
+    assert.isTrue(capturedUrls[0].includes('page=1'));
+    assert.isTrue(capturedUrls[1].includes('page=2'));
+    assert.isTrue(capturedUrls[2].includes('page=3'));
+    assert.equal(items.length, 6);
+    assert.deepEqual(
+      items.map((i) => i.id),
+      [10, 11, 20, 21, 30, 31]
+    );
+  });
+
+  test('getAllListItems returns items directly when total_pages is 1', async ({ assert }) => {
+    let fetchCalls = 0;
+    globalThis.fetch = async () => {
+      fetchCalls++;
+      return makeResponse(200, {
+        id: 1,
+        page: 1,
+        total_pages: 1,
+        total_results: 2,
+        items: [
+          { id: 1, media_type: 'movie' },
+          { id: 2, media_type: 'tv' },
+        ],
+      });
+    };
+
+    const items = await makeClient().getAllListItems(1);
+    assert.equal(fetchCalls, 1);
+    assert.equal(items.length, 2);
+  });
+
   // ── Endpoint URL construction ───────────────────────────────────────────────
 
   test('getMovieDetails calls the correct TMDB endpoint', async ({ assert }) => {

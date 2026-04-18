@@ -23,6 +23,6 @@ export default class Person extends BaseModel {
   @column()
   declare popularity: number | null;
 
-  @column()
+  @column.dateTime()
   declare lastUpdated: DateTime;
 }

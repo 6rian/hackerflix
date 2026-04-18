@@ -11,6 +11,6 @@ export default class Keyword extends BaseModel {
   @column()
   declare name: string;
 
-  @column()
+  @column.dateTime()
   declare lastUpdated: DateTime;
 }

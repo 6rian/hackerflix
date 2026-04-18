@@ -13,6 +13,6 @@ export default class TvContentRating extends BaseModel {
   @column()
   declare rating: string;
 
-  @column()
+  @column.dateTime()
   declare lastUpdated: DateTime;
 }

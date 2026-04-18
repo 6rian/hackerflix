@@ -41,6 +41,6 @@ export default class Video extends BaseModel {
   @column({ columnName: 'iso_3166_1' })
   declare iso31661: string | null;
 
-  @column()
+  @column.dateTime()
   declare lastUpdated: DateTime;
 }

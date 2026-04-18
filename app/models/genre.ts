@@ -11,6 +11,6 @@ export default class Genre extends BaseModel {
   @column()
   declare name: string;
 
-  @column()
+  @column.dateTime()
   declare lastUpdated: DateTime;
 }

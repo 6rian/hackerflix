@@ -1,6 +1,9 @@
 import { BaseModel, column } from '@adonisjs/lucid/orm';
 import { DateTime } from 'luxon';
 
+type AggregateRole = { credit_id: string; character: string; episode_count: number };
+type AggregateJob = { credit_id: string; job: string; episode_count: number };
+
 export default class TvCredit extends BaseModel {
   @column({ isPrimary: true })
   declare id: number;
@@ -12,20 +15,17 @@ export default class TvCredit extends BaseModel {
   declare personId: number;
 
   @column()
-  declare creditId: string;
-
-  @column()
   declare roleType: 'cast' | 'crew';
 
   @column({
-    prepare: (v: Record<string, unknown>[] | null) => (v !== null ? JSON.stringify(v) : null),
+    prepare: (v: AggregateRole[] | null) => (v !== null ? JSON.stringify(v) : null),
   })
-  declare roles: Record<string, unknown>[] | null;
+  declare roles: AggregateRole[] | null;
 
   @column({
-    prepare: (v: Record<string, unknown>[] | null) => (v !== null ? JSON.stringify(v) : null),
+    prepare: (v: AggregateJob[] | null) => (v !== null ? JSON.stringify(v) : null),
   })
-  declare jobs: Record<string, unknown>[] | null;
+  declare jobs: AggregateJob[] | null;
 
   @column()
   declare totalEpisodeCount: number | null;
@@ -33,6 +33,6 @@ export default class TvCredit extends BaseModel {
   @column()
   declare castOrder: number | null;
 
-  @column()
+  @column.dateTime()
   declare lastUpdated: DateTime;
 }

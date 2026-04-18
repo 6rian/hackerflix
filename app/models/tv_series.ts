@@ -86,7 +86,7 @@ export default class TvSeries extends BaseModel {
   @column()
   declare voteCount: number | null;
 
-  @column()
+  @column.dateTime()
   declare lastUpdated: DateTime;
 
   @column.dateTime({ autoCreate: true })

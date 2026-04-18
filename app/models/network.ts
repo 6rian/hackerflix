@@ -17,6 +17,6 @@ export default class Network extends BaseModel {
   @column()
   declare originCountry: string | null;
 
-  @column()
+  @column.dateTime()
   declare lastUpdated: DateTime;
 }

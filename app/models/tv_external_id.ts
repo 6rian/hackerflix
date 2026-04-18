@@ -28,6 +28,6 @@ export default class TvExternalId extends BaseModel {
   @column()
   declare wikidataId: string | null;
 
-  @column()
+  @column.dateTime()
   declare lastUpdated: DateTime;
 }

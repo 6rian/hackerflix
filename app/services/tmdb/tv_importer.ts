@@ -9,7 +9,6 @@ import Person from '#models/person';
 import ProductionCompany from '#models/production_company';
 import Season from '#models/season';
 import TvContentRating from '#models/tv_content_rating';
-import TvCredit from '#models/tv_credit';
 import TvExternalId from '#models/tv_external_id';
 import TvSeries from '#models/tv_series';
 
@@ -128,6 +127,10 @@ export class TvImporter {
       );
     }
     const networkIds = networks.map((n) => n.id);
+    if (networkIds.length === 0) {
+      await trx.from('tv_networks').where('tv_series_id', tvSeriesId).delete();
+      return;
+    }
     await trx
       .from('tv_networks')
       .where('tv_series_id', tvSeriesId)
@@ -159,6 +162,10 @@ export class TvImporter {
       );
     }
     const companyIds = companies.map((c) => c.id);
+    if (companyIds.length === 0) {
+      await trx.from('tv_production_companies').where('tv_series_id', tvSeriesId).delete();
+      return;
+    }
     await trx
       .from('tv_production_companies')
       .where('tv_series_id', tvSeriesId)
@@ -188,6 +195,10 @@ export class TvImporter {
     const now = DateTime.now();
     const seasonNumbers = seasons.map((s) => s.season_number);
 
+    if (seasonNumbers.length === 0) {
+      await trx.from('seasons').where('tv_series_id', tvSeriesId).delete();
+      return;
+    }
     await trx
       .from('seasons')
       .where('tv_series_id', tvSeriesId)
@@ -216,83 +227,79 @@ export class TvImporter {
     tvSeriesId: number,
     trx: TransactionClientContract
   ) {
+    if (credits.cast.length === 0 && credits.crew.length === 0) {
+      await trx.from('tv_credits').where('tv_series_id', tvSeriesId).delete();
+      return;
+    }
+
     const now = DateTime.now();
-    const allCreditIds: string[] = [];
+    const nowIso = now.toISO();
+
+    // Upsert all people first, deduplicating by tmdbId.
+    const allMembers = [...credits.cast, ...credits.crew];
+    const personIdByTmdbId = new Map<number, number>();
+    for (const member of allMembers) {
+      if (!personIdByTmdbId.has(member.id)) {
+        const person = await Person.updateOrCreate(
+          { tmdbId: member.id },
+          {
+            name: member.name,
+            gender: member.gender,
+            profilePath: member.profile_path,
+            knownForDepartment: member.known_for_department,
+            popularity: member.popularity,
+            lastUpdated: now,
+          },
+          { client: trx }
+        );
+        personIdByTmdbId.set(member.id, person.id);
+      }
+    }
+
+    const seenPersonIds: number[] = [];
 
     for (const member of credits.cast) {
-      const person = await Person.updateOrCreate(
-        { tmdbId: member.id },
-        {
-          name: member.name,
-          gender: member.gender,
-          profilePath: member.profile_path,
-          knownForDepartment: member.known_for_department,
-          popularity: member.popularity,
-          lastUpdated: now,
-        },
-        { client: trx }
-      );
-
-      const primaryCreditId = member.roles[0]?.credit_id ?? `cast-${tvSeriesId}-${member.id}`;
-
-      await TvCredit.updateOrCreate(
-        { creditId: primaryCreditId },
-        {
+      const personId = personIdByTmdbId.get(member.id)!;
+      await trx.rawQuery(
+        `INSERT INTO tv_credits
+           (tv_series_id, person_id, role_type, roles, jobs, total_episode_count, cast_order, last_updated)
+         VALUES (?, ?, 'cast', ?::jsonb, NULL, ?, ?, ?)
+         ON CONFLICT (tv_series_id, person_id, role_type) DO UPDATE SET
+           roles = EXCLUDED.roles,
+           total_episode_count = EXCLUDED.total_episode_count,
+           cast_order = EXCLUDED.cast_order,
+           last_updated = EXCLUDED.last_updated`,
+        [
           tvSeriesId,
-          personId: person.id,
-          roleType: 'cast',
-          roles: member.roles as unknown as Record<string, unknown>[],
-          jobs: null,
-          totalEpisodeCount: member.total_episode_count,
-          castOrder: member.order,
-          lastUpdated: now,
-        },
-        { client: trx }
+          personId,
+          JSON.stringify(member.roles),
+          member.total_episode_count,
+          member.order,
+          nowIso,
+        ]
       );
-
-      allCreditIds.push(primaryCreditId);
+      seenPersonIds.push(personId);
     }
 
     for (const member of credits.crew) {
-      const person = await Person.updateOrCreate(
-        { tmdbId: member.id },
-        {
-          name: member.name,
-          gender: member.gender,
-          profilePath: member.profile_path,
-          knownForDepartment: member.known_for_department,
-          popularity: member.popularity,
-          lastUpdated: now,
-        },
-        { client: trx }
+      const personId = personIdByTmdbId.get(member.id)!;
+      await trx.rawQuery(
+        `INSERT INTO tv_credits
+           (tv_series_id, person_id, role_type, roles, jobs, total_episode_count, cast_order, last_updated)
+         VALUES (?, ?, 'crew', NULL, ?::jsonb, ?, NULL, ?)
+         ON CONFLICT (tv_series_id, person_id, role_type) DO UPDATE SET
+           jobs = EXCLUDED.jobs,
+           total_episode_count = EXCLUDED.total_episode_count,
+           last_updated = EXCLUDED.last_updated`,
+        [tvSeriesId, personId, JSON.stringify(member.jobs), member.total_episode_count, nowIso]
       );
-
-      const primaryCreditId = member.jobs[0]?.credit_id ?? `crew-${tvSeriesId}-${member.id}`;
-
-      await TvCredit.updateOrCreate(
-        { creditId: primaryCreditId },
-        {
-          tvSeriesId,
-          personId: person.id,
-          roleType: 'crew',
-          roles: null,
-          jobs: member.jobs as unknown as Record<string, unknown>[],
-          totalEpisodeCount: member.total_episode_count,
-          castOrder: null,
-          lastUpdated: now,
-        },
-        { client: trx }
-      );
-
-      allCreditIds.push(primaryCreditId);
+      seenPersonIds.push(personId);
     }
 
-    if (allCreditIds.length > 0) {
-      await trx
-        .from('tv_credits')
-        .where('tv_series_id', tvSeriesId)
-        .whereNotIn('credit_id', allCreditIds)
-        .delete();
-    }
+    await trx
+      .from('tv_credits')
+      .where('tv_series_id', tvSeriesId)
+      .whereNotIn('person_id', seenPersonIds)
+      .delete();
   }
 }

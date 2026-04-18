@@ -14,7 +14,6 @@ import Genre from '#models/genre';
 import Image from '#models/image';
 import Keyword from '#models/keyword';
 import Movie from '#models/movie';
-import MovieCredit from '#models/movie_credit';
 import Person from '#models/person';
 import Video from '#models/video';
 
@@ -97,6 +96,10 @@ export class MoviesImporter {
     }
 
     const genreIds = genres.map((g) => g.id);
+    if (genreIds.length === 0) {
+      await trx.from(pivotTable).where(fkColumn, mediaId).delete();
+      return;
+    }
     await trx.from(pivotTable).where(fkColumn, mediaId).whereNotIn('genre_id', genreIds).delete();
     for (const id of genreIds) {
       await trx.rawQuery(
@@ -124,6 +127,10 @@ export class MoviesImporter {
     }
 
     const kwdIds = kwds.map((k) => k.id);
+    if (kwdIds.length === 0) {
+      await trx.from(pivotTable).where(fkColumn, mediaId).delete();
+      return;
+    }
     await trx.from(pivotTable).where(fkColumn, mediaId).whereNotIn('keyword_id', kwdIds).delete();
     for (const id of kwdIds) {
       await trx.rawQuery(
@@ -139,80 +146,78 @@ export class MoviesImporter {
     movieId: number,
     trx: TransactionClientContract
   ) {
+    if (cast.length === 0 && crew.length === 0) {
+      await trx.from('movie_credits').where('movie_id', movieId).delete();
+      return;
+    }
+
     const now = DateTime.now();
     const allCreditIds: string[] = [];
 
+    // Upsert all people first, building a tmdbId → person.id map.
+    const allMembers = [...cast, ...crew];
+    const personIdByTmdbId = new Map<number, number>();
+    for (const member of allMembers) {
+      if (!personIdByTmdbId.has(member.id)) {
+        const person = await Person.updateOrCreate(
+          { tmdbId: member.id },
+          {
+            name: member.name,
+            gender: member.gender,
+            profilePath: member.profile_path,
+            knownForDepartment: member.known_for_department,
+            popularity: member.popularity,
+            lastUpdated: now,
+          },
+          { client: trx }
+        );
+        personIdByTmdbId.set(member.id, person.id);
+      }
+    }
+
+    // rawQuery's StrictValues type excludes null, but the pg driver accepts it at runtime.
+    // This helper restores the correct runtime behaviour while keeping the call sites clean.
+    const rawExec = (sql: string, bindings: (string | number | boolean | null)[]) =>
+      trx.rawQuery(sql, bindings as Parameters<typeof trx.rawQuery>[1]);
+
+    const nowIso = now.toISO();
     for (const member of cast) {
-      const person = await Person.updateOrCreate(
-        { tmdbId: member.id },
-        {
-          name: member.name,
-          gender: member.gender,
-          profilePath: member.profile_path,
-          knownForDepartment: member.known_for_department,
-          popularity: member.popularity,
-          lastUpdated: now,
-        },
-        { client: trx }
+      const personId = personIdByTmdbId.get(member.id)!;
+      await rawExec(
+        `INSERT INTO movie_credits
+           (movie_id, person_id, credit_id, role_type, character, department, job, cast_order, last_updated)
+         VALUES (?, ?, ?, 'cast', ?, NULL, NULL, ?, ?)
+         ON CONFLICT (credit_id) DO UPDATE SET
+           person_id = EXCLUDED.person_id,
+           character = EXCLUDED.character,
+           cast_order = EXCLUDED.cast_order,
+           last_updated = EXCLUDED.last_updated`,
+        [movieId, personId, member.credit_id, member.character || null, member.order, nowIso]
       );
-
-      await MovieCredit.updateOrCreate(
-        { creditId: member.credit_id },
-        {
-          movieId,
-          personId: person.id,
-          roleType: 'cast',
-          character: member.character || null,
-          department: null,
-          job: null,
-          castOrder: member.order,
-          lastUpdated: now,
-        },
-        { client: trx }
-      );
-
       allCreditIds.push(member.credit_id);
     }
 
     for (const member of crew) {
-      const person = await Person.updateOrCreate(
-        { tmdbId: member.id },
-        {
-          name: member.name,
-          gender: member.gender,
-          profilePath: member.profile_path,
-          knownForDepartment: member.known_for_department,
-          popularity: member.popularity,
-          lastUpdated: now,
-        },
-        { client: trx }
+      const personId = personIdByTmdbId.get(member.id)!;
+      await rawExec(
+        `INSERT INTO movie_credits
+           (movie_id, person_id, credit_id, role_type, character, department, job, cast_order, last_updated)
+         VALUES (?, ?, ?, 'crew', NULL, ?, ?, NULL, ?)
+         ON CONFLICT (credit_id) DO UPDATE SET
+           person_id = EXCLUDED.person_id,
+           department = EXCLUDED.department,
+           job = EXCLUDED.job,
+           last_updated = EXCLUDED.last_updated`,
+        [movieId, personId, member.credit_id, member.department, member.job, nowIso]
       );
-
-      await MovieCredit.updateOrCreate(
-        { creditId: member.credit_id },
-        {
-          movieId,
-          personId: person.id,
-          roleType: 'crew',
-          character: null,
-          department: member.department,
-          job: member.job,
-          castOrder: null,
-          lastUpdated: now,
-        },
-        { client: trx }
-      );
-
       allCreditIds.push(member.credit_id);
     }
 
-    if (allCreditIds.length > 0) {
-      await trx
-        .from('movie_credits')
-        .where('movie_id', movieId)
-        .whereNotIn('credit_id', allCreditIds)
-        .delete();
-    }
+    await trx
+      .from('movie_credits')
+      .where('movie_id', movieId)
+      .whereNotIn('credit_id', allCreditIds)
+      .delete();
   }
 
   async upsertImages(

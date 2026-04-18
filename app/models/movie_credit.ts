@@ -29,6 +29,6 @@ export default class MovieCredit extends BaseModel {
   @column()
   declare castOrder: number | null;
 
-  @column()
+  @column.dateTime()
   declare lastUpdated: DateTime;
 }
