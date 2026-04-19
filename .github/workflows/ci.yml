@@ -43,6 +43,7 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      # --force is required: AdonisJS refuses to run migrations outside development without it.
       - name: Run migrations
         run: node ace migration:run --force
         env:
