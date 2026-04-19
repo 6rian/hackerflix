@@ -13,12 +13,15 @@ export function HeroSlider({ items }: HeroSliderProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
+    if (items.length === 0) return;
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % items.length);
     }, 5000);
 
     return () => clearInterval(timer);
   }, [items.length]);
+
+  if (items.length === 0) return null;
 
   const goToSlide = (index: number) => {
     setCurrentIndex(index);
