@@ -11,6 +11,9 @@ const tmdbConfig = {
   /** TMDB API base URL */
   baseUrl: 'https://api.themoviedb.org/3',
 
+  /** TMDB image base URL for w500 posters */
+  imageBaseUrl: 'https://image.tmdb.org/t/p/w500',
+
   /** Maximum requests per rate-limit window */
   rateLimit: {
     maxRequests: 40,
