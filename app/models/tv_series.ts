@@ -55,10 +55,10 @@ export default class TvSeries extends BaseModel {
   declare originCountry: string[] | null;
 
   @column()
-  declare firstAirDate: string | null;
+  declare firstAirDate: Date | null;
 
   @column()
-  declare lastAirDate: string | null;
+  declare lastAirDate: Date | null;
 
   @column()
   declare inProduction: boolean | null;

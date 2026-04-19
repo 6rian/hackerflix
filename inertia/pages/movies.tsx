@@ -1,12 +1,14 @@
+import { usePage } from '@inertiajs/react';
 import { TaxonomyTemplate } from '@/app/components/templates/TaxonomyTemplate';
-import { movies } from '@/app/data/mock_data';
+import type { MediaItem } from '@/app/types/media';
 
 export default function Movies() {
+  const { media } = usePage<{ media: MediaItem[] }>().props;
   return (
     <TaxonomyTemplate
       title="MOVIES"
-      description={`Explore ${movies.length} movies in the HackerFlix catalog`}
-      media={movies}
+      description={`Explore ${media.length} movies in the HackerFlix catalog`}
+      media={media}
     />
   );
 }

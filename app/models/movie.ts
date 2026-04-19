@@ -48,7 +48,7 @@ export default class Movie extends BaseModel {
   declare originCountry: string[] | null;
 
   @column()
-  declare releaseDate: string | null;
+  declare releaseDate: Date | null;
 
   @column()
   declare runtime: number | null;

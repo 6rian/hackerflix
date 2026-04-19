@@ -2,7 +2,7 @@ name: CI
 
 on:
   pull_request:
-    branches: ['*']
+    branches: ["*"]
 
 jobs:
   ci:
@@ -42,6 +42,20 @@ jobs:
 
       - name: Lint
         run: pnpm lint
+
+      # --force is required: AdonisJS refuses to run migrations outside development without it.
+      - name: Run migrations
+        run: node ace migration:run --force
+        env:
+          NODE_ENV: test
+          HOST: localhost
+          PORT: 3333
+          LOG_LEVEL: error
+          APP_KEY: ${{ secrets.APP_KEY || 'a-test-app-key-32-chars-minimum!' }}
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hackerflix
+          DB_SCHEMA: public
+          SESSION_DRIVER: memory
+          TMDB_API_ACCESS_TOKEN: ${{ secrets.TMDB_API_ACCESS_TOKEN || 'test-token' }}
 
       - name: Backend tests
         run: pnpm test
