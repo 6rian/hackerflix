@@ -1,5 +1,8 @@
 // Mock data for HackerFlix - Cyber/Tech themed content
-export type { MediaItem, MediaDetails, CastMember, CrewMember } from './types/media';
+// import+re-export is required: bare `export type { } from` doesn't create local bindings
+// needed by the typed arrays below.
+import type { MediaItem, MediaDetails, CastMember, CrewMember } from '../types/media';
+export type { MediaItem, MediaDetails, CastMember, CrewMember };
 
 export const featuredContent: MediaItem[] = [
   {

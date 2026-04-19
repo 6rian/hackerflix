@@ -4,7 +4,7 @@ import type { MediaItem } from '@/app/types/media';
 
 export default function TagPage() {
   const { tag, media } = usePage<{ tag: string; media: MediaItem[] }>().props;
-  const displayTag = tag ? decodeURIComponent(tag) : 'Unknown';
+  const displayTag = tag || 'Unknown';
   return (
     <TaxonomyTemplate
       title={displayTag.toUpperCase()}

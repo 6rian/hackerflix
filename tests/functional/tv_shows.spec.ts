@@ -1,3 +1,4 @@
+// TODO: migrate to @japa/api-client once that package is installed
 import { test } from '@japa/runner';
 
 const BASE_URL = `http://${process.env.HOST ?? '127.0.0.1'}:${process.env.PORT ?? '3333'}`;

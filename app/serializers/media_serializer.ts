@@ -13,6 +13,7 @@ export interface MediaItem {
   tags: string[];
 }
 
+// Callers must preload('keywords') before passing model instances here.
 export function serializeMovie(movie: Movie): MediaItem {
   return {
     id: movie.id,

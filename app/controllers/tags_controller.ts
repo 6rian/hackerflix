@@ -5,7 +5,13 @@ import { serializeMovie, serializeTvSeries } from '#serializers/media_serializer
 
 export default class TagsController {
   async show({ params, inertia }: HttpContext) {
-    const tag = decodeURIComponent(params.tag as string);
+    let tag: string;
+    try {
+      tag = decodeURIComponent(params.tag as string);
+    } catch {
+      // Malformed percent-encoding (e.g. %GG) — render an empty result rather than 500.
+      return inertia.render('tag', { tag: params.tag as string, media: [] });
+    }
 
     const [movies, series] = await Promise.all([
       Movie.query()
@@ -28,6 +34,6 @@ export default class TagsController {
       .sort((a, b) => b.pop - a.pop)
       .map(({ item }) => item);
 
-    return inertia.render('tag', { tag: params.tag, media: combined });
+    return inertia.render('tag', { tag, media: combined });
   }
 }
