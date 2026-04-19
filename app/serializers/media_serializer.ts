@@ -10,6 +10,7 @@ export interface MediaItem {
   rating: number;
   description: string;
   image: string;
+  backdrop?: string;
   tags: string[];
 }
 
@@ -23,6 +24,7 @@ export function serializeMovie(movie: Movie): MediaItem {
     rating: movie.voteAverage ?? 0,
     description: movie.overview ?? '',
     image: movie.posterPath ? tmdbConfig.imageBaseUrl + movie.posterPath : '',
+    backdrop: movie.backdropPath ? tmdbConfig.backdropBaseUrl + movie.backdropPath : undefined,
     tags: movie.keywords.map((k) => k.name),
   };
 }
@@ -36,6 +38,7 @@ export function serializeTvSeries(series: TvSeries): MediaItem {
     rating: series.voteAverage ?? 0,
     description: series.overview ?? '',
     image: series.posterPath ? tmdbConfig.imageBaseUrl + series.posterPath : '',
+    backdrop: series.backdropPath ? tmdbConfig.backdropBaseUrl + series.backdropPath : undefined,
     tags: series.keywords.map((k) => k.name),
   };
 }

@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight, Play } from 'lucide-react';
 import { Tag } from '@/app/components/global/Tag';
 import { HeroBackground } from '@/app/components/global/HeroBackground';
 import { PrimaryButton } from '@/app/components/global/PrimaryButton';
-import { MediaItem } from '@/app/data/mock_data';
+import type { MediaItem } from '@/app/types/media';
 
 interface HeroSliderProps {
   items: MediaItem[];
@@ -38,7 +38,7 @@ export function HeroSlider({ items }: HeroSliderProps) {
   const currentItem = items[currentIndex];
 
   return (
-    <HeroBackground backgroundImage={currentItem.image} className="mt-16 sm:mt-20 sm:h-[80vh]">
+    <HeroBackground backgroundImage={currentItem.backdrop || currentItem.image} className="mt-16 sm:mt-20 sm:h-[80vh]">
       {/* Content */}
       <div className="relative mx-auto flex h-full max-w-[1400px] items-center px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl space-y-4 sm:space-y-6">

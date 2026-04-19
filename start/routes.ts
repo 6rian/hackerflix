@@ -9,11 +9,12 @@
 
 import router from '@adonisjs/core/services/router';
 
+const HomeController = () => import('#controllers/home_controller');
 const MoviesController = () => import('#controllers/movies_controller');
 const TvShowsController = () => import('#controllers/tv_shows_controller');
 const TagsController = () => import('#controllers/tags_controller');
 
-router.on('/').renderInertia('home');
+router.get('/', [HomeController, 'index']);
 router.on('/about').renderInertia('about');
 router.on('/documentaries').renderInertia('documentaries');
 router.on('/search').renderInertia('search');
