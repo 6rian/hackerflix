@@ -5,11 +5,12 @@ import '../css/app.css';
 import { hydrateRoot } from 'react-dom/client';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from '@adonisjs/inertia/helpers';
+import { ThemeProvider } from './contexts/ThemeContext';
 
-const appName = import.meta.env.VITE_APP_NAME || 'AdonisJS';
+const appName = import.meta.env.VITE_APP_NAME || 'HackerFlix';
 
 createInertiaApp({
-  progress: { color: '#5468FF' },
+  progress: { color: '#6d28d9' },
 
   title: (title) => `${title} - ${appName}`,
 
@@ -18,6 +19,11 @@ createInertiaApp({
   },
 
   setup({ el, App, props }) {
-    hydrateRoot(el, <App {...props} />);
+    hydrateRoot(
+      el,
+      <ThemeProvider>
+        <App {...props} />
+      </ThemeProvider>
+    );
   },
 });
