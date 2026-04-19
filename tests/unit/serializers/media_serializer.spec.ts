@@ -12,7 +12,7 @@ function makeMovie(overrides: Partial<Movie> = {}): Movie {
   return Object.assign(new Movie(), {
     id: 1,
     title: 'Hackers',
-    releaseDate: '1995-09-15',
+    releaseDate: new Date('1995-09-15'),
     voteAverage: 6.5,
     overview: 'A group of high school hackers.',
     posterPath: '/hackers.jpg',
@@ -26,7 +26,7 @@ function makeTvSeries(overrides: Partial<TvSeries> = {}): TvSeries {
   return Object.assign(new TvSeries(), {
     id: 2,
     name: 'Mr. Robot',
-    firstAirDate: '2015-06-24',
+    firstAirDate: new Date('2015-06-24'),
     voteAverage: 8.5,
     overview: 'A cybersecurity engineer leads a hacker group.',
     posterPath: '/mrrobot.jpg',

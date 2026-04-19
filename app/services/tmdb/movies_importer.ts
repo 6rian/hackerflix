@@ -56,7 +56,7 @@ export class MoviesImporter {
           imdbId: details.imdb_id,
           originalLanguage: details.original_language,
           originCountry: details.origin_country,
-          releaseDate: details.release_date ?? null,
+          releaseDate: details.release_date ? new Date(details.release_date) : null,
           runtime: details.runtime,
           budget: details.budget,
           revenue: details.revenue,
