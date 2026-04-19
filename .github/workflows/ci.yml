@@ -43,6 +43,15 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      - name: Run migrations
+        run: node ace migration:run --force
+        env:
+          NODE_ENV: test
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hackerflix
+          DB_SCHEMA: public
+          APP_KEY: ${{ secrets.APP_KEY || 'a-test-app-key-32-chars-minimum!' }}
+          TMDB_API_ACCESS_TOKEN: test-token
+
       - name: Backend tests
         run: pnpm test
         env:
