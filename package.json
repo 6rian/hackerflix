@@ -13,7 +13,7 @@
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
     "prepare": "husky",
-    "dev:import-data": "dotenv -e .env.dev -- node ace data:import",
+    "dev:import-data": "node ace data:import",
     "prod:import-data": "dotenv -e .env.prod -- node ace data:import"
   },
   "imports": {
