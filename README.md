@@ -52,3 +52,15 @@ pnpm format      # Prettier (all files)
 git checkout v2
 git checkout -b feat/your-feature
 ```
+
+## Claude Skills & Agents
+
+Custom Claude Code skills live in `.claude/skills/`. HackerFlix-specific skills use the `hf-` namespace prefix and are invocable via `/hf-*` in Claude Code.
+
+| Skill | Description |
+|-------|-------------|
+| `/hf-product-manager` | Product manager persona. Generates feature ideas, SEO strategies, traffic acquisition plans, and writes Product Requirement Briefs (PRBs) to GitHub Issues. |
+| `/hf-team` | Coordinates multi-agent teamwork across frontend, backend, database, and design. Entry point for complex, cross-cutting features. |
+| `/hf-designer` | Senior UI/UX designer for the cyberpunk aesthetic. Provides component designs, layout guidance, color decisions, and design reviews with Tailwind implementations. |
+
+Third-party skills (`supabase`, `supabase-postgres-best-practices`) are also bundled for database work.
