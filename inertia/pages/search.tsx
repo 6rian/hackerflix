@@ -2,13 +2,16 @@ import { useState, useMemo, useRef, useEffect } from 'react';
 import { Navigation } from '@/app/components/global/Navigation';
 import { Footer } from '@/app/components/global/Footer';
 import { MediaListCard } from '@/app/components/global/MediaListCard';
-import { shows, movies, documentaries, MediaItem } from '@/app/data/mock_data';
+import { usePage } from '@inertiajs/react';
+import { documentaries, MediaItem } from '@/app/data/mock_data';
 import { Search as SearchIcon, SlidersHorizontal, X } from 'lucide-react';
 
 type MediaType = 'movie' | 'show' | 'documentary';
 type SortOption = 'title-asc' | 'title-desc' | 'year-asc' | 'year-desc';
 
 export default function Search() {
+  const { movies, shows } = usePage<{ movies: MediaItem[]; shows: MediaItem[] }>().props;
+
   const [searchQuery, setSearchQuery] = useState('');
   const [searchInput, setSearchInput] = useState('');
   const [selectedTypes, setSelectedTypes] = useState<MediaType[]>([]);
