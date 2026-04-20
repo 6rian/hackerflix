@@ -67,3 +67,22 @@ A pre-commit hook (via `husky` + `lint-staged`) runs on every commit:
 - **Prettier** on changed files
 - **Type-check** (`tsc --noEmit`)
 - **Lint** (`eslint`)
+
+## Project Management
+
+- Issues and feature requests tracked in GitHub Issues
+- PRBs and PRDs are tracked in GitHub Issues.
+- "Ticket" is the same thing as a GitHub Issue.
+- Milestones are used to group related issues and track progress toward releases.
+- Labels are used for categorization (e.g., `bug`, `feature`, `enhancement`, `documentation`).
+
+## Claude Skills
+
+Custom skills live in `.claude/skills/`. HackerFlix-specific skills use the `hf-` prefix:
+
+- **`hf-engineer`** — lead engineer and architect. Technical planning, implementation, bug fixes, devops, code reviews, performance optimization. Entry point for all coding tasks.
+- **`hf-product-manager`** — product direction, PRBs, SEO/traffic strategy. Does not write code.
+- **`hf-team`** — coordinates multi-agent work across frontend, backend, database, and design.
+- **`hf-designer`** — cyberpunk UI/UX guidance, component design, Tailwind implementations.
+
+Third-party skills (`supabase`, `supabase-postgres-best-practices`) are bundled for database work.
