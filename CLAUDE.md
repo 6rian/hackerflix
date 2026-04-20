@@ -67,3 +67,11 @@ A pre-commit hook (via `husky` + `lint-staged`) runs on every commit:
 - **Prettier** on changed files
 - **Type-check** (`tsc --noEmit`)
 - **Lint** (`eslint`)
+
+## Project Management
+
+- Issues and feature requests tracked in GitHub Issues
+- PRBs and PRDs are tracked in GitHub Issues.
+- "Ticket" is the same thing as a GitHub Issue.
+- Milestones are used to group related issues and track progress toward releases.
+- Labels are used for categorization (e.g., `bug`, `feature`, `enhancement`, `documentation`).
