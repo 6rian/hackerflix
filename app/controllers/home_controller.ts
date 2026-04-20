@@ -6,13 +6,14 @@ import { serializeMovie, serializeTvSeries } from '#serializers/media_serializer
 
 export default class HomeController {
   async index({ inertia }: HttpContext) {
-    const [featured, topMovies, topShows] = await Promise.all([
-      Movie.query().where('id', tmdbConfig.featuredId).preload('keywords').firstOrFail(),
+    const [featuredOrNull, topMovies, topShows] = await Promise.all([
+      Movie.query().where('id', tmdbConfig.featuredId).preload('keywords').first(),
       Movie.query().preload('keywords').orderBy('voteAverage', 'desc').limit(6),
       TvSeries.query().preload('keywords').orderBy('voteAverage', 'desc').limit(6),
     ]);
 
-    const featuredContent = [serializeMovie(featured)];
+    const featured = featuredOrNull ?? topMovies[0];
+    const featuredContent = featured ? [serializeMovie(featured)] : [];
     const movies = topMovies.map(serializeMovie);
     const shows = topShows.map(serializeTvSeries);
 

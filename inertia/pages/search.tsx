@@ -3,7 +3,8 @@ import { Navigation } from '@/app/components/global/Navigation';
 import { Footer } from '@/app/components/global/Footer';
 import { MediaListCard } from '@/app/components/global/MediaListCard';
 import { usePage } from '@inertiajs/react';
-import { documentaries, MediaItem } from '@/app/data/mock_data';
+import { documentaries } from '@/app/data/mock_data';
+import type { MediaItem } from '@/app/types/media';
 import { Search as SearchIcon, SlidersHorizontal, X } from 'lucide-react';
 
 type MediaType = 'movie' | 'show' | 'documentary';
@@ -28,7 +29,7 @@ export default function Search() {
   // Combine all media items
   const allMedia: MediaItem[] = useMemo(() => {
     return [...movies, ...shows, ...documentaries];
-  }, []);
+  }, [movies, shows]);
 
   // Get all unique tags
   const allTags = useMemo(() => {

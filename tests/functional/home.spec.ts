@@ -19,7 +19,7 @@ test.group('GET /', () => {
     assert.isArray(body.props.shows);
   });
 
-  test('featuredContent items include backdrop field', async ({ assert }) => {
+  test('featuredContent items include backdrop and image string fields', async ({ assert }) => {
     const response = await fetch(`${BASE_URL}/`, {
       headers: { 'X-Inertia': 'true', 'X-Inertia-Version': '1' },
     });
@@ -29,6 +29,8 @@ test.group('GET /', () => {
     const featured = body.props.featuredContent[0];
     assert.isDefined(featured);
     assert.typeOf(featured.image, 'string');
+    assert.isDefined(featured.backdrop);
+    assert.typeOf(featured.backdrop, 'string');
   });
 
   test('movies row contains at most 6 items', async ({ assert }) => {
