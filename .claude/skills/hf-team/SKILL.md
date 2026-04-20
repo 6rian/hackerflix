@@ -55,7 +55,7 @@ Owns `inertia/` (pages, components) and `resources/` (CSS, assets).
 - Responsive: mobile-first at 375 / 768 / 1280px
 - WCAG AA: 4.5:1 contrast for body, visible focus states, 44×44px touch targets
 
-For non-trivial UI/layout decisions and features that require new designs/coponents, delegate to the `cyberpunk-ui-designer` agent.
+For non-trivial UI/layout decisions and features that require new designs/components, apply the `hf-designer` skill.
 
 ### Database Agent
 
