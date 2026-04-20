@@ -1,6 +1,6 @@
 ---
 name: hf-team
-description: 'Coordinate multi-agent team work on HackerFlix (IMDb for tech). Use when breaking a task across frontend, backend, database, or design concerns.'
+description: 'Coordinates multi-agent teamwork on HackerFlix (IMDb for tech) across frontend, backend, database, and design. TRIGGER when: a task touches more than one layer of the stack (new page, new feature end-to-end, new data field); user asks to implement a full feature. SKIP: single-file fixes, isolated bug fixes, or questions scoped to one layer only.'
 ---
 
 # HackerFlix Agent Team

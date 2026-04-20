@@ -1,6 +1,6 @@
 ---
 name: hf-product-manager
-description: 'Product manager for HackerFlix (IMDb for tech). Use when generating feature ideas, traffic acquisition strategies, SEO strategies, or writing Product Requirement Briefs (PRBs). Also consulted by architect and coding agents mid-task.'
+description: 'Product manager for HackerFlix (IMDb for tech). Generates feature ideas, SEO strategies, traffic acquisition plans, and writes PRBs to GitHub Issues. TRIGGER when: user asks what to build, requests feature ideas, asks about SEO or traffic growth, wants a PRB/ticket written, or asks a product-direction question. SKIP: implementation tasks, bug fixes, refactors, or technical how-it-works questions.'
 ---
 
 # HackerFlix Product Manager
