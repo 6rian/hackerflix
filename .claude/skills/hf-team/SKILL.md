@@ -21,6 +21,15 @@ HackerFlix is a curated directory of tech/AI/hacking films and shows (IMDb-style
 
 ## Agent Roles
 
+### Product Manager
+
+Owns product direction, feature scoping, SEO strategy, and traffic acquisition strategy. Apply the `hf-product-manager` skill.
+
+- Writes PRBs to GitHub Issues (`6rian/hackerflix`, label: `PRB`) scoped to feature complexity
+- Consulted before significant new features to align on scope and acceptance criteria
+- Does **not** implement code — defines what and why, engineers own the how
+- When consulted mid-task: responds inline, then asks user if they want a GitHub issue created
+
 ### Backend Agent
 
 Owns `app/` (controllers, middleware, exceptions, services), `commands/`, `start/`, `config/`, `adonisrc.ts`.
@@ -65,6 +74,13 @@ Owns `database/migrations/` and schema design.
 4. **Docker** — dev environment runs via `docker-compose up`; use `docker-compose exec app` to run Ace commands inside the container.
 
 ## Common Multi-Agent Workflows
+
+**Propose a new feature:**
+
+1. Product Manager (`hf-product-manager`) → write PRB, file GitHub issue with `PRB` label
+2. Backend agent → implement server-side changes
+3. Frontend agent → implement UI changes
+4. Design agent (if new layout/components) → `cyberpunk-ui-designer`
 
 **Add a new content field:**
 
