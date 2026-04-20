@@ -16,6 +16,7 @@ function makeMovie(overrides: Partial<Movie> = {}): Movie {
     voteAverage: 6.5,
     overview: 'A group of high school hackers.',
     posterPath: '/hackers.jpg',
+    backdropPath: '/hackers_backdrop.jpg',
     popularity: 42.5,
     keywords: [{ name: 'hacking' }, { name: 'cyberpunk' }],
     ...overrides,
@@ -30,6 +31,7 @@ function makeTvSeries(overrides: Partial<TvSeries> = {}): TvSeries {
     voteAverage: 8.5,
     overview: 'A cybersecurity engineer leads a hacker group.',
     posterPath: '/mrrobot.jpg',
+    backdropPath: '/mrrobot_backdrop.jpg',
     popularity: 78.3,
     keywords: [{ name: 'hacking' }, { name: 'fsociety' }],
     ...overrides,
@@ -52,7 +54,18 @@ test.group('serializeMovie', () => {
     assert.equal(result.rating, 6.5);
     assert.equal(result.description, 'A group of high school hackers.');
     assert.equal(result.image, tmdbConfig.imageBaseUrl + '/hackers.jpg');
+    assert.equal(result.backdrop, tmdbConfig.backdropBaseUrl + '/hackers_backdrop.jpg');
     assert.deepEqual(result.tags, ['hacking', 'cyberpunk']);
+  });
+
+  test('backdropPath is prefixed with backdropBaseUrl', ({ assert }) => {
+    const result = serializeMovie(makeMovie({ backdropPath: '/test_bg.jpg' }));
+    assert.equal(result.backdrop, tmdbConfig.backdropBaseUrl + '/test_bg.jpg');
+  });
+
+  test('backdropPath: null → backdrop: undefined', ({ assert }) => {
+    const result = serializeMovie(makeMovie({ backdropPath: null }));
+    assert.isUndefined(result.backdrop);
   });
 
   test('type is hardcoded as "movie"', ({ assert }) => {
@@ -107,7 +120,18 @@ test.group('serializeTvSeries', () => {
     assert.equal(result.rating, 8.5);
     assert.equal(result.description, 'A cybersecurity engineer leads a hacker group.');
     assert.equal(result.image, tmdbConfig.imageBaseUrl + '/mrrobot.jpg');
+    assert.equal(result.backdrop, tmdbConfig.backdropBaseUrl + '/mrrobot_backdrop.jpg');
     assert.deepEqual(result.tags, ['hacking', 'fsociety']);
+  });
+
+  test('backdropPath is prefixed with backdropBaseUrl', ({ assert }) => {
+    const result = serializeTvSeries(makeTvSeries({ backdropPath: '/test_bg.jpg' }));
+    assert.equal(result.backdrop, tmdbConfig.backdropBaseUrl + '/test_bg.jpg');
+  });
+
+  test('backdropPath: null → backdrop: undefined', ({ assert }) => {
+    const result = serializeTvSeries(makeTvSeries({ backdropPath: null }));
+    assert.isUndefined(result.backdrop);
   });
 
   test('type is hardcoded as "show"', ({ assert }) => {

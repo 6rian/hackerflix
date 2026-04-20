@@ -1,10 +1,18 @@
+import { usePage } from '@inertiajs/react';
 import { Navigation } from '@/app/components/global/Navigation';
 import { HeroSlider } from '@/app/components/global/HeroSlider';
 import { MediaCard } from '@/app/components/global/MediaCard';
 import { Footer } from '@/app/components/global/Footer';
-import { featuredContent, shows, movies, documentaries } from '@/app/data/mock_data';
+import { documentaries } from '@/app/data/mock_data';
+import type { MediaItem } from '@/app/types/media';
 
 export default function Home() {
+  const { featuredContent, movies, shows } = usePage<{
+    featuredContent: MediaItem[];
+    movies: MediaItem[];
+    shows: MediaItem[];
+  }>().props;
+
   return (
     <div className="bg-background text-foreground relative min-h-screen">
       {/* Background Texture */}

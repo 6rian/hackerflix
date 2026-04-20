@@ -14,6 +14,9 @@ const tmdbConfig = {
   /** TMDB image base URL for w500 posters */
   imageBaseUrl: 'https://image.tmdb.org/t/p/w500',
 
+  /** TMDB image base URL for w1280 backdrops (hero section) */
+  backdropBaseUrl: 'https://image.tmdb.org/t/p/w1280',
+
   /** Maximum requests per rate-limit window */
   rateLimit: {
     maxRequests: 40,
