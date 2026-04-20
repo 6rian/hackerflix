@@ -80,6 +80,7 @@ A pre-commit hook (via `husky` + `lint-staged`) runs on every commit:
 
 Custom skills live in `.claude/skills/`. HackerFlix-specific skills use the `hf-` prefix:
 
+- **`hf-engineer`** — lead engineer and architect. Technical planning, implementation, bug fixes, devops, code reviews, performance optimization. Entry point for all coding tasks.
 - **`hf-product-manager`** — product direction, PRBs, SEO/traffic strategy. Does not write code.
 - **`hf-team`** — coordinates multi-agent work across frontend, backend, database, and design.
 - **`hf-designer`** — cyberpunk UI/UX guidance, component design, Tailwind implementations.

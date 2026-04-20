@@ -1,6 +1,6 @@
 ---
 name: hf-team
-description: 'Coordinates multi-agent teamwork on HackerFlix (IMDb for tech) across frontend, backend, database, and design. TRIGGER when: a task touches more than one layer of the stack (new page, new feature end-to-end, new data field); user asks to implement a full feature. SKIP: single-file fixes, isolated bug fixes, or questions scoped to one layer only.'
+description: 'Coordinates multi-agent teamwork on HackerFlix (IMDb for tech) across engineering, product, design, and database. TRIGGER when: a task touches more than one layer of the stack (new page, new feature end-to-end, new data field); user asks to implement a full feature. SKIP: single-file fixes, isolated bug fixes, or questions scoped to one layer only.'
 ---
 
 # HackerFlix Agent Team
@@ -21,6 +21,33 @@ HackerFlix is a curated directory of tech/AI/hacking films and shows (IMDb-style
 
 ## Agent Roles
 
+### Engineer (Lead)
+
+Owns all code and architecture across the full stack. Apply the `hf-engineer` skill for any implementation work.
+
+- Entry point for all coding tasks: technical planning, feature implementation, bug fixes, devops, code reviews, performance optimization
+- Delegates UI/UX design decisions to `hf-designer` when non-trivial
+- Asks `hf-product-manager` for requirements clarification when needed
+- Asks the user when confidence is below 90%
+
+**Backend** — owns `app/` (controllers, middleware, exceptions, services), `commands/`, `start/`, `config/`, `adonisrc.ts`
+- Tests: `node ace test` (Japa)
+- Data models in `app/models/`: `Movie`, `TvSeries`, `Person`, `Genre`, `Image`, `Video`, `Season`, `Network`, `ProductionCompany`, plus credit/keyword/rating bridge tables
+- TMDB data sync via `data:import` Ace command; token in `.env` as `TMDB_API_ACCESS_TOKEN`
+- No user auth — ratings and reviews come directly from TMDB
+- Non-secret config lives in `config/`, not `.env`
+
+**Frontend** — owns `inertia/` (pages, components) and `resources/` (CSS, assets)
+- Tests: `pnpm vitest`
+- Pages in `inertia/pages/`: `home`, `movies`, `tv_shows`, `documentaries`, `media_details`, `search`, `tag`, `about`, `profile`
+- Data flows from AdonisJS controllers via `inertia.render()` — no separate API layer
+- Design system — dark-first cyberpunk: backgrounds `#0a0a0f`/`#0d1117`/`#12141c`; neon accents purple `#b026ff`/`#9333ea`, green `#00ff41`/`#22c55e`, blue `#00d4ff`/`#38bdf8`; both themes must work; WCAG AA; mobile-first 375/768/1280px
+
+**Database** — owns `database/migrations/` and schema design
+- Apply the `supabase` and `supabase-postgres-best-practices` skills
+- `DB_SCHEMA=dev` (dev/staging), `DB_SCHEMA=public` (production)
+- Read-heavy TMDB cache — index for reads; never modify already-run migrations
+
 ### Product Manager
 
 Owns product direction, feature scoping, SEO strategy, and traffic acquisition strategy. Apply the `hf-product-manager` skill.
@@ -30,41 +57,12 @@ Owns product direction, feature scoping, SEO strategy, and traffic acquisition s
 - Does **not** implement code — defines what and why, engineers own the how
 - When consulted mid-task: responds inline, then asks user if they want a GitHub issue created
 
-### Backend Agent
+### Designer
 
-Owns `app/` (controllers, middleware, exceptions, services), `commands/`, `start/`, `config/`, `adonisrc.ts`.
+Owns UI/UX design for non-trivial components and layouts. Apply the `hf-designer` skill.
 
-- Tests: `node ace test` (Japa)
-- Data models live in `app/models/` — key types: `Movie`, `TvSeries`, `Person`, `Genre`, `Image`, `Video`, `Season`, `Network`, `ProductionCompany`, plus credit/keyword/rating bridge tables
-- TMDB data sync runs via `data:import` Ace command in `commands/`
-- No user auth — ratings and reviews come directly from TMDB
-- Non-secret config (TMDB list ID, featured content ID, default theme) lives in `config/`, not `.env`
-- TMDB API token is in `.env.dev` as `TMDB_API_ACCESS_TOKEN`
-
-### Frontend Agent
-
-Owns `inertia/` (pages, components) and `resources/` (CSS, assets).
-
-- Tests: `pnpm vitest`
-- Pages live in `inertia/pages/`: `home`, `movies`, `tv_shows`, `documentaries`, `media_details`, `search`, `tag`, `about`, `profile`
-- Data flows from AdonisJS controllers via `inertia.render()` — no separate API layer
-- **Design system — dark-first cyberpunk:**
-  - Backgrounds: `#0a0a0f`, `#0d1117`, `#12141c` (never pure black)
-  - Neon accents: purple `#b026ff`/`#9333ea`, green `#00ff41`/`#22c55e`, blue `#00d4ff`/`#38bdf8`
-  - Light theme is available — both themes must work
-- Responsive: mobile-first at 375 / 768 / 1280px
-- WCAG AA: 4.5:1 contrast for body, visible focus states, 44×44px touch targets
-
-For non-trivial UI/layout decisions and features that require new designs/components, apply the `hf-designer` skill.
-
-### Database Agent
-
-Owns `database/migrations/` and schema design.
-
-- Apply the `supabase` and `supabase-postgres-best-practices` skills
-- Schema-based env separation: `DB_SCHEMA=dev` (dev/staging), `DB_SCHEMA=public` (production)
-- TMDB data is read-heavy and cached locally — index for read performance
-- Never modify already-run migrations; always add new ones
+- Provides component designs, layout guidance, color/typography decisions, and Tailwind implementations
+- Consulted by the Engineer when a new UI component or page layout is needed
 
 ## Coordination Rules
 
@@ -75,27 +73,29 @@ Owns `database/migrations/` and schema design.
 
 ## Common Multi-Agent Workflows
 
+All implementation steps use the `hf-engineer` skill regardless of whether the work is backend, frontend, or database.
+
 **Propose a new feature:**
 
 1. Product Manager (`hf-product-manager`) → write PRB, file GitHub issue with `PRB` label
-2. Backend agent → implement server-side changes
-3. Frontend agent → implement UI changes
-4. Design agent (if new layout/components) → `cyberpunk-ui-designer`
+2. Designer (`hf-designer`, if new layout/components) → design components and layout
+3. Backend agent (`hf-engineer`) → implement server-side changes
+4. Frontend agent (`hf-engineer`) → implement UI changes
 
 **Add a new content field:**
 
-1. Database agent → migration to add column
-2. Backend agent → update model + controller
-3. Frontend agent → update TypeScript page props + component
+1. Database agent (`hf-engineer`) → migration to add column
+2. Backend agent (`hf-engineer`) → update model + controller
+3. Frontend agent (`hf-engineer`) → update TypeScript page props + component
 
 **Add a new page:**
 
-1. Backend agent → route (`start/routes.ts`) + controller + `inertia.render()`
-2. Frontend agent → page component in `inertia/pages/` + TypeScript props interface
-3. Design agent (if new layout patterns) → `cyberpunk-ui-designer`
+1. Designer (`hf-designer`, if new layout patterns) → design page layout and components
+2. Backend agent (`hf-engineer`) → route (`start/routes.ts`) + controller + `inertia.render()`
+3. Frontend agent (`hf-engineer`) → page component in `inertia/pages/` + TypeScript props interface
 
 **TMDB data model change:**
 
-1. Backend agent → update `data:import` command + affected models
-2. Database agent → migration for schema changes
-3. Frontend agent → update any affected page components
+1. Backend agent (`hf-engineer`) → update `data:import` command + affected models
+2. Database agent (`hf-engineer`) → migration for schema changes
+3. Frontend agent (`hf-engineer`) → update any affected page components

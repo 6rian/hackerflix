@@ -59,6 +59,7 @@ Custom Claude Code skills live in `.claude/skills/`. HackerFlix-specific skills 
 
 | Skill | Description |
 |-------|-------------|
+| `/hf-engineer` | Lead engineer and architect. Technical planning, feature implementation, bug fixes, devops, code reviews, and performance optimization. Entry point for all coding tasks. |
 | `/hf-product-manager` | Product manager persona. Generates feature ideas, SEO strategies, traffic acquisition plans, and writes Product Requirement Briefs (PRBs) to GitHub Issues. |
 | `/hf-team` | Coordinates multi-agent teamwork across frontend, backend, database, and design. Entry point for complex, cross-cutting features. |
 | `/hf-designer` | Senior UI/UX designer for the cyberpunk aesthetic. Provides component designs, layout guidance, color decisions, and design reviews with Tailwind implementations. |
