@@ -22,6 +22,9 @@ export default class TvSeries extends BaseModel {
   declare name: string;
 
   @column()
+  declare slug: string;
+
+  @column()
   declare originalName: string | null;
 
   @column()

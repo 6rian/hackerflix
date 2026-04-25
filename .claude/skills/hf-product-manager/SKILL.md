@@ -39,24 +39,24 @@ You are **technically adept** — you understand TypeScript, React, AdonisJS, In
 
 The TMDB API is the backbone of HackerFlix's content. Key endpoints relevant to product decisions:
 
-| Capability | Endpoint |
-|---|---|
-| Discovery (filter by genre, keyword, year, rating) | `/discover/movie`, `/discover/tv` |
-| Search | `/search/multi`, `/search/movie`, `/search/tv`, `/search/person`, `/search/keyword` |
-| Trending | `/trending/{media_type}/{time_window}` (day/week) |
-| Recommendations | `/movie/{id}/recommendations`, `/tv/{id}/recommendations` |
-| Similar titles | `/movie/{id}/similar`, `/tv/{id}/similar` |
-| Keywords | `/movie/{id}/keywords`, `/tv/{id}/keywords`, `/keyword/{id}/movies` |
-| Collections/franchises | `/collection/{id}` |
-| Person/cast pages | `/person/{id}`, `/person/{id}/movie_credits`, `/person/{id}/tv_credits` |
-| Where to watch | `/movie/{id}/watch/providers`, `/tv/{id}/watch/providers` (JustWatch data) |
-| Genres | `/genre/movie/list`, `/genre/tv/list` |
-| External IDs | `/movie/{id}/external_ids` (IMDb, Wikidata) |
-| Lists (curation) | `/list/{id}`, `/4/list/{id}` |
-| Reviews | `/movie/{id}/reviews`, `/tv/{id}/reviews` |
-| Images | `/movie/{id}/images`, `/tv/{id}/images` |
-| Videos (trailers) | `/movie/{id}/videos`, `/tv/{id}/videos` |
-| Languages/regions | `/configuration/languages`, `/configuration/countries` |
+| Capability                                         | Endpoint                                                                            |
+| -------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Discovery (filter by genre, keyword, year, rating) | `/discover/movie`, `/discover/tv`                                                   |
+| Search                                             | `/search/multi`, `/search/movie`, `/search/tv`, `/search/person`, `/search/keyword` |
+| Trending                                           | `/trending/{media_type}/{time_window}` (day/week)                                   |
+| Recommendations                                    | `/movie/{id}/recommendations`, `/tv/{id}/recommendations`                           |
+| Similar titles                                     | `/movie/{id}/similar`, `/tv/{id}/similar`                                           |
+| Keywords                                           | `/movie/{id}/keywords`, `/tv/{id}/keywords`, `/keyword/{id}/movies`                 |
+| Collections/franchises                             | `/collection/{id}`                                                                  |
+| Person/cast pages                                  | `/person/{id}`, `/person/{id}/movie_credits`, `/person/{id}/tv_credits`             |
+| Where to watch                                     | `/movie/{id}/watch/providers`, `/tv/{id}/watch/providers` (JustWatch data)          |
+| Genres                                             | `/genre/movie/list`, `/genre/tv/list`                                               |
+| External IDs                                       | `/movie/{id}/external_ids` (IMDb, Wikidata)                                         |
+| Lists (curation)                                   | `/list/{id}`, `/4/list/{id}`                                                        |
+| Reviews                                            | `/movie/{id}/reviews`, `/tv/{id}/reviews`                                           |
+| Images                                             | `/movie/{id}/images`, `/tv/{id}/images`                                             |
+| Videos (trailers)                                  | `/movie/{id}/videos`, `/tv/{id}/videos`                                             |
+| Languages/regions                                  | `/configuration/languages`, `/configuration/countries`                              |
 
 **Current data cached in HackerFlix DB:** movies and TV series with genres, keywords, credits (cast/crew), images, videos (trailers), seasons, networks, production companies, content ratings, and external IDs. No user-generated data — ratings and reviews come directly from TMDB.
 
@@ -181,18 +181,31 @@ gh label create "PRB" --repo 6rian/hackerflix --color "7B2FBE" --description "Pr
 
 Always confirm the issue URL after creation so the user can review it.
 
+When an issue is blocked by a decision or question, add the "needs grooming" label, add a comment tagging the user:
+
+```bash
+gh issue edit ISSUE_NUMBER --add-label "needs grooming"
+gh issue comment ISSUE_NUMBER --body "@OWNER This issue is blocked pending your input on [QUESTION]."
+```
+
+If an issue is blocked by another issue, OR if it blocks another issue, set the relationship in GitHub:
+
+```bash
+gh issue edit BLOCKED_ISSUE_NUMBER --add-blocked-by BLOCKING_ISSUE_NUMBER
+```
+
 ---
 
 ## Stack Reference (for writing precise specs)
 
-| Layer | Tech |
-|---|---|
-| Backend | AdonisJS 6 + TypeScript |
-| Frontend | React 19 + Inertia.js (SSR) + Tailwind CSS 4 |
+| Layer    | Tech                                            |
+| -------- | ----------------------------------------------- |
+| Backend  | AdonisJS 6 + TypeScript                         |
+| Frontend | React 19 + Inertia.js (SSR) + Tailwind CSS 4    |
 | Database | PostgreSQL via Supabase (`dev`/`public` schema) |
-| ORM | Lucid (AdonisJS) |
-| Dev env | Docker + pnpm |
-| CI/CD | GitHub Actions → GHCR → DigitalOcean |
+| ORM      | Lucid (AdonisJS)                                |
+| Dev env  | Docker + pnpm                                   |
+| CI/CD    | GitHub Actions → GHCR → DigitalOcean            |
 
 **Design system:** Dark-first cyberpunk. Backgrounds `#0a0a0f`/`#0d1117`/`#12141c`. Neon accents: purple `#b026ff`/`#9333ea`, green `#00ff41`/`#22c55e`, blue `#00d4ff`/`#38bdf8`. Both dark and light themes must work. WCAG AA required.
 

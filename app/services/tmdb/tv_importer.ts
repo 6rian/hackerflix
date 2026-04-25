@@ -11,6 +11,7 @@ import Season from '#models/season';
 import TvContentRating from '#models/tv_content_rating';
 import TvExternalId from '#models/tv_external_id';
 import TvSeries from '#models/tv_series';
+import { generateUniqueSlug } from '#utils/slug';
 
 export class TvImporter {
   constructor(
@@ -42,10 +43,22 @@ export class TvImporter {
       ]);
 
     await db.transaction(async (trx) => {
+      const slug =
+        existing?.slug ||
+        (await generateUniqueSlug(
+          details.name,
+          async (s) =>
+            !!(await TvSeries.query({ client: trx })
+              .where('slug', s)
+              .whereNot('tmdb_id', details.id)
+              .first())
+        ));
+
       const series = await TvSeries.updateOrCreate(
         { tmdbId: details.id },
         {
           name: details.name,
+          slug,
           originalName: details.original_name,
           tagline: details.tagline ?? null,
           overview: details.overview ?? null,

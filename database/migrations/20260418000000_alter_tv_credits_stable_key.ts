@@ -4,15 +4,29 @@ export default class extends BaseSchema {
   protected tableName = 'tv_credits';
 
   async up() {
+    // Drop the old credit_id constraint and column first (DDL runs before defer).
     this.schema.alterTable(this.tableName, (table) => {
-      // Drop the TMDB credit_id unique constraint — it is unreliable as a
-      // stable key because aggregate credits use the first role's credit_id,
-      // which can change if TMDB reorders roles between runs.
       table.dropUnique(['credit_id']);
       table.dropColumn('credit_id');
+    });
 
-      // Replace with a composite unique key: one row per person per series per role type.
-      table.unique(['tv_series_id', 'person_id', 'role_type']);
+    // Deduplicate then add the composite unique key in defer so it runs after
+    // the column drop. Keeps the most recently inserted row per group.
+    this.defer(async (db) => {
+      await db.rawQuery(`
+        DELETE FROM tv_credits
+        WHERE id NOT IN (
+          SELECT MAX(id)
+          FROM tv_credits
+          GROUP BY tv_series_id, person_id, role_type
+        )
+      `);
+
+      await db.rawQuery(`
+        ALTER TABLE tv_credits
+        ADD CONSTRAINT tv_credits_tv_series_id_person_id_role_type_unique
+        UNIQUE (tv_series_id, person_id, role_type)
+      `);
     });
   }
 

@@ -86,3 +86,14 @@ Custom skills live in `.claude/skills/`. HackerFlix-specific skills use the `hf-
 - **`hf-designer`** — cyberpunk UI/UX guidance, component design, Tailwind implementations.
 
 Third-party skills (`supabase`, `supabase-postgres-best-practices`) are bundled for database work.
+
+## Rules
+
+1. All code-related tasks must be assigned to `hf-engineer`.
+2. Product and strategy tasks must be assigned to `hf-product_manager`.
+3. Multi-agent coordination tasks must be assigned to `hf-team`.
+4. Design-related tasks must be assigned to `hf-designer`.
+5. For database schema design and queries, `hf-engineer` may utilize `supabase` and `supabase-postgres-best-practices` skills as needed.
+6. Do not guess or assume requirements. If any aspect of a task is unclear, ask for clarification before proceeding.
+7. Follow best practices for code quality, security, and performance. Prioritize maintainability and scalability in all implementations.
+8. Communicate clearly and regularly about progress, blockers, and decisions.

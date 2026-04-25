@@ -14,7 +14,11 @@
     "typecheck": "tsc --noEmit",
     "prepare": "husky",
     "dev:import-data": "dotenv -e .env -- node ace data:import",
-    "prod:import-data": "dotenv -e .env.prod -- node ace data:import"
+    "prod:import-data": "dotenv -e .env.prod -- node ace data:import",
+    "dev:migrate": "dotenv -e .env -- node ace migration:run",
+    "dev:migrate:rollback": "dotenv -e .env -- node ace migration:rollback",
+    "prod:migrate": "dotenv -e .env.prod -- node ace migration:run",
+    "prod:migrate:rollback": "dotenv -e .env.prod -- node ace migration:rollback"
   },
   "imports": {
     "#controllers/*": "./app/controllers/*.js",
@@ -33,7 +37,8 @@
     "#tests/*": "./tests/*.js",
     "#start/*": "./start/*.js",
     "#config/*": "./config/*.js",
-    "#serializers/*": "./app/serializers/*.js"
+    "#serializers/*": "./app/serializers/*.js",
+    "#utils/*": "./app/utils/*.js"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^7.8.2",

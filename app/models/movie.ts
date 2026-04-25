@@ -15,6 +15,9 @@ export default class Movie extends BaseModel {
   declare title: string;
 
   @column()
+  declare slug: string;
+
+  @column()
   declare originalTitle: string | null;
 
   @column()
