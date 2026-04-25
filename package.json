@@ -1,6 +1,6 @@
 {
   "name": "hackerflix",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "license": "UNLICENSED",
@@ -12,7 +12,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
-    "precommit": "pnpm run typecheck && pnpm run lint && pnpm run format",
+    "precommit": "pnpm run typecheck && pnpm run lint && pnpm run test && pnpm run format",
     "prepare": "husky",
     "dev:import-data": "dotenv -e .env -- node ace data:import",
     "prod:import-data": "dotenv -e .env.prod -- node ace data:import",
