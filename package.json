@@ -12,6 +12,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
+    "precommit": "pnpm run typecheck && pnpm run lint && pnpm run format",
     "prepare": "husky",
     "dev:import-data": "dotenv -e .env -- node ace data:import",
     "prod:import-data": "dotenv -e .env.prod -- node ace data:import",
