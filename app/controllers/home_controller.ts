@@ -4,10 +4,8 @@ import TvSeries from '#models/tv_series';
 import tmdbConfig from '#config/tmdb';
 import { serializeMovie, serializeTvSeries } from '#serializers/media_serializer';
 
-import tmdbConfig from '#config/tmdb';
-
 export default class HomeController {
-/**
+  /**
    * Render the homepage with featured, top movies/shows, and documentaries.
    * @param inertia - Inertia.js context for SSR
    */
@@ -17,12 +15,12 @@ export default class HomeController {
       Movie.query().preload('keywords').orderBy('voteAverage', 'desc').limit(6),
       TvSeries.query().preload('keywords').orderBy('voteAverage', 'desc').limit(6),
       Movie.query()
-        .whereHas('genres', (q) => q.where('genres.id', DOCUMENTARY_GENRE_ID))
+        .whereHas('genres', (q) => q.where('genres.id', tmdbConfig.documentaryGenreId))
         .preload('keywords')
         .orderBy('popularity', 'desc')
         .limit(12),
       TvSeries.query()
-        .whereHas('genres', (q) => q.where('genres.id', DOCUMENTARY_GENRE_ID))
+        .whereHas('genres', (q) => q.where('genres.id', tmdbConfig.documentaryGenreId))
         .preload('keywords')
         .orderBy('popularity', 'desc')
         .limit(12),

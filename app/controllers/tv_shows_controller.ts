@@ -5,7 +5,7 @@ import Video from '#models/video';
 import { serializeTvSeries, serializeTvSeriesDetails } from '#serializers/media_serializer';
 
 export default class TvShowsController {
-/**
+  /**
    * List all TV series, sorted by popularity.
    * @param inertia - Inertia.js context for SSR
    */
@@ -15,7 +15,7 @@ export default class TvShowsController {
     return inertia.render('tv_shows', { media: series.map(serializeTvSeries) });
   }
 
-/**
+  /**
    * Show details for a single TV series, including images and videos.
    * @param params - Route params (expects slug)
    * @param inertia - Inertia.js context for SSR
@@ -25,7 +25,7 @@ export default class TvShowsController {
     const series = await TvSeries.query()
       .where('slug', params.slug as string)
       .preload('keywords')
-      
+
       .preload('tvCredits', (q) => q.preload('person'))
       .first();
 

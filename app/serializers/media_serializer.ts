@@ -174,9 +174,7 @@ export function serializeTvSeriesDetails(
     }));
 
   const crew: CrewMember[] = credits
-    .filter(
-      (c) => c.roleType === 'crew' && c.jobs?.some((j) => CREW_ROLES.has(j.job))
-    )
+    .filter((c) => c.roleType === 'crew' && c.jobs?.some((j) => CREW_ROLES.has(j.job)))
     .map((c) => ({
       id: c.personId,
       name: c.person.name,

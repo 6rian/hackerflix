@@ -4,7 +4,9 @@ import { test } from '@japa/runner';
 const BASE_URL = `http://${process.env.HOST ?? '127.0.0.1'}:${process.env.PORT ?? '3333'}`;
 
 test.group('GET /tag/:slug', () => {
-  test('returns Inertia page with media array and tag prop for a known slug', async ({ assert }) => {
+  test('returns Inertia page with media array and tag prop for a known slug', async ({
+    assert,
+  }) => {
     const response = await fetch(`${BASE_URL}/tag/hacking`, {
       headers: { 'X-Inertia': 'true', 'X-Inertia-Version': '1' },
     });

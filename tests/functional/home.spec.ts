@@ -11,7 +11,12 @@ test.group('GET /', () => {
     assert.equal(response.status, 200);
     const body = (await response.json()) as {
       component: string;
-      props: { featuredContent: unknown[]; movies: unknown[]; shows: unknown[]; documentaries: unknown[] };
+      props: {
+        featuredContent: unknown[];
+        movies: unknown[];
+        shows: unknown[];
+        documentaries: unknown[];
+      };
     };
     assert.equal(body.component, 'home');
     assert.isArray(body.props.featuredContent);
