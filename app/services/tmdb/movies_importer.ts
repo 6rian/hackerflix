@@ -16,6 +16,7 @@ import Keyword from '#models/keyword';
 import Movie from '#models/movie';
 import Person from '#models/person';
 import Video from '#models/video';
+import { generateUniqueSlug } from '#utils/slug';
 
 export class MoviesImporter {
   constructor(private readonly client: TmdbClient) {}
@@ -41,10 +42,22 @@ export class MoviesImporter {
     ]);
 
     await db.transaction(async (trx) => {
+      const slug =
+        existing?.slug ||
+        (await generateUniqueSlug(
+          details.title,
+          async (s) =>
+            !!(await Movie.query({ client: trx })
+              .where('slug', s)
+              .whereNot('tmdb_id', details.id)
+              .first())
+        ));
+
       const movie = await Movie.updateOrCreate(
         { tmdbId: details.id },
         {
           title: details.title,
+          slug,
           originalTitle: details.original_title,
           tagline: details.tagline ?? null,
           overview: details.overview ?? null,
@@ -88,9 +101,20 @@ export class MoviesImporter {
     const fkColumn = mediaType === 'movie' ? 'movie_id' : 'tv_series_id';
 
     for (const g of genres) {
+      const existingGenre = await Genre.query({ client: trx }).where('id', g.id).first();
+      const slug =
+        existingGenre?.slug ||
+        (await generateUniqueSlug(
+          g.name,
+          async (s) =>
+            !!(await Genre.query({ client: trx })
+              .where('slug', s)
+              .whereNot('id', g.id)
+              .first())
+        ));
       await Genre.updateOrCreate(
         { id: g.id },
-        { name: g.name, lastUpdated: DateTime.now() },
+        { name: g.name, slug, lastUpdated: DateTime.now() },
         { client: trx }
       );
     }
@@ -119,9 +143,20 @@ export class MoviesImporter {
     const fkColumn = mediaType === 'movie' ? 'movie_id' : 'tv_series_id';
 
     for (const k of kwds) {
+      const existingKwd = await Keyword.query({ client: trx }).where('id', k.id).first();
+      const slug =
+        existingKwd?.slug ||
+        (await generateUniqueSlug(
+          k.name,
+          async (s) =>
+            !!(await Keyword.query({ client: trx })
+              .where('slug', s)
+              .whereNot('id', k.id)
+              .first())
+        ));
       await Keyword.updateOrCreate(
         { id: k.id },
-        { name: k.name, lastUpdated: DateTime.now() },
+        { name: k.name, slug, lastUpdated: DateTime.now() },
         { client: trx }
       );
     }

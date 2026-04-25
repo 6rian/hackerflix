@@ -11,6 +11,9 @@ export default class Genre extends BaseModel {
   @column()
   declare name: string;
 
+  @column()
+  declare slug: string;
+
   @column.dateTime()
   declare lastUpdated: DateTime;
 }
