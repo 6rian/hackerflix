@@ -107,10 +107,7 @@ export class MoviesImporter {
         (await generateUniqueSlug(
           g.name,
           async (s) =>
-            !!(await Genre.query({ client: trx })
-              .where('slug', s)
-              .whereNot('id', g.id)
-              .first())
+            !!(await Genre.query({ client: trx }).where('slug', s).whereNot('id', g.id).first())
         ));
       await Genre.updateOrCreate(
         { id: g.id },
@@ -149,10 +146,7 @@ export class MoviesImporter {
         (await generateUniqueSlug(
           k.name,
           async (s) =>
-            !!(await Keyword.query({ client: trx })
-              .where('slug', s)
-              .whereNot('id', k.id)
-              .first())
+            !!(await Keyword.query({ client: trx }).where('slug', s).whereNot('id', k.id).first())
         ));
       await Keyword.updateOrCreate(
         { id: k.id },

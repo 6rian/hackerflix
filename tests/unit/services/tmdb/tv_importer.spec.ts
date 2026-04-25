@@ -291,8 +291,7 @@ test.group('TvImporter — importTvSeries slug', (group) => {
     TvSeries.query = (() => mockQueryBuilder(null)) as typeof TvSeries.query;
 
     const client = makeMockClient();
-    client.getTvDetails = async () =>
-      ({ ...tvPayload, name: 'Mr. Robot' }) as never;
+    client.getTvDetails = async () => ({ ...tvPayload, name: 'Mr. Robot' }) as never;
 
     let capturedSlug: string | undefined;
     TvSeries.updateOrCreate = (async (_s: any, data: any) => {
