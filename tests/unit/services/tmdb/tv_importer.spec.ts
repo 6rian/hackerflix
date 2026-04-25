@@ -6,6 +6,7 @@ import { MoviesImporter } from '#services/tmdb/movies_importer';
 import { TvImporter } from '#services/tmdb/tv_importer';
 import { TmdbClient } from '#services/tmdb/client';
 import tmdbConfig from '#config/tmdb';
+import { executeTransaction, mockQueryBuilder } from '#tests/unit/helpers/import_test_helpers';
 
 // ── Fixtures ──────────────────────────────────────────────────────────────────
 
@@ -86,37 +87,6 @@ async function stubTransaction() {
   const original = db.transaction.bind(db);
   db.transaction = (async () => undefined) as unknown as typeof db.transaction;
   return () => (db.transaction = original);
-}
-
-async function executeTransaction() {
-  const { default: db } = await import('@adonisjs/lucid/services/db');
-  const original = db.transaction.bind(db);
-  db.transaction = (async (cb: (trx: any) => any) =>
-    cb(makeMockTrx())) as unknown as typeof db.transaction;
-  return () => (db.transaction = original);
-}
-
-function makeMockTrx(): any {
-  const builder: any = {
-    where: () => builder,
-    whereNot: () => builder,
-    whereNotIn: () => builder,
-    delete: async () => {},
-    first: async () => null,
-  };
-  return {
-    from: () => builder,
-    rawQuery: async () => ({ rows: [] }),
-  };
-}
-
-function mockQueryBuilder(result: unknown) {
-  const builder: any = {
-    where: () => builder,
-    whereNot: () => builder,
-    first: async () => result,
-  };
-  return builder;
 }
 
 function makeTvImporter(client: TmdbClient): TvImporter {

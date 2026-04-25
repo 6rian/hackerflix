@@ -15,10 +15,9 @@ export async function generateUniqueSlug(
 ): Promise<string> {
   const base = generateSlug(input);
   if (!(await checkExists(base))) return base;
-  let n = 1;
-  while (true) {
+  for (let n = 1; n <= 1000; n++) {
     const candidate = `${base}-${n}`;
     if (!(await checkExists(candidate))) return candidate;
-    n++;
   }
+  throw new Error(`Could not generate a unique slug for "${input}" after 1000 attempts`);
 }
