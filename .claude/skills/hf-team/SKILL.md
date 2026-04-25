@@ -31,6 +31,7 @@ Owns all code and architecture across the full stack. Apply the `hf-engineer` sk
 - Asks the user when confidence is below 90%
 
 **Backend** — owns `app/` (controllers, middleware, exceptions, services), `commands/`, `start/`, `config/`, `adonisrc.ts`
+
 - Tests: `node ace test` (Japa)
 - Data models in `app/models/`: `Movie`, `TvSeries`, `Person`, `Genre`, `Image`, `Video`, `Season`, `Network`, `ProductionCompany`, plus credit/keyword/rating bridge tables
 - TMDB data sync via `data:import` Ace command; token in `.env` as `TMDB_API_ACCESS_TOKEN`
@@ -38,12 +39,14 @@ Owns all code and architecture across the full stack. Apply the `hf-engineer` sk
 - Non-secret config lives in `config/`, not `.env`
 
 **Frontend** — owns `inertia/` (pages, components) and `resources/` (CSS, assets)
+
 - Tests: `pnpm vitest`
 - Pages in `inertia/pages/`: `home`, `movies`, `tv_shows`, `documentaries`, `media_details`, `search`, `tag`, `about`, `profile`
 - Data flows from AdonisJS controllers via `inertia.render()` — no separate API layer
 - Design system — dark-first cyberpunk: backgrounds `#0a0a0f`/`#0d1117`/`#12141c`; neon accents purple `#b026ff`/`#9333ea`, green `#00ff41`/`#22c55e`, blue `#00d4ff`/`#38bdf8`; both themes must work; WCAG AA; mobile-first 375/768/1280px
 
 **Database** — owns `database/migrations/` and schema design
+
 - Apply the `supabase` and `supabase-postgres-best-practices` skills
 - `DB_SCHEMA=dev` (dev/staging), `DB_SCHEMA=public` (production)
 - Read-heavy TMDB cache — index for reads; never modify already-run migrations
