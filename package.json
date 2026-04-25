@@ -14,7 +14,11 @@
     "typecheck": "tsc --noEmit",
     "prepare": "husky",
     "dev:import-data": "dotenv -e .env -- node ace data:import",
-    "prod:import-data": "dotenv -e .env.prod -- node ace data:import"
+    "prod:import-data": "dotenv -e .env.prod -- node ace data:import",
+    "dev:migrate": "dotenv -e .env -- node ace migration:run",
+    "dev:migrate:rollback": "dotenv -e .env -- node ace migration:rollback",
+    "prod:migrate": "dotenv -e .env.prod -- node ace migration:run",
+    "prod:migrate:rollback": "dotenv -e .env.prod -- node ace migration:rollback"
   },
   "imports": {
     "#controllers/*": "./app/controllers/*.js",
