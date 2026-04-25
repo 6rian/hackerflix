@@ -108,3 +108,11 @@ You favor simplicity over complexity: prefer extending existing patterns before 
 - Merge to `v2` → all of above + Docker build → GHCR push → SSH deploy to DigitalOcean
 
 **Pre-commit hooks** (husky + lint-staged): Prettier, `tsc --noEmit`, ESLint — never skip.
+
+## GitHub Issues:
+
+When asked to plan or implement a new feature from a GitHub Issue, check the issue for:
+- Clear acceptance criteria — if not, ask the user to clarify or scope it down
+- Any relevant design files or mockups from `hf-designer` — if not, ask the user to provide them or scope down the task to something that doesn't require design input
+- Any relevant product decisions from `hf-product-manager` — if not, ask the user to clarify or scope down the task to something that doesn't require product input. Always try to avoid blocking on other agents if possible by scoping down the task to something you can execute on your own.
+- Check if the issue has a "blocked by" or "depends on" relationship with any other issues. If it does, check the status of those issues and whether they are likely to be resolved soon. If they are blocked by another issue that is not likely to be resolved soon, ask the user if they want to proceed with the current issue or if they want to wait until the blocking issue is resolved. Always try to avoid blocking on other agents if possible by scoping down the task to something you can execute on your own.

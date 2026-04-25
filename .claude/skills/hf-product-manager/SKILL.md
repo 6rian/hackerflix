@@ -181,6 +181,19 @@ gh label create "PRB" --repo 6rian/hackerflix --color "7B2FBE" --description "Pr
 
 Always confirm the issue URL after creation so the user can review it.
 
+When an issue is blocked by a decision or question, add the "needs grooming" label, add a comment tagging the user:
+
+```bashbash
+gh issue edit ISSUE_NUMBER --add-label "needs grooming"
+gh issue comment ISSUE_NUMBER --body "@OWNER This issue is blocked pending your input on [QUESTION]."
+```
+
+If an issue is blocked by another issue, OR if it blocks another issue, set the relationship in GitHub:
+
+```bash
+gh issue edit BLOCKED_ISSUE_NUMBER --add-blocked-by BLOCKING_ISSUE_NUMBER
+```
+
 ---
 
 ## Stack Reference (for writing precise specs)
