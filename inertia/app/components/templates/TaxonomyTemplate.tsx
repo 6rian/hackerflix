@@ -1,7 +1,7 @@
 import { Navigation } from '@/app/components/global/Navigation';
 import { Footer } from '@/app/components/global/Footer';
 import { MediaListCard } from '@/app/components/global/MediaListCard';
-import { MediaItem } from '@/app/data/mock_data';
+import type { MediaItem } from '@/app/types/media';
 
 interface TaxonomyTemplateProps {
   title: string;

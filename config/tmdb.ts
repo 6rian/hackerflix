@@ -5,6 +5,9 @@ const tmdbConfig = {
   /** TMDB movie ID for the default featured title (Hackers, 1995) */
   featuredId: 8487,
 
+  /** TMDB genre ID for Documentary — shared by both movies and TV series */
+  documentaryGenreId: 99,
+
   /** Number of days before a record is considered stale and eligible for re-import */
   stalenessThresholdDays: 7,
 

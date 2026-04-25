@@ -1,16 +1,17 @@
 import { usePage } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import { Navigation } from '@/app/components/global/Navigation';
 import { HeroSlider } from '@/app/components/global/HeroSlider';
 import { MediaCard } from '@/app/components/global/MediaCard';
 import { Footer } from '@/app/components/global/Footer';
-import { documentaries } from '@/app/data/mock_data';
 import type { MediaItem } from '@/app/types/media';
 
 export default function Home() {
-  const { featuredContent, movies, shows } = usePage<{
+  const { featuredContent, movies, shows, documentaries } = usePage<{
     featuredContent: MediaItem[];
     movies: MediaItem[];
     shows: MediaItem[];
+    documentaries: MediaItem[];
   }>().props;
 
   return (
@@ -29,9 +30,12 @@ export default function Home() {
         <section>
           <div className="mb-6 flex items-center justify-between">
             <h2 className="font-hf-mono text-2xl font-bold tracking-tight sm:text-3xl">TV SHOWS</h2>
-            <button className="font-hf-mono text-sm font-medium text-[var(--deep-purple)] transition-colors duration-200 hover:text-[var(--primary)]">
+            <Link
+              href="/tvshows"
+              className="font-hf-mono text-sm font-medium text-[var(--deep-purple)] transition-colors duration-200 hover:text-[var(--primary)]"
+            >
               VIEW ALL →
-            </button>
+            </Link>
           </div>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {shows.map((show) => (
@@ -44,9 +48,12 @@ export default function Home() {
         <section>
           <div className="mb-6 flex items-center justify-between">
             <h2 className="font-hf-mono text-2xl font-bold tracking-tight sm:text-3xl">MOVIES</h2>
-            <button className="font-hf-mono text-sm font-medium text-[var(--deep-purple)] transition-colors duration-200 hover:text-[var(--primary)]">
+            <Link
+              href="/movies"
+              className="font-hf-mono text-sm font-medium text-[var(--deep-purple)] transition-colors duration-200 hover:text-[var(--primary)]"
+            >
               VIEW ALL →
-            </button>
+            </Link>
           </div>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {movies.map((movie) => (
@@ -61,9 +68,12 @@ export default function Home() {
             <h2 className="font-hf-mono text-2xl font-bold tracking-tight sm:text-3xl">
               DOCUMENTARIES
             </h2>
-            <button className="font-hf-mono text-sm font-medium text-[var(--deep-purple)] transition-colors duration-200 hover:text-[var(--primary)]">
+            <Link
+              href="/documentaries"
+              className="font-hf-mono text-sm font-medium text-[var(--deep-purple)] transition-colors duration-200 hover:text-[var(--primary)]"
+            >
               VIEW ALL →
-            </button>
+            </Link>
           </div>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {documentaries.map((doc) => (

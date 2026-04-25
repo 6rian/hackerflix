@@ -1,8 +1,9 @@
-import { BaseModel, column, manyToMany } from '@adonisjs/lucid/orm';
-import type { ManyToMany } from '@adonisjs/lucid/types/relations';
+import { BaseModel, column, hasMany, manyToMany } from '@adonisjs/lucid/orm';
+import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations';
 import { DateTime } from 'luxon';
 import Genre from '#models/genre';
 import Keyword from '#models/keyword';
+import MovieCredit from '#models/movie_credit';
 
 export default class Movie extends BaseModel {
   @column({ isPrimary: true })
@@ -89,4 +90,7 @@ export default class Movie extends BaseModel {
     pivotTable: 'movie_keywords',
   })
   declare keywords: ManyToMany<typeof Keyword>;
+
+  @hasMany(() => MovieCredit)
+  declare movieCredits: HasMany<typeof MovieCredit>;
 }

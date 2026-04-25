@@ -11,6 +11,7 @@ import tmdbConfig from '#config/tmdb';
 function makeMovie(overrides: Partial<Movie> = {}): Movie {
   return Object.assign(new Movie(), {
     id: 1,
+    slug: 'hackers-1995',
     title: 'Hackers',
     releaseDate: new Date('1995-09-15'),
     voteAverage: 6.5,
@@ -18,7 +19,10 @@ function makeMovie(overrides: Partial<Movie> = {}): Movie {
     posterPath: '/hackers.jpg',
     backdropPath: '/hackers_backdrop.jpg',
     popularity: 42.5,
-    keywords: [{ name: 'hacking' }, { name: 'cyberpunk' }],
+    keywords: [
+      { name: 'hacking', slug: 'hacking' },
+      { name: 'cyberpunk', slug: 'cyberpunk' },
+    ],
     ...overrides,
   });
 }
@@ -26,6 +30,7 @@ function makeMovie(overrides: Partial<Movie> = {}): Movie {
 function makeTvSeries(overrides: Partial<TvSeries> = {}): TvSeries {
   return Object.assign(new TvSeries(), {
     id: 2,
+    slug: 'mr-robot',
     name: 'Mr. Robot',
     firstAirDate: new Date('2015-06-24'),
     voteAverage: 8.5,
@@ -33,7 +38,10 @@ function makeTvSeries(overrides: Partial<TvSeries> = {}): TvSeries {
     posterPath: '/mrrobot.jpg',
     backdropPath: '/mrrobot_backdrop.jpg',
     popularity: 78.3,
-    keywords: [{ name: 'hacking' }, { name: 'fsociety' }],
+    keywords: [
+      { name: 'hacking', slug: 'hacking' },
+      { name: 'fsociety', slug: 'fsociety' },
+    ],
     ...overrides,
   });
 }
@@ -48,6 +56,8 @@ test.group('serializeMovie', () => {
     const result = serializeMovie(movie);
 
     assert.equal(result.id, 1);
+    assert.equal(result.slug, 'hackers-1995');
+    assert.equal(result.mediaType, 'movie');
     assert.equal(result.title, 'Hackers');
     assert.equal(result.type, 'movie');
     assert.equal(result.year, '1995');
@@ -55,7 +65,10 @@ test.group('serializeMovie', () => {
     assert.equal(result.description, 'A group of high school hackers.');
     assert.equal(result.image, tmdbConfig.imageBaseUrl + '/hackers.jpg');
     assert.equal(result.backdrop, tmdbConfig.backdropBaseUrl + '/hackers_backdrop.jpg');
-    assert.deepEqual(result.tags, ['hacking', 'cyberpunk']);
+    assert.deepEqual(result.tags, [
+      { name: 'hacking', slug: 'hacking' },
+      { name: 'cyberpunk', slug: 'cyberpunk' },
+    ]);
   });
 
   test('backdropPath is prefixed with backdropBaseUrl', ({ assert }) => {
@@ -71,6 +84,11 @@ test.group('serializeMovie', () => {
   test('type is hardcoded as "movie"', ({ assert }) => {
     const result = serializeMovie(makeMovie());
     assert.equal(result.type, 'movie');
+  });
+
+  test('mediaType is hardcoded as "movie"', ({ assert }) => {
+    const result = serializeMovie(makeMovie());
+    assert.equal(result.mediaType, 'movie');
   });
 
   test('posterPath is prefixed with imageBaseUrl', ({ assert }) => {
@@ -114,6 +132,8 @@ test.group('serializeTvSeries', () => {
     const result = serializeTvSeries(series);
 
     assert.equal(result.id, 2);
+    assert.equal(result.slug, 'mr-robot');
+    assert.equal(result.mediaType, 'tv');
     assert.equal(result.title, 'Mr. Robot');
     assert.equal(result.type, 'show');
     assert.equal(result.year, '2015');
@@ -121,7 +141,10 @@ test.group('serializeTvSeries', () => {
     assert.equal(result.description, 'A cybersecurity engineer leads a hacker group.');
     assert.equal(result.image, tmdbConfig.imageBaseUrl + '/mrrobot.jpg');
     assert.equal(result.backdrop, tmdbConfig.backdropBaseUrl + '/mrrobot_backdrop.jpg');
-    assert.deepEqual(result.tags, ['hacking', 'fsociety']);
+    assert.deepEqual(result.tags, [
+      { name: 'hacking', slug: 'hacking' },
+      { name: 'fsociety', slug: 'fsociety' },
+    ]);
   });
 
   test('backdropPath is prefixed with backdropBaseUrl', ({ assert }) => {
@@ -137,6 +160,11 @@ test.group('serializeTvSeries', () => {
   test('type is hardcoded as "show"', ({ assert }) => {
     const result = serializeTvSeries(makeTvSeries());
     assert.equal(result.type, 'show');
+  });
+
+  test('mediaType is hardcoded as "tv"', ({ assert }) => {
+    const result = serializeTvSeries(makeTvSeries());
+    assert.equal(result.mediaType, 'tv');
   });
 
   test('posterPath is prefixed with imageBaseUrl', ({ assert }) => {
