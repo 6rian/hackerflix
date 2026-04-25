@@ -1,5 +1,7 @@
 import { test } from '@japa/runner';
 import { DateTime } from 'luxon';
+import Genre from '#models/genre';
+import Keyword from '#models/keyword';
 import Movie from '#models/movie';
 import { MoviesImporter } from '#services/tmdb/movies_importer';
 import { TmdbClient } from '#services/tmdb/client';
@@ -58,6 +60,41 @@ async function stubTransaction() {
   const original = db.transaction.bind(db);
   db.transaction = (async () => undefined) as unknown as typeof db.transaction;
   return () => (db.transaction = original);
+}
+
+/**
+ * Stub db.transaction to actually execute the callback with a lightweight mock
+ * transaction client. Used when we need to test logic inside the transaction.
+ */
+async function executeTransaction() {
+  const { default: db } = await import('@adonisjs/lucid/services/db');
+  const original = db.transaction.bind(db);
+  db.transaction = (async (cb: (trx: any) => any) =>
+    cb(makeMockTrx())) as unknown as typeof db.transaction;
+  return () => (db.transaction = original);
+}
+
+function makeMockTrx(): any {
+  const builder: any = {
+    where: () => builder,
+    whereNot: () => builder,
+    whereNotIn: () => builder,
+    delete: async () => {},
+    first: async () => null,
+  };
+  return {
+    from: () => builder,
+    rawQuery: async () => ({ rows: [] }),
+  };
+}
+
+function mockQueryBuilder(result: unknown) {
+  const builder: any = {
+    where: () => builder,
+    whereNot: () => builder,
+    first: async () => result,
+  };
+  return builder;
 }
 
 // ── Tests ─────────────────────────────────────────────────────────────────────
@@ -152,5 +189,219 @@ test.group('MoviesImporter — staleness check', (group) => {
     } finally {
       restore();
     }
+  });
+});
+
+// ── Slug tests ────────────────────────────────────────────────────────────────
+
+test.group('MoviesImporter — importMovie slug', (group) => {
+  let originalFindBy: typeof Movie.findBy;
+  let originalQuery: typeof Movie.query;
+  let originalUpdateOrCreate: typeof Movie.updateOrCreate;
+
+  group.each.setup(() => {
+    originalFindBy = Movie.findBy;
+    originalQuery = Movie.query;
+    originalUpdateOrCreate = Movie.updateOrCreate;
+  });
+
+  group.each.teardown(() => {
+    Movie.findBy = originalFindBy;
+    Movie.query = originalQuery;
+    Movie.updateOrCreate = originalUpdateOrCreate;
+  });
+
+  test('generates slug from title for a new record', async ({ assert }) => {
+    Movie.findBy = async () => null;
+    Movie.query = (() => mockQueryBuilder(null)) as typeof Movie.query;
+
+    let capturedSlug: string | undefined;
+    Movie.updateOrCreate = (async (_s: any, data: any) => {
+      capturedSlug = data.slug;
+      return { id: 1 } as any;
+    }) as typeof Movie.updateOrCreate;
+
+    const restore = await executeTransaction();
+    try {
+      await new MoviesImporter(makeMockClient()).importMovie(8487, false);
+      assert.equal(capturedSlug, 'hackers');
+    } finally {
+      restore();
+    }
+  });
+
+  test('preserves an existing slug on re-import', async ({ assert }) => {
+    const staleDays = tmdbConfig.stalenessThresholdDays + 1;
+    Movie.findBy = async () =>
+      ({ lastUpdated: DateTime.now().minus({ days: staleDays }), slug: 'hackers-1995' }) as never;
+
+    let capturedSlug: string | undefined;
+    let queryWasCalled = false;
+    Movie.query = (() => {
+      queryWasCalled = true;
+      return mockQueryBuilder(null);
+    }) as typeof Movie.query;
+    Movie.updateOrCreate = (async (_s: any, data: any) => {
+      capturedSlug = data.slug;
+      return { id: 1 } as any;
+    }) as typeof Movie.updateOrCreate;
+
+    const restore = await executeTransaction();
+    try {
+      await new MoviesImporter(makeMockClient()).importMovie(8487, false);
+      assert.equal(capturedSlug, 'hackers-1995');
+      assert.isFalse(queryWasCalled, 'Movie.query should not be called when slug already set');
+    } finally {
+      restore();
+    }
+  });
+
+  test('generates slug when existing record has empty slug', async ({ assert }) => {
+    const staleDays = tmdbConfig.stalenessThresholdDays + 1;
+    Movie.findBy = async () =>
+      ({ lastUpdated: DateTime.now().minus({ days: staleDays }), slug: '' }) as never;
+
+    Movie.query = (() => mockQueryBuilder(null)) as typeof Movie.query;
+
+    let capturedSlug: string | undefined;
+    Movie.updateOrCreate = (async (_s: any, data: any) => {
+      capturedSlug = data.slug;
+      return { id: 1 } as any;
+    }) as typeof Movie.updateOrCreate;
+
+    const restore = await executeTransaction();
+    try {
+      await new MoviesImporter(makeMockClient()).importMovie(8487, false);
+      assert.equal(capturedSlug, 'hackers');
+    } finally {
+      restore();
+    }
+  });
+
+  test('appends numeric suffix when base slug is taken', async ({ assert }) => {
+    Movie.findBy = async () => null;
+
+    let queryCallCount = 0;
+    Movie.query = (() => {
+      queryCallCount++;
+      // First uniqueness check ('hackers') returns taken; second ('hackers-1') is free
+      return mockQueryBuilder(queryCallCount === 1 ? { slug: 'hackers' } : null);
+    }) as typeof Movie.query;
+
+    let capturedSlug: string | undefined;
+    Movie.updateOrCreate = (async (_s: any, data: any) => {
+      capturedSlug = data.slug;
+      return { id: 1 } as any;
+    }) as typeof Movie.updateOrCreate;
+
+    const restore = await executeTransaction();
+    try {
+      await new MoviesImporter(makeMockClient()).importMovie(8487, false);
+      assert.equal(capturedSlug, 'hackers-1');
+    } finally {
+      restore();
+    }
+  });
+});
+
+test.group('MoviesImporter — upsertGenres slug', (group) => {
+  let originalGenreQuery: typeof Genre.query;
+  let originalGenreUpdateOrCreate: typeof Genre.updateOrCreate;
+
+  group.each.setup(() => {
+    originalGenreQuery = Genre.query;
+    originalGenreUpdateOrCreate = Genre.updateOrCreate;
+  });
+
+  group.each.teardown(() => {
+    Genre.query = originalGenreQuery;
+    Genre.updateOrCreate = originalGenreUpdateOrCreate;
+  });
+
+  test('generates slug from name for a new genre', async ({ assert }) => {
+    Genre.query = (() => mockQueryBuilder(null)) as typeof Genre.query;
+
+    let capturedData: Record<string, unknown> | undefined;
+    Genre.updateOrCreate = (async (_s: any, data: any) => {
+      capturedData = data;
+      return {} as any;
+    }) as typeof Genre.updateOrCreate;
+
+    await new MoviesImporter(makeMockClient()).upsertGenres(
+      [{ id: 878, name: 'Science Fiction' }],
+      1,
+      'movie',
+      makeMockTrx()
+    );
+    assert.equal(capturedData?.slug, 'science-fiction');
+  });
+
+  test('preserves an existing genre slug on re-upsert', async ({ assert }) => {
+    Genre.query = (() => mockQueryBuilder({ slug: 'sci-fi' })) as typeof Genre.query;
+
+    let capturedData: Record<string, unknown> | undefined;
+    Genre.updateOrCreate = (async (_s: any, data: any) => {
+      capturedData = data;
+      return {} as any;
+    }) as typeof Genre.updateOrCreate;
+
+    await new MoviesImporter(makeMockClient()).upsertGenres(
+      [{ id: 878, name: 'Science Fiction' }],
+      1,
+      'movie',
+      makeMockTrx()
+    );
+    assert.equal(capturedData?.slug, 'sci-fi');
+  });
+});
+
+test.group('MoviesImporter — upsertKeywords slug', (group) => {
+  let originalKeywordQuery: typeof Keyword.query;
+  let originalKeywordUpdateOrCreate: typeof Keyword.updateOrCreate;
+
+  group.each.setup(() => {
+    originalKeywordQuery = Keyword.query;
+    originalKeywordUpdateOrCreate = Keyword.updateOrCreate;
+  });
+
+  group.each.teardown(() => {
+    Keyword.query = originalKeywordQuery;
+    Keyword.updateOrCreate = originalKeywordUpdateOrCreate;
+  });
+
+  test('generates slug from name for a new keyword', async ({ assert }) => {
+    Keyword.query = (() => mockQueryBuilder(null)) as typeof Keyword.query;
+
+    let capturedData: Record<string, unknown> | undefined;
+    Keyword.updateOrCreate = (async (_s: any, data: any) => {
+      capturedData = data;
+      return {} as any;
+    }) as typeof Keyword.updateOrCreate;
+
+    await new MoviesImporter(makeMockClient()).upsertKeywords(
+      [{ id: 9951, name: 'Artificial Intelligence' }],
+      1,
+      'movie',
+      makeMockTrx()
+    );
+    assert.equal(capturedData?.slug, 'artificial-intelligence');
+  });
+
+  test('preserves an existing keyword slug on re-upsert', async ({ assert }) => {
+    Keyword.query = (() => mockQueryBuilder({ slug: 'ai' })) as typeof Keyword.query;
+
+    let capturedData: Record<string, unknown> | undefined;
+    Keyword.updateOrCreate = (async (_s: any, data: any) => {
+      capturedData = data;
+      return {} as any;
+    }) as typeof Keyword.updateOrCreate;
+
+    await new MoviesImporter(makeMockClient()).upsertKeywords(
+      [{ id: 9951, name: 'Artificial Intelligence' }],
+      1,
+      'movie',
+      makeMockTrx()
+    );
+    assert.equal(capturedData?.slug, 'ai');
   });
 });

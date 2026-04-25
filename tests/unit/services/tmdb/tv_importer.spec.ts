@@ -1,5 +1,6 @@
 import { test } from '@japa/runner';
 import { DateTime } from 'luxon';
+import TvExternalId from '#models/tv_external_id';
 import TvSeries from '#models/tv_series';
 import { MoviesImporter } from '#services/tmdb/movies_importer';
 import { TvImporter } from '#services/tmdb/tv_importer';
@@ -85,6 +86,37 @@ async function stubTransaction() {
   const original = db.transaction.bind(db);
   db.transaction = (async () => undefined) as unknown as typeof db.transaction;
   return () => (db.transaction = original);
+}
+
+async function executeTransaction() {
+  const { default: db } = await import('@adonisjs/lucid/services/db');
+  const original = db.transaction.bind(db);
+  db.transaction = (async (cb: (trx: any) => any) =>
+    cb(makeMockTrx())) as unknown as typeof db.transaction;
+  return () => (db.transaction = original);
+}
+
+function makeMockTrx(): any {
+  const builder: any = {
+    where: () => builder,
+    whereNot: () => builder,
+    whereNotIn: () => builder,
+    delete: async () => {},
+    first: async () => null,
+  };
+  return {
+    from: () => builder,
+    rawQuery: async () => ({ rows: [] }),
+  };
+}
+
+function mockQueryBuilder(result: unknown) {
+  const builder: any = {
+    where: () => builder,
+    whereNot: () => builder,
+    first: async () => result,
+  };
+  return builder;
 }
 
 function makeTvImporter(client: TmdbClient): TvImporter {
@@ -180,6 +212,98 @@ test.group('TvImporter — staleness check', (group) => {
       const result = await makeTvImporter(client).importTvSeries(1399, false);
       assert.isTrue(result);
       assert.isTrue(tmdbCalled);
+    } finally {
+      restore();
+    }
+  });
+});
+
+// ── Slug tests ────────────────────────────────────────────────────────────────
+
+test.group('TvImporter — importTvSeries slug', (group) => {
+  let originalFindBy: typeof TvSeries.findBy;
+  let originalQuery: typeof TvSeries.query;
+  let originalUpdateOrCreate: typeof TvSeries.updateOrCreate;
+  let originalTvExternalIdUpdateOrCreate: typeof TvExternalId.updateOrCreate;
+
+  group.each.setup(() => {
+    originalFindBy = TvSeries.findBy;
+    originalQuery = TvSeries.query;
+    originalUpdateOrCreate = TvSeries.updateOrCreate;
+    originalTvExternalIdUpdateOrCreate = TvExternalId.updateOrCreate;
+    TvExternalId.updateOrCreate = async () => ({}) as never;
+  });
+
+  group.each.teardown(() => {
+    TvSeries.findBy = originalFindBy;
+    TvSeries.query = originalQuery;
+    TvSeries.updateOrCreate = originalUpdateOrCreate;
+    TvExternalId.updateOrCreate = originalTvExternalIdUpdateOrCreate;
+  });
+
+  test('generates slug from name for a new series', async ({ assert }) => {
+    TvSeries.findBy = async () => null;
+    TvSeries.query = (() => mockQueryBuilder(null)) as typeof TvSeries.query;
+
+    let capturedSlug: string | undefined;
+    TvSeries.updateOrCreate = (async (_s: any, data: any) => {
+      capturedSlug = data.slug;
+      return { id: 1 } as any;
+    }) as typeof TvSeries.updateOrCreate;
+
+    const restore = await executeTransaction();
+    try {
+      await makeTvImporter(makeMockClient()).importTvSeries(1399, false);
+      assert.equal(capturedSlug, 'game-of-thrones');
+    } finally {
+      restore();
+    }
+  });
+
+  test('preserves an existing slug on re-import', async ({ assert }) => {
+    const staleDays = tmdbConfig.stalenessThresholdDays + 1;
+    TvSeries.findBy = async () =>
+      ({ lastUpdated: DateTime.now().minus({ days: staleDays }), slug: 'got' }) as never;
+
+    let capturedSlug: string | undefined;
+    let queryWasCalled = false;
+    TvSeries.query = (() => {
+      queryWasCalled = true;
+      return mockQueryBuilder(null);
+    }) as typeof TvSeries.query;
+    TvSeries.updateOrCreate = (async (_s: any, data: any) => {
+      capturedSlug = data.slug;
+      return { id: 1 } as any;
+    }) as typeof TvSeries.updateOrCreate;
+
+    const restore = await executeTransaction();
+    try {
+      await makeTvImporter(makeMockClient()).importTvSeries(1399, false);
+      assert.equal(capturedSlug, 'got');
+      assert.isFalse(queryWasCalled, 'TvSeries.query should not be called when slug already set');
+    } finally {
+      restore();
+    }
+  });
+
+  test('generates slug from name field, not title', async ({ assert }) => {
+    TvSeries.findBy = async () => null;
+    TvSeries.query = (() => mockQueryBuilder(null)) as typeof TvSeries.query;
+
+    const client = makeMockClient();
+    client.getTvDetails = async () =>
+      ({ ...tvPayload, name: 'Mr. Robot' }) as never;
+
+    let capturedSlug: string | undefined;
+    TvSeries.updateOrCreate = (async (_s: any, data: any) => {
+      capturedSlug = data.slug;
+      return { id: 1 } as any;
+    }) as typeof TvSeries.updateOrCreate;
+
+    const restore = await executeTransaction();
+    try {
+      await makeTvImporter(client).importTvSeries(1399, false);
+      assert.equal(capturedSlug, 'mr-robot');
     } finally {
       restore();
     }
