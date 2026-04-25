@@ -1,13 +1,35 @@
 // TODO: migrate to @japa/api-client once that package is installed
 import { test } from '@japa/runner';
+import { DateTime } from 'luxon';
+import Keyword from '#models/keyword';
 
 const BASE_URL = `http://${process.env.HOST ?? '127.0.0.1'}:${process.env.PORT ?? '3333'}`;
 
-test.group('GET /tag/:slug', () => {
+const TEST_KEYWORD_ID = 999_999_901;
+const TEST_KEYWORD_SLUG = 'hacking-test-fixture';
+const TEST_KEYWORD_NAME = 'Hacking Test Fixture';
+
+test.group('GET /tag/:slug', (group) => {
+  group.setup(async () => {
+    await Keyword.updateOrCreate(
+      { id: TEST_KEYWORD_ID },
+      {
+        id: TEST_KEYWORD_ID,
+        name: TEST_KEYWORD_NAME,
+        slug: TEST_KEYWORD_SLUG,
+        lastUpdated: DateTime.now(),
+      }
+    );
+  });
+
+  group.teardown(async () => {
+    await Keyword.query().where('id', TEST_KEYWORD_ID).delete();
+  });
+
   test('returns Inertia page with media array and tag prop for a known slug', async ({
     assert,
   }) => {
-    const response = await fetch(`${BASE_URL}/tag/hacking`, {
+    const response = await fetch(`${BASE_URL}/tag/${TEST_KEYWORD_SLUG}`, {
       headers: { 'X-Inertia': 'true', 'X-Inertia-Version': '1' },
     });
     assert.equal(response.status, 200);
