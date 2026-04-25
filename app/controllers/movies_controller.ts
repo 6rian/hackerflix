@@ -15,7 +15,7 @@ export default class MoviesController {
     const movie = await Movie.query()
       .where('slug', params.slug as string)
       .preload('keywords')
-      .preload('genres')
+      
       .preload('movieCredits', (q) => q.preload('person'))
       .first();
 

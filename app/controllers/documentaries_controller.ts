@@ -3,7 +3,7 @@ import Movie from '#models/movie';
 import TvSeries from '#models/tv_series';
 import { serializeMovie, serializeTvSeries } from '#serializers/media_serializer';
 
-const DOCUMENTARY_GENRE_ID = 99;
+import tmdbConfig from '#config/tmdb';
 
 export default class DocumentariesController {
   async index({ inertia }: HttpContext) {

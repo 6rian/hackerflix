@@ -15,7 +15,7 @@ export default class TvShowsController {
     const series = await TvSeries.query()
       .where('slug', params.slug as string)
       .preload('keywords')
-      .preload('genres')
+      
       .preload('tvCredits', (q) => q.preload('person'))
       .first();
 

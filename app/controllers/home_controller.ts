@@ -4,7 +4,7 @@ import TvSeries from '#models/tv_series';
 import tmdbConfig from '#config/tmdb';
 import { serializeMovie, serializeTvSeries } from '#serializers/media_serializer';
 
-const DOCUMENTARY_GENRE_ID = 99;
+import tmdbConfig from '#config/tmdb';
 
 export default class HomeController {
   async index({ inertia }: HttpContext) {
