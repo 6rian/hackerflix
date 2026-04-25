@@ -1,5 +1,7 @@
-import { BaseModel, column } from '@adonisjs/lucid/orm';
+import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm';
+import type { BelongsTo } from '@adonisjs/lucid/types/relations';
 import { DateTime } from 'luxon';
+import Person from '#models/person';
 
 export default class MovieCredit extends BaseModel {
   @column({ isPrimary: true })
@@ -31,4 +33,7 @@ export default class MovieCredit extends BaseModel {
 
   @column.dateTime()
   declare lastUpdated: DateTime;
+
+  @belongsTo(() => Person, { foreignKey: 'personId' })
+  declare person: BelongsTo<typeof Person>;
 }

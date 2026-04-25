@@ -13,25 +13,21 @@ import {
   Check,
 } from 'lucide-react';
 import { useState, useRef } from 'react';
-import { getMediaDetails } from '@/app/data/detailed_data';
-import { shows, movies, documentaries } from '@/app/data/mock_data';
 import { MediaCard } from '@/app/components/global/MediaCard';
 import { Navigation } from '@/app/components/global/Navigation';
 import { Footer } from '@/app/components/global/Footer';
 import { Tag } from '@/app/components/global/Tag';
 import { HeroBackground } from '@/app/components/global/HeroBackground';
 import { PrimaryButton } from '@/app/components/global/PrimaryButton';
+import type { MediaDetails } from '@/app/types/media';
 
-export default function MediaDetails() {
-  const { id } = usePage<{ id: string }>().props;
+export default function MediaDetailsPage() {
+  const { media } = usePage<{ media: MediaDetails | null }>().props;
   const [activeTab, setActiveTab] = useState<'backdrops' | 'posters' | 'videos'>('backdrops');
   const castScrollRef = useRef<HTMLDivElement>(null);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isInQueue, setIsInQueue] = useState(false);
   const [isSeen, setIsSeen] = useState(false);
-
-  const mediaId = id ? parseInt(id) : undefined;
-  const media = mediaId ? getMediaDetails(mediaId) : undefined;
 
   if (!media) {
     return (
@@ -49,12 +45,6 @@ export default function MediaDetails() {
       </div>
     );
   }
-
-  // Get related media
-  const allMedia = [...shows, ...movies, ...documentaries];
-  const relatedMedia = media.relatedIds
-    .map((id) => allMedia.find((item) => item.id === id))
-    .filter(Boolean);
 
   const scrollCast = (direction: 'left' | 'right') => {
     if (castScrollRef.current) {
@@ -103,7 +93,7 @@ export default function MediaDetails() {
 
             <div className="mb-6 flex flex-wrap gap-2">
               {media.tags.map((tag, index) => (
-                <Tag key={index} tag={tag} />
+                <Tag key={index} name={tag.name} slug={tag.slug} />
               ))}
             </div>
 
@@ -165,139 +155,147 @@ export default function MediaDetails() {
             </section>
 
             {/* Cast & Crew */}
-            <section>
-              <div className="mb-6 flex items-center justify-between">
-                <h2 className="font-hf-mono text-2xl font-bold">CAST & CREW</h2>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => scrollCast('left')}
-                    className="bg-card border-border rounded-lg border p-2 transition-all duration-300 hover:border-[var(--electric-green)]/40 hover:shadow-[0_0_20px_rgba(0,255,170,0.3)]"
-                  >
-                    <ChevronLeft className="h-5 w-5" />
-                  </button>
-                  <button
-                    onClick={() => scrollCast('right')}
-                    className="bg-card border-border rounded-lg border p-2 transition-all duration-300 hover:border-[var(--electric-green)]/40 hover:shadow-[0_0_20px_rgba(0,255,170,0.3)]"
-                  >
-                    <ChevronRight className="h-5 w-5" />
-                  </button>
+            {(media.cast.length > 0 || media.crew.length > 0) && (
+              <section>
+                <div className="mb-6 flex items-center justify-between">
+                  <h2 className="font-hf-mono text-2xl font-bold">CAST & CREW</h2>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => scrollCast('left')}
+                      className="bg-card border-border rounded-lg border p-2 transition-all duration-300 hover:border-[var(--electric-green)]/40 hover:shadow-[0_0_20px_rgba(0,255,170,0.3)]"
+                    >
+                      <ChevronLeft className="h-5 w-5" />
+                    </button>
+                    <button
+                      onClick={() => scrollCast('right')}
+                      className="bg-card border-border rounded-lg border p-2 transition-all duration-300 hover:border-[var(--electric-green)]/40 hover:shadow-[0_0_20px_rgba(0,255,170,0.3)]"
+                    >
+                      <ChevronRight className="h-5 w-5" />
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              <div
-                ref={castScrollRef}
-                className="scrollbar-hide flex gap-4 overflow-x-auto scroll-smooth pb-4"
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-              >
-                {media.cast.map((member) => (
-                  <div key={member.id} className="group w-32 flex-shrink-0">
-                    <div className="border-border relative mb-3 aspect-square overflow-hidden rounded-xl border transition-all duration-300 group-hover:border-[var(--electric-green)]/40 group-hover:shadow-[0_0_20px_rgba(0,255,170,0.3)]">
-                      <img
-                        src={member.image}
-                        alt={member.name}
-                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
-                      />
+                <div
+                  ref={castScrollRef}
+                  className="scrollbar-hide flex gap-4 overflow-x-auto scroll-smooth pb-4"
+                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
+                  {media.cast.map((member) => (
+                    <div key={member.id} className="group w-32 flex-shrink-0">
+                      <div className="border-border relative mb-3 aspect-square overflow-hidden rounded-xl border transition-all duration-300 group-hover:border-[var(--electric-green)]/40 group-hover:shadow-[0_0_20px_rgba(0,255,170,0.3)]">
+                        <img
+                          src={member.image}
+                          alt={member.name}
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                        />
+                      </div>
+                      <h3 className="font-hf-mono mb-1 line-clamp-2 text-sm font-bold">
+                        {member.name}
+                      </h3>
+                      <p className="text-muted-foreground line-clamp-2 text-xs">
+                        {member.character}
+                      </p>
                     </div>
-                    <h3 className="font-hf-mono mb-1 line-clamp-2 text-sm font-bold">
-                      {member.name}
-                    </h3>
-                    <p className="text-muted-foreground line-clamp-2 text-xs">{member.character}</p>
-                  </div>
-                ))}
-                {media.crew.map((member) => (
-                  <div key={member.id} className="group w-32 flex-shrink-0">
-                    <div className="border-border relative mb-3 aspect-square overflow-hidden rounded-xl border transition-all duration-300 group-hover:border-[var(--electric-green)]/40 group-hover:shadow-[0_0_20px_rgba(0,255,170,0.3)]">
-                      <img
-                        src={member.image}
-                        alt={member.name}
-                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
-                      />
+                  ))}
+                  {media.crew.map((member) => (
+                    <div key={member.id} className="group w-32 flex-shrink-0">
+                      <div className="border-border relative mb-3 aspect-square overflow-hidden rounded-xl border transition-all duration-300 group-hover:border-[var(--electric-green)]/40 group-hover:shadow-[0_0_20px_rgba(0,255,170,0.3)]">
+                        <img
+                          src={member.image}
+                          alt={member.name}
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                        />
+                      </div>
+                      <h3 className="font-hf-mono mb-1 line-clamp-2 text-sm font-bold">
+                        {member.name}
+                      </h3>
+                      <p className="text-muted-foreground line-clamp-2 text-xs">{member.job}</p>
                     </div>
-                    <h3 className="font-hf-mono mb-1 line-clamp-2 text-sm font-bold">
-                      {member.name}
-                    </h3>
-                    <p className="text-muted-foreground line-clamp-2 text-xs">{member.job}</p>
-                  </div>
-                ))}
-              </div>
-            </section>
+                  ))}
+                </div>
+              </section>
+            )}
 
             {/* Media Tabs */}
-            <section>
-              <h2 className="font-hf-mono mb-6 text-2xl font-bold">MEDIA</h2>
+            {(media.backdrops.length > 0 ||
+              media.posters.length > 0 ||
+              media.videos.length > 0) && (
+              <section>
+                <h2 className="font-hf-mono mb-6 text-2xl font-bold">MEDIA</h2>
 
-              {/* Tabs */}
-              <div className="border-border mb-6 flex gap-4 border-b">
-                {(['backdrops', 'posters', 'videos'] as const).map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => setActiveTab(tab)}
-                    className={`font-hf-mono relative px-1 pb-3 text-sm font-medium transition-all duration-300 ${
-                      activeTab === tab
-                        ? 'text-[var(--deep-purple)] dark:text-[var(--neon-cyan)]'
-                        : 'text-muted-foreground hover:text-foreground'
-                    }`}
-                  >
-                    {tab.toUpperCase()}
-                    {activeTab === tab && (
-                      <div className="absolute right-0 bottom-0 left-0 h-[2px] bg-[var(--electric-green)]" />
-                    )}
-                  </button>
-                ))}
-              </div>
-
-              {/* Tab Content */}
-              <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-                {activeTab === 'backdrops' &&
-                  media.backdrops.map((backdrop, index) => (
-                    <div
-                      key={index}
-                      className="border-border group relative aspect-video cursor-pointer overflow-hidden rounded-lg border transition-all duration-300 hover:border-[var(--electric-green)]/40 hover:shadow-[0_0_30px_rgba(0,255,170,0.4)]"
+                {/* Tabs */}
+                <div className="border-border mb-6 flex gap-4 border-b">
+                  {(['backdrops', 'posters', 'videos'] as const).map((tab) => (
+                    <button
+                      key={tab}
+                      onClick={() => setActiveTab(tab)}
+                      className={`font-hf-mono relative px-1 pb-3 text-sm font-medium transition-all duration-300 ${
+                        activeTab === tab
+                          ? 'text-[var(--deep-purple)] dark:text-[var(--neon-cyan)]'
+                          : 'text-muted-foreground hover:text-foreground'
+                      }`}
                     >
-                      <img
-                        src={backdrop}
-                        alt={`Backdrop ${index + 1}`}
-                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
-                      />
-                    </div>
+                      {tab.toUpperCase()}
+                      {activeTab === tab && (
+                        <div className="absolute right-0 bottom-0 left-0 h-[2px] bg-[var(--electric-green)]" />
+                      )}
+                    </button>
                   ))}
+                </div>
 
-                {activeTab === 'posters' &&
-                  media.posters.map((poster, index) => (
-                    <div
-                      key={index}
-                      className="border-border group relative aspect-[2/3] cursor-pointer overflow-hidden rounded-lg border transition-all duration-300 hover:border-[var(--electric-green)]/40 hover:shadow-[0_0_30px_rgba(0,255,170,0.4)]"
-                    >
-                      <img
-                        src={poster}
-                        alt={`Poster ${index + 1}`}
-                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
-                      />
-                    </div>
-                  ))}
-
-                {activeTab === 'videos' &&
-                  media.videos.map((video) => (
-                    <div
-                      key={video.id}
-                      className="border-border group relative aspect-video cursor-pointer overflow-hidden rounded-lg border transition-all duration-300 hover:border-[var(--electric-green)]/40 hover:shadow-[0_0_30px_rgba(0,255,170,0.4)]"
-                    >
-                      <img
-                        src={video.thumbnail}
-                        alt={video.title}
-                        className="h-full w-full object-cover"
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                        <Play className="h-12 w-12 fill-current text-white" />
+                {/* Tab Content */}
+                <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+                  {activeTab === 'backdrops' &&
+                    media.backdrops.map((backdrop, index) => (
+                      <div
+                        key={index}
+                        className="border-border group relative aspect-video cursor-pointer overflow-hidden rounded-lg border transition-all duration-300 hover:border-[var(--electric-green)]/40 hover:shadow-[0_0_30px_rgba(0,255,170,0.4)]"
+                      >
+                        <img
+                          src={backdrop}
+                          alt={`Backdrop ${index + 1}`}
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                        />
                       </div>
-                      <div className="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-black/80 to-transparent p-3">
-                        <p className="font-hf-mono text-xs font-bold text-white">{video.title}</p>
-                        <p className="text-xs text-gray-300">{video.type}</p>
+                    ))}
+
+                  {activeTab === 'posters' &&
+                    media.posters.map((poster, index) => (
+                      <div
+                        key={index}
+                        className="border-border group relative aspect-[2/3] cursor-pointer overflow-hidden rounded-lg border transition-all duration-300 hover:border-[var(--electric-green)]/40 hover:shadow-[0_0_30px_rgba(0,255,170,0.4)]"
+                      >
+                        <img
+                          src={poster}
+                          alt={`Poster ${index + 1}`}
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                        />
                       </div>
-                    </div>
-                  ))}
-              </div>
-            </section>
+                    ))}
+
+                  {activeTab === 'videos' &&
+                    media.videos.map((video) => (
+                      <div
+                        key={video.id}
+                        className="border-border group relative aspect-video cursor-pointer overflow-hidden rounded-lg border transition-all duration-300 hover:border-[var(--electric-green)]/40 hover:shadow-[0_0_30px_rgba(0,255,170,0.4)]"
+                      >
+                        <img
+                          src={video.thumbnail}
+                          alt={video.title}
+                          className="h-full w-full object-cover"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                          <Play className="h-12 w-12 fill-current text-white" />
+                        </div>
+                        <div className="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+                          <p className="font-hf-mono text-xs font-bold text-white">{video.title}</p>
+                          <p className="text-xs text-gray-300">{video.type}</p>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </section>
+            )}
           </div>
 
           {/* Right Column - Meta Details */}
@@ -330,23 +328,29 @@ export default function MediaDetails() {
                 <h3 className="font-hf-mono mb-8 text-lg font-bold">DETAILS</h3>
 
                 <div className="space-y-6">
-                  <div className="border-border/50 border-b pb-6">
-                    <div className="text-muted-foreground mb-2 flex items-center gap-2">
-                      <Calendar className="h-4 w-4" />
-                      <span className="font-hf-mono text-xs tracking-wider uppercase">Status</span>
+                  {media.status && (
+                    <div className="border-border/50 border-b pb-6">
+                      <div className="text-muted-foreground mb-2 flex items-center gap-2">
+                        <Calendar className="h-4 w-4" />
+                        <span className="font-hf-mono text-xs tracking-wider uppercase">
+                          Status
+                        </span>
+                      </div>
+                      <p className="font-hf-mono text-sm font-medium">{media.status}</p>
                     </div>
-                    <p className="font-hf-mono text-sm font-medium">{media.status}</p>
-                  </div>
+                  )}
 
-                  <div className="border-border/50 border-b pb-6">
-                    <div className="text-muted-foreground mb-2 flex items-center gap-2">
-                      <Globe className="h-4 w-4" />
-                      <span className="font-hf-mono text-xs tracking-wider uppercase">
-                        Language
-                      </span>
+                  {media.originalLanguage && (
+                    <div className="border-border/50 border-b pb-6">
+                      <div className="text-muted-foreground mb-2 flex items-center gap-2">
+                        <Globe className="h-4 w-4" />
+                        <span className="font-hf-mono text-xs tracking-wider uppercase">
+                          Language
+                        </span>
+                      </div>
+                      <p className="font-hf-mono text-sm font-medium">{media.originalLanguage}</p>
                     </div>
-                    <p className="font-hf-mono text-sm font-medium">{media.originalLanguage}</p>
-                  </div>
+                  )}
 
                   {media.budget && (
                     <div className="border-border/50 border-b pb-6">
@@ -434,16 +438,18 @@ export default function MediaDetails() {
                     </div>
                   )}
 
-                  <div className="pt-2">
-                    <span className="font-hf-mono text-muted-foreground mb-3 block text-xs tracking-wider uppercase">
-                      Tags
-                    </span>
-                    <div className="flex flex-wrap gap-2">
-                      {media.tags.map((tag, index) => (
-                        <Tag key={index} tag={tag} />
-                      ))}
+                  {media.tags.length > 0 && (
+                    <div className="pt-2">
+                      <span className="font-hf-mono text-muted-foreground mb-3 block text-xs tracking-wider uppercase">
+                        Tags
+                      </span>
+                      <div className="flex flex-wrap gap-2">
+                        {media.tags.map((tag, index) => (
+                          <Tag key={index} name={tag.name} slug={tag.slug} />
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -451,13 +457,11 @@ export default function MediaDetails() {
         </div>
 
         {/* Related Content */}
-        {relatedMedia.length > 0 && (
+        {(media.relatedIds ?? []).length > 0 && (
           <section className="mt-16">
             <h2 className="font-hf-mono mb-6 text-2xl font-bold">RELATED CONTENT</h2>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-              {relatedMedia.map((item) => (
-                <MediaCard key={item!.id} item={item!} />
-              ))}
+              {/* Related content requires backend support — reserved for future use */}
             </div>
           </section>
         )}

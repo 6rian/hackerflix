@@ -1,12 +1,13 @@
 import { Link } from '@inertiajs/react';
 
 interface TagProps {
-  tag: string;
+  name: string;
+  slug: string;
   size?: 'sm' | 'md';
   variant?: 'default' | 'overlay';
 }
 
-export function Tag({ tag, size = 'md', variant = 'default' }: TagProps) {
+export function Tag({ name, slug, size = 'md', variant = 'default' }: TagProps) {
   const sizeClasses = size === 'sm' ? 'px-2 py-0.5 text-[10px]' : 'px-3 py-1 text-xs';
 
   // Overlay variant: white text (for dark backgrounds like media card hover)
@@ -18,10 +19,10 @@ export function Tag({ tag, size = 'md', variant = 'default' }: TagProps) {
 
   return (
     <Link
-      href={`/tag/${encodeURIComponent(tag)}`}
+      href={`/tag/${slug}`}
       className={`font-hf-mono inline-block ${sizeClasses} ${colorClasses} rounded-full transition-all duration-300 hover:shadow-[0_0_15px_rgba(184,164,255,0.3)]`}
     >
-      {tag}
+      {name}
     </Link>
   );
 }

@@ -4,12 +4,24 @@ import TvSeries from '#models/tv_series';
 import tmdbConfig from '#config/tmdb';
 import { serializeMovie, serializeTvSeries } from '#serializers/media_serializer';
 
+const DOCUMENTARY_GENRE_ID = 99;
+
 export default class HomeController {
   async index({ inertia }: HttpContext) {
-    const [featuredOrNull, topMovies, topShows] = await Promise.all([
+    const [featuredOrNull, topMovies, topShows, docMovies, docShows] = await Promise.all([
       Movie.query().where('id', tmdbConfig.featuredId).preload('keywords').first(),
       Movie.query().preload('keywords').orderBy('voteAverage', 'desc').limit(6),
       TvSeries.query().preload('keywords').orderBy('voteAverage', 'desc').limit(6),
+      Movie.query()
+        .whereHas('genres', (q) => q.where('genres.id', DOCUMENTARY_GENRE_ID))
+        .preload('keywords')
+        .orderBy('popularity', 'desc')
+        .limit(12),
+      TvSeries.query()
+        .whereHas('genres', (q) => q.where('genres.id', DOCUMENTARY_GENRE_ID))
+        .preload('keywords')
+        .orderBy('popularity', 'desc')
+        .limit(12),
     ]);
 
     const featured = featuredOrNull ?? topMovies[0];
@@ -17,6 +29,14 @@ export default class HomeController {
     const movies = topMovies.map(serializeMovie);
     const shows = topShows.map(serializeTvSeries);
 
-    return inertia.render('home', { featuredContent, movies, shows });
+    const documentaries = [
+      ...docMovies.map((m) => ({ item: serializeMovie(m), pop: m.popularity ?? 0 })),
+      ...docShows.map((s) => ({ item: serializeTvSeries(s), pop: s.popularity ?? 0 })),
+    ]
+      .sort((a, b) => b.pop - a.pop)
+      .slice(0, 12)
+      .map(({ item }) => item);
+
+    return inertia.render('home', { featuredContent, movies, shows, documentaries });
   }
 }

@@ -48,7 +48,7 @@ export function HeroSlider({ items }: HeroSliderProps) {
           {/* Tags */}
           <div className="flex flex-wrap gap-2">
             {currentItem.tags.map((tag, index) => (
-              <Tag key={index} tag={tag} />
+              <Tag key={index} name={tag.name} slug={tag.slug} />
             ))}
           </div>
 

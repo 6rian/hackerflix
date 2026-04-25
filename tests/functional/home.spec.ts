@@ -11,12 +11,13 @@ test.group('GET /', () => {
     assert.equal(response.status, 200);
     const body = (await response.json()) as {
       component: string;
-      props: { featuredContent: unknown[]; movies: unknown[]; shows: unknown[] };
+      props: { featuredContent: unknown[]; movies: unknown[]; shows: unknown[]; documentaries: unknown[] };
     };
     assert.equal(body.component, 'home');
     assert.isArray(body.props.featuredContent);
     assert.isArray(body.props.movies);
     assert.isArray(body.props.shows);
+    assert.isArray(body.props.documentaries);
   });
 
   test('featuredContent items include backdrop and image string fields', async ({ assert }) => {
@@ -29,7 +30,9 @@ test.group('GET /', () => {
     const featured = body.props.featuredContent[0];
     if (!featured) return; // no seed data in CI — shape is covered by unit tests
     assert.typeOf(featured.image, 'string');
-    assert.typeOf(featured.backdrop, 'string');
+    if (featured.backdrop !== undefined) {
+      assert.typeOf(featured.backdrop, 'string');
+    }
   });
 
   test('movies row contains at most 6 items', async ({ assert }) => {

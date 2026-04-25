@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { MediaItem } from '@/app/data/mock_data';
+import type { MediaItem } from '@/app/types/media';
 import { Calendar, Star } from 'lucide-react';
 import { Tag } from '@/app/components/global/Tag';
 
@@ -8,9 +8,11 @@ interface MediaListCardProps {
 }
 
 export function MediaListCard({ media }: MediaListCardProps) {
+  const href = `/${media.mediaType === 'movie' ? 'movies' : 'shows'}/${media.slug}`;
+
   return (
     <Link
-      href={`/media/${media.id}`}
+      href={href}
       className="group bg-card border-border flex flex-col gap-4 rounded-xl border p-4 transition-all duration-300 hover:border-[var(--electric-green)]/40 hover:shadow-[0_0_40px_rgba(0,255,170,0.25)] sm:flex-row"
     >
       {/* Image */}
@@ -56,7 +58,7 @@ export function MediaListCard({ media }: MediaListCardProps) {
           {/* Tags */}
           <div className="flex flex-wrap gap-2">
             {media.tags.slice(0, 4).map((tag, index) => (
-              <Tag key={index} tag={tag} size="sm" />
+              <Tag key={index} name={tag.name} slug={tag.slug} size="sm" />
             ))}
           </div>
         </div>

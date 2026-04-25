@@ -6,6 +6,7 @@ import Keyword from '#models/keyword';
 import Network from '#models/network';
 import ProductionCompany from '#models/production_company';
 import Season from '#models/season';
+import TvCredit from '#models/tv_credit';
 import TvExternalId from '#models/tv_external_id';
 import TvContentRating from '#models/tv_content_rating';
 
@@ -142,4 +143,7 @@ export default class TvSeries extends BaseModel {
 
   @hasMany(() => TvContentRating)
   declare contentRatings: HasMany<typeof TvContentRating>;
+
+  @hasMany(() => TvCredit, { foreignKey: 'tvSeriesId' })
+  declare tvCredits: HasMany<typeof TvCredit>;
 }

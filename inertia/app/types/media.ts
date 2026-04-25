@@ -1,5 +1,12 @@
+export interface MediaTag {
+  name: string;
+  slug: string;
+}
+
 export interface MediaItem {
   id: number;
+  slug: string;
+  mediaType: 'movie' | 'tv';
   title: string;
   type: 'movie' | 'show' | 'documentary';
   year: string;
@@ -7,7 +14,7 @@ export interface MediaItem {
   description: string;
   image: string;
   backdrop?: string;
-  tags: string[];
+  tags: MediaTag[];
 }
 
 export interface CastMember {
@@ -29,7 +36,7 @@ export interface MediaDetails extends MediaItem {
   runtime?: string; // For movies/documentaries
   seasons?: number; // For shows
   episodes?: number; // For shows
-  status: 'Released' | 'In Production' | 'Completed' | 'Ongoing';
+  status: string;
   budget?: string;
   revenue?: string;
   originalLanguage: string;
@@ -38,5 +45,5 @@ export interface MediaDetails extends MediaItem {
   videos: { id: number; title: string; type: string; thumbnail: string; url: string }[];
   backdrops: string[];
   posters: string[];
-  relatedIds: number[];
+  relatedIds?: number[];
 }

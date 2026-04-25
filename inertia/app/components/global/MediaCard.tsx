@@ -1,5 +1,5 @@
 import { Play, Star } from 'lucide-react';
-import { MediaItem } from '@/app/data/mock_data';
+import type { MediaItem } from '@/app/types/media';
 import { Link } from '@inertiajs/react';
 import { Tag } from '@/app/components/global/Tag';
 
@@ -8,8 +8,10 @@ interface MediaCardProps {
 }
 
 export function MediaCard({ item }: MediaCardProps) {
+  const href = `/${item.mediaType === 'movie' ? 'movies' : 'shows'}/${item.slug}`;
+
   return (
-    <Link href={`/media/${item.id}`}>
+    <Link href={href}>
       <div className="group bg-card border-border relative flex h-full flex-col overflow-hidden rounded-xl border text-base transition-all duration-300 hover:scale-105 hover:border-[var(--electric-green)]/40 hover:shadow-[0_0_40px_rgba(0,255,170,0.4)]">
         {/* Image */}
         <div className="relative aspect-[2/3] flex-shrink-0 overflow-hidden">
@@ -37,7 +39,7 @@ export function MediaCard({ item }: MediaCardProps) {
           <div className="absolute right-0 bottom-0 left-0 translate-y-2 bg-gradient-to-t from-black/95 via-black/80 to-transparent p-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
             <div className="flex flex-wrap gap-1.5">
               {item.tags.slice(0, 3).map((tag, index) => (
-                <Tag key={index} tag={tag} size="sm" variant="overlay" />
+                <Tag key={index} name={tag.name} slug={tag.slug} size="sm" variant="overlay" />
               ))}
             </div>
           </div>

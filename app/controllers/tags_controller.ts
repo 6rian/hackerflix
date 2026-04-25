@@ -1,25 +1,23 @@
 import type { HttpContext } from '@adonisjs/core/http';
+import Keyword from '#models/keyword';
 import Movie from '#models/movie';
 import TvSeries from '#models/tv_series';
 import { serializeMovie, serializeTvSeries } from '#serializers/media_serializer';
 
 export default class TagsController {
-  async show({ params, inertia }: HttpContext) {
-    let tag: string;
-    try {
-      tag = decodeURIComponent(params.tag as string);
-    } catch {
-      // Malformed percent-encoding (e.g. %GG) — render an empty result rather than 500.
-      return inertia.render('tag', { tag: params.tag as string, media: [] });
-    }
+  async show({ params, inertia, response }: HttpContext) {
+    const slug = params.slug as string;
+
+    const keyword = await Keyword.query().where('slug', slug).first();
+    if (!keyword) return response.notFound();
 
     const [movies, series] = await Promise.all([
       Movie.query()
-        .whereHas('keywords', (q) => q.whereILike('name', tag))
+        .whereHas('keywords', (q) => q.where('slug', slug))
         .preload('keywords')
         .orderBy('popularity', 'desc'),
       TvSeries.query()
-        .whereHas('keywords', (q) => q.whereILike('name', tag))
+        .whereHas('keywords', (q) => q.where('slug', slug))
         .preload('keywords')
         .orderBy('popularity', 'desc'),
     ]);
@@ -34,6 +32,6 @@ export default class TagsController {
       .sort((a, b) => b.pop - a.pop)
       .map(({ item }) => item);
 
-    return inertia.render('tag', { tag, media: combined });
+    return inertia.render('tag', { tag: keyword.name, media: combined });
   }
 }
