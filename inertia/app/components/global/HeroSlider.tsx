@@ -38,7 +38,10 @@ export function HeroSlider({ items }: HeroSliderProps) {
   const currentItem = items[currentIndex];
 
   return (
-    <HeroBackground backgroundImage={currentItem.backdrop || currentItem.image} className="mt-16 sm:mt-20 sm:h-[80vh]">
+    <HeroBackground
+      backgroundImage={currentItem.backdrop || currentItem.image}
+      className="mt-16 sm:mt-20 sm:h-[80vh]"
+    >
       {/* Content */}
       <div className="relative mx-auto flex h-full max-w-[1400px] items-center px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl space-y-4 sm:space-y-6">
