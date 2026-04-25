@@ -6,6 +6,10 @@ import { serializeMovie, serializeTvSeries } from '#serializers/media_serializer
 import tmdbConfig from '#config/tmdb';
 
 export default class DocumentariesController {
+/**
+   * Render the documentaries page with all movies and shows tagged as documentaries.
+   * @param inertia - Inertia.js context for SSR
+   */
   async index({ inertia }: HttpContext) {
     const [docMovies, docShows] = await Promise.all([
       Movie.query()

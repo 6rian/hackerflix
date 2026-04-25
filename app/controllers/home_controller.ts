@@ -7,6 +7,10 @@ import { serializeMovie, serializeTvSeries } from '#serializers/media_serializer
 import tmdbConfig from '#config/tmdb';
 
 export default class HomeController {
+/**
+   * Render the homepage with featured, top movies/shows, and documentaries.
+   * @param inertia - Inertia.js context for SSR
+   */
   async index({ inertia }: HttpContext) {
     const [featuredOrNull, topMovies, topShows, docMovies, docShows] = await Promise.all([
       Movie.query().where('id', tmdbConfig.featuredId).preload('keywords').first(),
