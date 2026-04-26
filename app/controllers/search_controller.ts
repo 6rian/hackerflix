@@ -6,8 +6,8 @@ import { serializeMovie, serializeTvSeries } from '#serializers/media_serializer
 export default class SearchController {
   async index({ inertia }: HttpContext) {
     const [allMovies, allShows] = await Promise.all([
-      Movie.query().preload('keywords').orderBy('title', 'asc'),
-      TvSeries.query().preload('keywords').orderBy('name', 'asc'),
+      Movie.query().preload('keywords').preload('genres').orderBy('title', 'asc'),
+      TvSeries.query().preload('keywords').preload('genres').orderBy('name', 'asc'),
     ]);
 
     const movies = allMovies.map(serializeMovie);

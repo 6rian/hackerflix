@@ -15,6 +15,7 @@ export interface MediaItem {
   image: string;
   backdrop?: string;
   tags: MediaTag[];
+  genres: MediaTag[];
 }
 
 export interface CastMember {

@@ -23,6 +23,7 @@ function makeMovie(overrides: Partial<Movie> = {}): Movie {
       { name: 'hacking', slug: 'hacking' },
       { name: 'cyberpunk', slug: 'cyberpunk' },
     ],
+    genres: [{ id: 878, name: 'Science Fiction', slug: 'science-fiction' }],
     ...overrides,
   });
 }
@@ -42,6 +43,7 @@ function makeTvSeries(overrides: Partial<TvSeries> = {}): TvSeries {
       { name: 'hacking', slug: 'hacking' },
       { name: 'fsociety', slug: 'fsociety' },
     ],
+    genres: [{ id: 18, name: 'Drama', slug: 'drama' }],
     ...overrides,
   });
 }
@@ -69,6 +71,7 @@ test.group('serializeMovie', () => {
       { name: 'hacking', slug: 'hacking' },
       { name: 'cyberpunk', slug: 'cyberpunk' },
     ]);
+    assert.deepEqual(result.genres, [{ name: 'Science Fiction', slug: 'science-fiction' }]);
   });
 
   test('backdropPath is prefixed with backdropBaseUrl', ({ assert }) => {
@@ -81,9 +84,36 @@ test.group('serializeMovie', () => {
     assert.isUndefined(result.backdrop);
   });
 
-  test('type is hardcoded as "movie"', ({ assert }) => {
+  test('type defaults to "movie" when no documentary genre', ({ assert }) => {
     const result = serializeMovie(makeMovie());
     assert.equal(result.type, 'movie');
+  });
+
+  test('type is "documentary" when genres include TMDB id 99', ({ assert }) => {
+    const result = serializeMovie(
+      makeMovie({ genres: [{ id: 99, name: 'Documentary', slug: 'documentary' }] as unknown as Movie['genres'] })
+    );
+    assert.equal(result.type, 'documentary');
+  });
+
+  test('genres are mapped to MediaTag shape', ({ assert }) => {
+    const result = serializeMovie(
+      makeMovie({
+        genres: [
+          { id: 28, name: 'Action', slug: 'action' },
+          { id: 878, name: 'Science Fiction', slug: 'science-fiction' },
+        ] as unknown as Movie['genres'],
+      })
+    );
+    assert.deepEqual(result.genres, [
+      { name: 'Action', slug: 'action' },
+      { name: 'Science Fiction', slug: 'science-fiction' },
+    ]);
+  });
+
+  test('genres is [] when genres array is empty', ({ assert }) => {
+    const result = serializeMovie(makeMovie({ genres: [] as unknown as Movie['genres'] }));
+    assert.deepEqual(result.genres, []);
   });
 
   test('mediaType is hardcoded as "movie"', ({ assert }) => {
@@ -145,6 +175,7 @@ test.group('serializeTvSeries', () => {
       { name: 'hacking', slug: 'hacking' },
       { name: 'fsociety', slug: 'fsociety' },
     ]);
+    assert.deepEqual(result.genres, [{ name: 'Drama', slug: 'drama' }]);
   });
 
   test('backdropPath is prefixed with backdropBaseUrl', ({ assert }) => {
@@ -160,6 +191,28 @@ test.group('serializeTvSeries', () => {
   test('type is hardcoded as "show"', ({ assert }) => {
     const result = serializeTvSeries(makeTvSeries());
     assert.equal(result.type, 'show');
+  });
+
+  test('genres are mapped to MediaTag shape', ({ assert }) => {
+    const result = serializeTvSeries(
+      makeTvSeries({
+        genres: [
+          { id: 18, name: 'Drama', slug: 'drama' },
+          { id: 10765, name: 'Sci-Fi & Fantasy', slug: 'sci-fi-fantasy' },
+        ] as unknown as TvSeries['genres'],
+      })
+    );
+    assert.deepEqual(result.genres, [
+      { name: 'Drama', slug: 'drama' },
+      { name: 'Sci-Fi & Fantasy', slug: 'sci-fi-fantasy' },
+    ]);
+  });
+
+  test('genres is [] when genres array is empty', ({ assert }) => {
+    const result = serializeTvSeries(
+      makeTvSeries({ genres: [] as unknown as TvSeries['genres'] })
+    );
+    assert.deepEqual(result.genres, []);
   });
 
   test('mediaType is hardcoded as "tv"', ({ assert }) => {

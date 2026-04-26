@@ -17,13 +17,17 @@ export default function Search() {
   const [selectedTypes, setSelectedTypes] = useState<MediaType[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState('');
+  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+  const [genreInput, setGenreInput] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('title-asc');
   const [showFilters, setShowFilters] = useState(false);
   const [showSearchAutocomplete, setShowSearchAutocomplete] = useState(false);
   const [showTagAutocomplete, setShowTagAutocomplete] = useState(false);
+  const [showGenreAutocomplete, setShowGenreAutocomplete] = useState(false);
 
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const tagContainerRef = useRef<HTMLDivElement>(null);
+  const genreContainerRef = useRef<HTMLDivElement>(null);
 
   // Combine all media items
   const allMedia: MediaItem[] = useMemo(() => {
@@ -37,6 +41,15 @@ export default function Search() {
       item.tags.forEach((tag) => tags.add(tag.name));
     });
     return Array.from(tags).sort();
+  }, [allMedia]);
+
+  // Get all unique genre names
+  const allGenres = useMemo(() => {
+    const genres = new Set<string>();
+    allMedia.forEach((item) => {
+      item.genres.forEach((g) => genres.add(g.name));
+    });
+    return Array.from(genres).sort();
   }, [allMedia]);
 
   // Get all unique titles for autocomplete
@@ -62,6 +75,16 @@ export default function Search() {
       .slice(0, 8);
   }, [tagInput, allTags, selectedTags]);
 
+  // Filtered genres for genre autocomplete
+  const filteredGenreOptions = useMemo(() => {
+    if (!genreInput) return [];
+    return allGenres
+      .filter(
+        (g) => g.toLowerCase().includes(genreInput.toLowerCase()) && !selectedGenres.includes(g)
+      )
+      .slice(0, 8);
+  }, [genreInput, allGenres, selectedGenres]);
+
   // Toggle type filter
   const toggleType = (type: MediaType) => {
     setSelectedTypes((prev) =>
@@ -79,6 +102,18 @@ export default function Search() {
   // Remove tag
   const removeTag = (tag: string) => {
     setSelectedTags((prev) => prev.filter((t) => t !== tag));
+  };
+
+  // Add genre
+  const addGenre = (genre: string) => {
+    if (!selectedGenres.includes(genre)) {
+      setSelectedGenres((prev) => [...prev, genre]);
+    }
+  };
+
+  // Remove genre
+  const removeGenre = (genre: string) => {
+    setSelectedGenres((prev) => prev.filter((g) => g !== genre));
   };
 
   // Filter and sort media
@@ -106,6 +141,13 @@ export default function Search() {
       );
     }
 
+    // Filter by genres (inclusive - match any selected genre)
+    if (selectedGenres.length > 0) {
+      filtered = filtered.filter((item) =>
+        item.genres.some((g) => selectedGenres.includes(g.name))
+      );
+    }
+
     // Sort
     filtered = [...filtered].sort((a, b) => {
       switch (sortBy) {
@@ -129,11 +171,14 @@ export default function Search() {
   const clearFilters = () => {
     setSelectedTypes([]);
     setSelectedTags([]);
+    setSelectedGenres([]);
     setSearchQuery('');
     setSearchInput('');
+    setGenreInput('');
   };
 
-  const hasActiveFilters = selectedTypes.length > 0 || selectedTags.length > 0 || searchQuery;
+  const hasActiveFilters =
+    selectedTypes.length > 0 || selectedTags.length > 0 || selectedGenres.length > 0 || searchQuery;
 
   // Handle search input change
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -171,6 +216,27 @@ export default function Search() {
     }
   };
 
+  // Handle genre input change
+  const handleGenreInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setGenreInput(value);
+    setShowGenreAutocomplete(value.length > 0);
+  };
+
+  // Handle genre autocomplete select
+  const handleGenreSelect = (genre: string) => {
+    addGenre(genre);
+    setGenreInput('');
+    setShowGenreAutocomplete(false);
+  };
+
+  // Handle genre input key press
+  const handleGenreInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace' && !genreInput && selectedGenres.length > 0) {
+      removeGenre(selectedGenres[selectedGenres.length - 1]);
+    }
+  };
+
   // Click outside to close autocomplete
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -182,6 +248,12 @@ export default function Search() {
       }
       if (tagContainerRef.current && !tagContainerRef.current.contains(event.target as Node)) {
         setShowTagAutocomplete(false);
+      }
+      if (
+        genreContainerRef.current &&
+        !genreContainerRef.current.contains(event.target as Node)
+      ) {
+        setShowGenreAutocomplete(false);
       }
     };
 
@@ -243,7 +315,7 @@ export default function Search() {
               {showFilters ? 'HIDE_FILTERS' : 'SHOW_FILTERS'}
               {hasActiveFilters && (
                 <span className="text-background ml-1 rounded-full bg-[var(--electric-green)] px-2 py-0.5 text-xs">
-                  {selectedTypes.length + selectedTags.length + (searchQuery ? 1 : 0)}
+                  {selectedTypes.length + selectedTags.length + selectedGenres.length + (searchQuery ? 1 : 0)}
                 </span>
               )}
             </button>
@@ -348,6 +420,51 @@ export default function Search() {
                     )}
                   </div>
                 </div>
+
+                {/* Genres Filter */}
+                <div>
+                  <h3 className="font-hf-mono mb-3 text-sm font-bold text-[var(--deep-purple)] dark:text-[var(--neon-cyan)]">
+                    GENRES
+                  </h3>
+                  <div className="relative" ref={genreContainerRef}>
+                    {/* Genre Input with Selected Genres */}
+                    <div className="bg-card border-border flex flex-wrap gap-2 rounded-lg border p-2 transition-all duration-300 focus-within:border-[var(--electric-green)]/40 focus-within:shadow-[0_0_20px_rgba(0,255,170,0.2)]">
+                      {selectedGenres.map((genre) => (
+                        <button
+                          key={genre}
+                          onClick={() => removeGenre(genre)}
+                          className="font-hf-mono flex items-center gap-1 rounded bg-[var(--deep-purple)] px-2 py-1 text-xs font-medium text-white transition-all duration-200 hover:bg-[var(--deep-purple)]/80"
+                        >
+                          {genre}
+                          <X className="h-3 w-3" />
+                        </button>
+                      ))}
+                      <input
+                        type="text"
+                        placeholder={selectedGenres.length === 0 ? 'Type to search genres...' : ''}
+                        value={genreInput}
+                        onChange={handleGenreInputChange}
+                        onKeyDown={handleGenreInputKeyDown}
+                        onFocus={() => genreInput && setShowGenreAutocomplete(true)}
+                        className="min-w-[120px] flex-1 bg-transparent text-sm outline-none"
+                      />
+                    </div>
+                    {/* Genre Autocomplete Dropdown */}
+                    {showGenreAutocomplete && filteredGenreOptions.length > 0 && (
+                      <div className="bg-card border-border absolute top-full right-0 left-0 z-20 mt-1 max-h-64 overflow-y-auto rounded-xl border shadow-lg">
+                        {filteredGenreOptions.map((genre) => (
+                          <button
+                            key={genre}
+                            onClick={() => handleGenreSelect(genre)}
+                            className="hover:bg-muted/80 w-full px-4 py-2 text-left text-sm transition-all duration-200 first:rounded-t-xl last:rounded-b-xl"
+                          >
+                            {genre}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </aside>
 
@@ -376,6 +493,16 @@ export default function Search() {
                       <X className="h-3 w-3" />
                     </button>
                   ))}
+                  {selectedGenres.map((genre) => (
+                    <button
+                      key={genre}
+                      onClick={() => removeGenre(genre)}
+                      className="font-hf-mono flex items-center gap-2 rounded-full bg-[var(--deep-purple)]/70 px-3 py-1 text-xs font-medium text-white transition-all duration-200 hover:bg-[var(--deep-purple)]/50"
+                    >
+                      {genre.toUpperCase()}
+                      <X className="h-3 w-3" />
+                    </button>
+                  ))}
                 </div>
               )}
 
@@ -388,7 +515,7 @@ export default function Search() {
               {filteredMedia.length > 0 ? (
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                   {filteredMedia.map((media) => (
-                    <MediaListCard key={media.id} media={media} />
+                    <MediaListCard key={`${media.mediaType}-${media.id}`} media={media} />
                   ))}
                 </div>
               ) : (

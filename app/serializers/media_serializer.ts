@@ -16,13 +16,14 @@ export interface MediaItem {
   slug: string;
   mediaType: 'movie' | 'tv';
   title: string;
-  type: 'movie' | 'show';
+  type: 'movie' | 'show' | 'documentary';
   year: string;
   rating: number;
   description: string;
   image: string;
   backdrop?: string;
   tags: MediaTag[];
+  genres: MediaTag[];
 }
 
 export interface CastMember {
@@ -58,20 +59,24 @@ export interface MediaDetails extends MediaItem {
 
 const CREW_ROLES = new Set(['Director', 'Writer', 'Screenplay', 'Producer', 'Creator']);
 
-// Both functions require keywords to be preloaded: .preload('keywords')
+// Both functions require keywords and genres to be preloaded: .preload('keywords').preload('genres')
+// When genres are not preloaded, type defaults to 'movie'/'show' and genres defaults to [].
 export function serializeMovie(movie: Movie): MediaItem {
+  // TMDB genre ID 99 = Documentary
+  const isDocumentary = movie.genres?.some((g) => g.id === 99) ?? false;
   return {
     id: movie.id,
     slug: movie.slug,
     mediaType: 'movie',
     title: movie.title,
-    type: 'movie',
+    type: isDocumentary ? 'documentary' : 'movie',
     year: movie.releaseDate ? movie.releaseDate.getFullYear().toString() : '',
     rating: movie.voteAverage ?? 0,
     description: movie.overview ?? '',
     image: movie.posterPath ? tmdbConfig.imageBaseUrl + movie.posterPath : '',
     backdrop: movie.backdropPath ? tmdbConfig.backdropBaseUrl + movie.backdropPath : undefined,
     tags: movie.keywords.map((k) => ({ name: k.name, slug: k.slug })),
+    genres: (movie.genres ?? []).map((g) => ({ name: g.name, slug: g.slug })),
   };
 }
 
@@ -88,6 +93,7 @@ export function serializeTvSeries(series: TvSeries): MediaItem {
     image: series.posterPath ? tmdbConfig.imageBaseUrl + series.posterPath : '',
     backdrop: series.backdropPath ? tmdbConfig.backdropBaseUrl + series.backdropPath : undefined,
     tags: series.keywords.map((k) => ({ name: k.name, slug: k.slug })),
+    genres: (series.genres ?? []).map((g) => ({ name: g.name, slug: g.slug })),
   };
 }
 
