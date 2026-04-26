@@ -12,7 +12,7 @@ vi.mock('@/app/components/global/MediaListCard', () => ({
   ),
 }));
 
-import Search from './search';
+import Search from '@/pages/search';
 import { usePage } from '@inertiajs/react';
 
 const mockUsePage = vi.mocked(usePage);
