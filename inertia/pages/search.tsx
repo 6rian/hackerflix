@@ -145,7 +145,7 @@ export default function Search() {
     });
 
     return filtered;
-  }, [allMedia, searchQuery, selectedTypes, selectedTags, sortBy]);
+  }, [allMedia, searchQuery, selectedTypes, selectedTags, selectedGenres, sortBy]);
 
   // Clear all filters
   const clearFilters = () => {
@@ -333,6 +333,33 @@ export default function Search() {
                   </div>
                 </div>
 
+                {/* Genres Filter */}
+                <div>
+                  <h3 className="font-hf-mono mb-3 text-sm font-bold text-[var(--deep-purple)] dark:text-[var(--neon-cyan)]">
+                    GENRES
+                  </h3>
+                  <select
+                    multiple
+                    size={6}
+                    value={selectedGenres}
+                    onChange={(e) =>
+                      setSelectedGenres(
+                        Array.from(e.target.selectedOptions).map((o) => o.value)
+                      )
+                    }
+                    className="bg-card border-border w-full rounded-lg border text-sm transition-all duration-300 focus:border-[var(--electric-green)]/40 focus:outline-none [&>option]:cursor-pointer [&>option]:px-3 [&>option]:py-2 [&>option:checked]:bg-[var(--deep-purple)] [&>option:checked]:text-white"
+                  >
+                    {allGenres.map((genre) => (
+                      <option key={genre} value={genre}>
+                        {genre}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-muted-foreground mt-1.5 text-xs">
+                    Hold ⌘/Ctrl to select multiple
+                  </p>
+                </div>
+
                 {/* Tags Filter */}
                 <div>
                   <h3 className="font-hf-mono mb-3 text-sm font-bold text-[var(--deep-purple)] dark:text-[var(--neon-cyan)]">
@@ -376,33 +403,6 @@ export default function Search() {
                       </div>
                     )}
                   </div>
-                </div>
-
-                {/* Genres Filter */}
-                <div>
-                  <h3 className="font-hf-mono mb-3 text-sm font-bold text-[var(--deep-purple)] dark:text-[var(--neon-cyan)]">
-                    GENRES
-                  </h3>
-                  <select
-                    multiple
-                    size={6}
-                    value={selectedGenres}
-                    onChange={(e) =>
-                      setSelectedGenres(
-                        Array.from(e.target.selectedOptions).map((o) => o.value)
-                      )
-                    }
-                    className="bg-card border-border w-full rounded-lg border text-sm transition-all duration-300 focus:border-[var(--electric-green)]/40 focus:outline-none [&>option]:cursor-pointer [&>option]:px-3 [&>option]:py-2 [&>option:checked]:bg-[var(--deep-purple)] [&>option:checked]:text-white"
-                  >
-                    {allGenres.map((genre) => (
-                      <option key={genre} value={genre}>
-                        {genre}
-                      </option>
-                    ))}
-                  </select>
-                  <p className="text-muted-foreground mt-1.5 text-xs">
-                    Hold ⌘/Ctrl to select multiple
-                  </p>
                 </div>
               </div>
             </aside>
@@ -452,7 +452,7 @@ export default function Search() {
 
               {/* Media Grid */}
               {filteredMedia.length > 0 ? (
-                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
                   {filteredMedia.map((media) => (
                     <MediaListCard key={`${media.mediaType}-${media.id}`} media={media} />
                   ))}
