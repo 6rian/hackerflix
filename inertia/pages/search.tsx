@@ -322,9 +322,13 @@ export default function Search() {
                 onKeyDown={handleSearchKeyDown}
                 role="combobox"
                 aria-expanded={showSearchAutocomplete && filteredTitles.length > 0}
-                aria-controls="search-listbox"
+                aria-controls={
+                  showSearchAutocomplete && filteredTitles.length > 0 ? 'search-listbox' : undefined
+                }
                 aria-autocomplete="list"
-                aria-activedescendant={searchActiveIndex >= 0 ? `search-option-${searchActiveIndex}` : ''}
+                aria-activedescendant={
+                  searchActiveIndex >= 0 ? `search-option-${searchActiveIndex}` : ''
+                }
                 aria-label="Search titles and descriptions"
                 className={`bg-card border-border w-full rounded-xl border py-4 pl-12 transition-all duration-300 focus:border-[var(--electric-green)]/40 focus:shadow-[0_0_20px_rgba(0,255,170,0.2)] focus:outline-none ${searchQuery ? 'pr-12' : 'pr-4'}`}
               />
@@ -346,6 +350,7 @@ export default function Search() {
                 <div
                   role="listbox"
                   id="search-listbox"
+                  aria-label="Title suggestions"
                   className="bg-card border-border absolute top-full right-0 left-0 z-20 mt-1 max-h-64 overflow-y-auto rounded-xl border shadow-lg"
                 >
                   {filteredTitles.map((title, index) => (
@@ -378,7 +383,7 @@ export default function Search() {
               aria-controls="filters-sidebar"
               className="font-hf-mono bg-card border-border flex cursor-pointer items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-all duration-300 hover:border-[var(--electric-green)]/40"
             >
-              <SlidersHorizontal className="h-4 w-4" />
+              <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
               {showFilters ? 'HIDE_FILTERS' : 'SHOW_FILTERS'}
               {hasActiveFilters && (
                 <span className="text-background ml-1 rounded-full bg-[var(--electric-green)] px-2 py-0.5 text-xs">
@@ -531,9 +536,15 @@ export default function Search() {
                         onFocus={() => tagInput && setShowTagAutocomplete(true)}
                         role="combobox"
                         aria-expanded={showTagAutocomplete && filteredTagOptions.length > 0}
-                        aria-controls="tag-listbox"
+                        aria-controls={
+                          showTagAutocomplete && filteredTagOptions.length > 0
+                            ? 'tag-listbox'
+                            : undefined
+                        }
                         aria-autocomplete="list"
-                        aria-activedescendant={tagActiveIndex >= 0 ? `tag-option-${tagActiveIndex}` : ''}
+                        aria-activedescendant={
+                          tagActiveIndex >= 0 ? `tag-option-${tagActiveIndex}` : ''
+                        }
                         aria-labelledby="tags-label"
                         className="min-w-[120px] flex-1 bg-transparent text-sm outline-none"
                       />
@@ -542,6 +553,7 @@ export default function Search() {
                       <div
                         role="listbox"
                         id="tag-listbox"
+                        aria-label="Tag suggestions"
                         className="bg-card border-border absolute top-full right-0 left-0 z-20 mt-1 max-h-64 overflow-y-auto rounded-xl border shadow-lg"
                       >
                         {filteredTagOptions.map((tag, index) => (
