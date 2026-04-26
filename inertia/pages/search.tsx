@@ -327,7 +327,7 @@ export default function Search() {
                     setShowSearchAutocomplete(false);
                     setSearchActiveIndex(-1);
                   }}
-                  className="text-muted-foreground absolute top-1/2 right-4 z-10 -translate-y-1/2 cursor-pointer transition-colors hover:text-foreground"
+                  className="text-muted-foreground hover:text-foreground absolute top-1/2 right-4 z-10 -translate-y-1/2 cursor-pointer transition-colors"
                   aria-label="Clear search"
                 >
                   <X className="h-4 w-4" />
@@ -465,7 +465,7 @@ export default function Search() {
                             isSelected
                               ? 'bg-[var(--deep-purple)] text-white'
                               : isFocused
-                                ? 'bg-muted/60 ring-1 ring-inset ring-[var(--electric-green)]/40'
+                                ? 'bg-muted/60 ring-1 ring-[var(--electric-green)]/40 ring-inset'
                                 : 'hover:bg-muted/80'
                           }`}
                         >
@@ -474,9 +474,7 @@ export default function Search() {
                       );
                     })}
                   </div>
-                  <p className="text-muted-foreground mt-1.5 text-xs">
-                    ↑↓ navigate · Space toggle
-                  </p>
+                  <p className="text-muted-foreground mt-1.5 text-xs">↑↓ navigate · Space toggle</p>
                 </div>
 
                 {/* Tags Filter */}
