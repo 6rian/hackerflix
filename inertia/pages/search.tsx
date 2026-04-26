@@ -309,7 +309,10 @@ export default function Search() {
           {/* Search Bar */}
           <div className="mb-8" ref={searchContainerRef}>
             <div className="relative">
-              <SearchIcon className="text-muted-foreground absolute top-1/2 left-4 z-10 h-5 w-5 -translate-y-1/2" />
+              <SearchIcon
+                aria-hidden="true"
+                className="text-muted-foreground absolute top-1/2 left-4 z-10 h-5 w-5 -translate-y-1/2"
+              />
               <input
                 type="text"
                 placeholder="Search titles, descriptions..."
@@ -317,6 +320,16 @@ export default function Search() {
                 onChange={handleSearchInputChange}
                 onFocus={() => searchInput && setShowSearchAutocomplete(true)}
                 onKeyDown={handleSearchKeyDown}
+                role="combobox"
+                aria-expanded={showSearchAutocomplete && filteredTitles.length > 0}
+                aria-controls={
+                  showSearchAutocomplete && filteredTitles.length > 0 ? 'search-listbox' : undefined
+                }
+                aria-autocomplete="list"
+                aria-activedescendant={
+                  searchActiveIndex >= 0 ? `search-option-${searchActiveIndex}` : ''
+                }
+                aria-label="Search titles and descriptions"
                 className={`bg-card border-border w-full rounded-xl border py-4 pl-12 transition-all duration-300 focus:border-[var(--electric-green)]/40 focus:shadow-[0_0_20px_rgba(0,255,170,0.2)] focus:outline-none ${searchQuery ? 'pr-12' : 'pr-4'}`}
               />
               {searchQuery && (
@@ -334,13 +347,21 @@ export default function Search() {
                 </button>
               )}
               {showSearchAutocomplete && filteredTitles.length > 0 && (
-                <div className="bg-card border-border absolute top-full right-0 left-0 z-20 mt-1 max-h-64 overflow-y-auto rounded-xl border shadow-lg">
+                <div
+                  role="listbox"
+                  id="search-listbox"
+                  aria-label="Title suggestions"
+                  className="bg-card border-border absolute top-full right-0 left-0 z-20 mt-1 max-h-64 overflow-y-auto rounded-xl border shadow-lg"
+                >
                   {filteredTitles.map((title, index) => (
                     <button
                       key={title}
+                      id={`search-option-${index}`}
                       ref={(el) => {
                         searchItemRefs.current[index] = el;
                       }}
+                      role="option"
+                      aria-selected={index === searchActiveIndex}
                       onClick={() => handleSearchSelect(title)}
                       className={`w-full cursor-pointer px-4 py-3 text-left transition-all duration-200 first:rounded-t-xl last:rounded-b-xl ${
                         index === searchActiveIndex ? 'bg-muted/80' : 'hover:bg-muted/80'
@@ -358,9 +379,11 @@ export default function Search() {
           <div className="mb-6 lg:hidden">
             <button
               onClick={() => setShowFilters(!showFilters)}
+              aria-expanded={showFilters}
+              aria-controls="filters-sidebar"
               className="font-hf-mono bg-card border-border flex cursor-pointer items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-all duration-300 hover:border-[var(--electric-green)]/40"
             >
-              <SlidersHorizontal className="h-4 w-4" />
+              <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
               {showFilters ? 'HIDE_FILTERS' : 'SHOW_FILTERS'}
               {hasActiveFilters && (
                 <span className="text-background ml-1 rounded-full bg-[var(--electric-green)] px-2 py-0.5 text-xs">
@@ -376,6 +399,8 @@ export default function Search() {
           <div className="flex flex-col gap-8 lg:flex-row">
             {/* Filters Sidebar */}
             <aside
+              id="filters-sidebar"
+              aria-label="Search filters"
               className={`w-full flex-shrink-0 lg:w-64 ${showFilters ? 'block' : 'hidden lg:block'}`}
             >
               <div className="sticky top-24 space-y-6">
@@ -391,12 +416,16 @@ export default function Search() {
 
                 {/* Sort */}
                 <div>
-                  <h3 className="font-hf-mono mb-3 text-sm font-bold text-[var(--deep-purple)] dark:text-[var(--neon-cyan)]">
+                  <h3
+                    id="sort-label"
+                    className="font-hf-mono mb-3 text-sm font-bold text-[var(--deep-purple)] dark:text-[var(--neon-cyan)]"
+                  >
                     SORT_BY
                   </h3>
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as SortOption)}
+                    aria-labelledby="sort-label"
                     className="bg-card border-border w-full cursor-pointer rounded-lg border px-3 py-2 text-sm transition-all duration-300 focus:border-[var(--electric-green)]/40 focus:outline-none"
                   >
                     <option value="title-asc">Title (A-Z)</option>
@@ -407,10 +436,10 @@ export default function Search() {
                 </div>
 
                 {/* Type Filter */}
-                <div>
-                  <h3 className="font-hf-mono mb-3 text-sm font-bold text-[var(--deep-purple)] dark:text-[var(--neon-cyan)]">
+                <fieldset>
+                  <legend className="font-hf-mono mb-3 text-sm font-bold text-[var(--deep-purple)] dark:text-[var(--neon-cyan)]">
                     TYPE
-                  </h3>
+                  </legend>
                   <div className="space-y-2">
                     {(['movie', 'show', 'documentary'] as MediaType[]).map((type) => (
                       <label key={type} className="group flex cursor-pointer items-center gap-2">
@@ -426,7 +455,7 @@ export default function Search() {
                       </label>
                     ))}
                   </div>
-                </div>
+                </fieldset>
 
                 {/* Genres Filter — custom accessible listbox */}
                 <div>
@@ -479,7 +508,10 @@ export default function Search() {
 
                 {/* Tags Filter */}
                 <div>
-                  <h3 className="font-hf-mono mb-3 text-sm font-bold text-[var(--deep-purple)] dark:text-[var(--neon-cyan)]">
+                  <h3
+                    id="tags-label"
+                    className="font-hf-mono mb-3 text-sm font-bold text-[var(--deep-purple)] dark:text-[var(--neon-cyan)]"
+                  >
                     TAGS
                   </h3>
                   <div className="relative" ref={tagContainerRef}>
@@ -488,10 +520,11 @@ export default function Search() {
                         <button
                           key={tag}
                           onClick={() => removeTag(tag)}
+                          aria-label={`Remove ${tag}`}
                           className="font-hf-mono flex cursor-pointer items-center gap-1 rounded bg-[var(--deep-purple)] px-2 py-1 text-xs font-medium text-white transition-all duration-200 hover:bg-[var(--deep-purple)]/80"
                         >
                           {tag}
-                          <X className="h-3 w-3" />
+                          <X className="h-3 w-3" aria-hidden="true" />
                         </button>
                       ))}
                       <input
@@ -501,17 +534,37 @@ export default function Search() {
                         onChange={handleTagInputChange}
                         onKeyDown={handleTagInputKeyDown}
                         onFocus={() => tagInput && setShowTagAutocomplete(true)}
+                        role="combobox"
+                        aria-expanded={showTagAutocomplete && filteredTagOptions.length > 0}
+                        aria-controls={
+                          showTagAutocomplete && filteredTagOptions.length > 0
+                            ? 'tag-listbox'
+                            : undefined
+                        }
+                        aria-autocomplete="list"
+                        aria-activedescendant={
+                          tagActiveIndex >= 0 ? `tag-option-${tagActiveIndex}` : ''
+                        }
+                        aria-labelledby="tags-label"
                         className="min-w-[120px] flex-1 bg-transparent text-sm outline-none"
                       />
                     </div>
                     {showTagAutocomplete && filteredTagOptions.length > 0 && (
-                      <div className="bg-card border-border absolute top-full right-0 left-0 z-20 mt-1 max-h-64 overflow-y-auto rounded-xl border shadow-lg">
+                      <div
+                        role="listbox"
+                        id="tag-listbox"
+                        aria-label="Tag suggestions"
+                        className="bg-card border-border absolute top-full right-0 left-0 z-20 mt-1 max-h-64 overflow-y-auto rounded-xl border shadow-lg"
+                      >
                         {filteredTagOptions.map((tag, index) => (
                           <button
                             key={tag}
+                            id={`tag-option-${index}`}
                             ref={(el) => {
                               tagItemRefs.current[index] = el;
                             }}
+                            role="option"
+                            aria-selected={index === tagActiveIndex}
                             onClick={() => handleTagSelect(tag)}
                             className={`w-full cursor-pointer px-4 py-2 text-left text-sm transition-all duration-200 first:rounded-t-xl last:rounded-b-xl ${
                               index === tagActiveIndex ? 'bg-muted/80' : 'hover:bg-muted/80'
@@ -536,38 +589,45 @@ export default function Search() {
                     <button
                       key={type}
                       onClick={() => toggleType(type)}
+                      aria-label={`Remove ${type} filter`}
                       className="font-hf-mono flex cursor-pointer items-center gap-2 rounded-full bg-[var(--deep-purple)] px-3 py-1 text-xs font-medium text-white transition-all duration-200 hover:bg-[var(--deep-purple)]/80"
                     >
                       {type === 'show' ? 'TV SHOW' : type.toUpperCase()}
-                      <X className="h-3 w-3" />
+                      <X className="h-3 w-3" aria-hidden="true" />
                     </button>
                   ))}
                   {selectedTags.map((tag) => (
                     <button
                       key={tag}
                       onClick={() => removeTag(tag)}
+                      aria-label={`Remove ${tag} filter`}
                       className="font-hf-mono bg-muted text-muted-foreground hover:bg-muted/80 flex cursor-pointer items-center gap-2 rounded-full px-3 py-1 text-xs font-medium transition-all duration-200"
                     >
                       {tag.toUpperCase()}
-                      <X className="h-3 w-3" />
+                      <X className="h-3 w-3" aria-hidden="true" />
                     </button>
                   ))}
                   {selectedGenres.map((genre) => (
                     <button
                       key={genre}
                       onClick={() => removeGenre(genre)}
+                      aria-label={`Remove ${genre} filter`}
                       className="font-hf-mono flex cursor-pointer items-center gap-2 rounded-full bg-[var(--deep-purple)] px-3 py-1 text-xs font-medium text-white transition-all duration-200 hover:bg-[var(--deep-purple)]/80"
                     >
                       {genre.toUpperCase()}
-                      <X className="h-3 w-3" />
+                      <X className="h-3 w-3" aria-hidden="true" />
                     </button>
                   ))}
                 </div>
               )}
 
               {/* Results Count */}
-              <p className="font-hf-mono text-muted-foreground mb-6 text-sm">
-                RESULTS: {filteredMedia.length}
+              <p
+                aria-live="polite"
+                aria-atomic="true"
+                className="font-hf-mono text-muted-foreground mb-6 text-sm"
+              >
+                {filteredMedia.length} result{filteredMedia.length !== 1 ? 's' : ''} found
               </p>
 
               {/* Media Grid */}
