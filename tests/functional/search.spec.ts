@@ -36,7 +36,10 @@ test.group('GET /search', () => {
     const validTypes = new Set(['movie', 'show', 'documentary']);
     for (const item of body.props.movies) {
       assert.isArray(item.genres, `genres should be an array on movie id=${item.id}`);
-      assert.isTrue(validTypes.has(item.type), `type "${item.type}" is not valid on movie id=${item.id}`);
+      assert.isTrue(
+        validTypes.has(item.type),
+        `type "${item.type}" is not valid on movie id=${item.id}`
+      );
     }
   });
 

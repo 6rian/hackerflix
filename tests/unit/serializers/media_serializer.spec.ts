@@ -92,7 +92,9 @@ test.group('serializeMovie', () => {
   test('type is "documentary" when genres include TMDB id 99', ({ assert }) => {
     const result = serializeMovie(
       makeMovie({
-        genres: [{ id: 99, name: 'Documentary', slug: 'documentary' }] as unknown as Movie['genres'],
+        genres: [
+          { id: 99, name: 'Documentary', slug: 'documentary' },
+        ] as unknown as Movie['genres'],
       })
     );
     assert.equal(result.type, 'documentary');
@@ -224,9 +226,7 @@ test.group('serializeTvSeries', () => {
   });
 
   test('genres is [] when genres array is empty', ({ assert }) => {
-    const result = serializeTvSeries(
-      makeTvSeries({ genres: [] as unknown as TvSeries['genres'] })
-    );
+    const result = serializeTvSeries(makeTvSeries({ genres: [] as unknown as TvSeries['genres'] }));
     assert.deepEqual(result.genres, []);
   });
 
