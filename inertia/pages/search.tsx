@@ -362,21 +362,24 @@ export default function Search() {
                   <h3 className="font-hf-mono mb-3 text-sm font-bold text-[var(--deep-purple)] dark:text-[var(--neon-cyan)]">
                     TYPE
                   </h3>
-                  <div className="space-y-2">
-                    {(['movie', 'show', 'documentary'] as MediaType[]).map((type) => (
-                      <label key={type} className="group flex cursor-pointer items-center gap-2">
-                        <input
-                          type="checkbox"
-                          checked={selectedTypes.includes(type)}
-                          onChange={() => toggleType(type)}
-                          className="border-border h-4 w-4 cursor-pointer rounded accent-[var(--deep-purple)]"
-                        />
-                        <span className="text-sm capitalize transition-colors duration-200 group-hover:text-[var(--deep-purple)] dark:group-hover:text-[var(--neon-cyan)]">
-                          {type === 'show' ? 'TV Show' : type}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
+                  <select
+                    multiple
+                    size={3}
+                    value={selectedTypes}
+                    onChange={(e) =>
+                      setSelectedTypes(
+                        Array.from(e.target.selectedOptions).map((o) => o.value as MediaType)
+                      )
+                    }
+                    className="bg-card border-border w-full rounded-lg border text-sm transition-all duration-300 focus:border-[var(--electric-green)]/40 focus:outline-none [&>option]:cursor-pointer [&>option]:px-3 [&>option]:py-2 [&>option:checked]:bg-[var(--deep-purple)] [&>option:checked]:text-white"
+                  >
+                    <option value="movie">Movie</option>
+                    <option value="show">TV Show</option>
+                    <option value="documentary">Documentary</option>
+                  </select>
+                  <p className="text-muted-foreground mt-1.5 text-xs">
+                    Hold ⌘/Ctrl to select multiple
+                  </p>
                 </div>
 
                 {/* Tags Filter */}
