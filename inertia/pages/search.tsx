@@ -18,16 +18,13 @@ export default function Search() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState('');
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
-  const [genreInput, setGenreInput] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('title-asc');
   const [showFilters, setShowFilters] = useState(false);
   const [showSearchAutocomplete, setShowSearchAutocomplete] = useState(false);
   const [showTagAutocomplete, setShowTagAutocomplete] = useState(false);
-  const [showGenreAutocomplete, setShowGenreAutocomplete] = useState(false);
 
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const tagContainerRef = useRef<HTMLDivElement>(null);
-  const genreContainerRef = useRef<HTMLDivElement>(null);
 
   // Combine all media items
   const allMedia: MediaItem[] = useMemo(() => {
@@ -75,16 +72,6 @@ export default function Search() {
       .slice(0, 8);
   }, [tagInput, allTags, selectedTags]);
 
-  // Filtered genres for genre autocomplete
-  const filteredGenreOptions = useMemo(() => {
-    if (!genreInput) return [];
-    return allGenres
-      .filter(
-        (g) => g.toLowerCase().includes(genreInput.toLowerCase()) && !selectedGenres.includes(g)
-      )
-      .slice(0, 8);
-  }, [genreInput, allGenres, selectedGenres]);
-
   // Toggle type filter
   const toggleType = (type: MediaType) => {
     setSelectedTypes((prev) =>
@@ -102,13 +89,6 @@ export default function Search() {
   // Remove tag
   const removeTag = (tag: string) => {
     setSelectedTags((prev) => prev.filter((t) => t !== tag));
-  };
-
-  // Add genre
-  const addGenre = (genre: string) => {
-    if (!selectedGenres.includes(genre)) {
-      setSelectedGenres((prev) => [...prev, genre]);
-    }
   };
 
   // Remove genre
@@ -173,11 +153,9 @@ export default function Search() {
     setSelectedTags([]);
     setTagInput('');
     setSelectedGenres([]);
-    setGenreInput('');
     setSearchQuery('');
     setSearchInput('');
     setShowTagAutocomplete(false);
-    setShowGenreAutocomplete(false);
   };
 
   const hasActiveFilters =
@@ -219,27 +197,6 @@ export default function Search() {
     }
   };
 
-  // Handle genre input change
-  const handleGenreInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setGenreInput(value);
-    setShowGenreAutocomplete(value.length > 0);
-  };
-
-  // Handle genre autocomplete select
-  const handleGenreSelect = (genre: string) => {
-    addGenre(genre);
-    setGenreInput('');
-    setShowGenreAutocomplete(false);
-  };
-
-  // Handle genre input key press
-  const handleGenreInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Backspace' && !genreInput && selectedGenres.length > 0) {
-      removeGenre(selectedGenres[selectedGenres.length - 1]);
-    }
-  };
-
   // Click outside to close autocomplete
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -251,9 +208,6 @@ export default function Search() {
       }
       if (tagContainerRef.current && !tagContainerRef.current.contains(event.target as Node)) {
         setShowTagAutocomplete(false);
-      }
-      if (genreContainerRef.current && !genreContainerRef.current.contains(event.target as Node)) {
-        setShowGenreAutocomplete(false);
       }
     };
 
@@ -362,24 +316,21 @@ export default function Search() {
                   <h3 className="font-hf-mono mb-3 text-sm font-bold text-[var(--deep-purple)] dark:text-[var(--neon-cyan)]">
                     TYPE
                   </h3>
-                  <select
-                    multiple
-                    size={3}
-                    value={selectedTypes}
-                    onChange={(e) =>
-                      setSelectedTypes(
-                        Array.from(e.target.selectedOptions).map((o) => o.value as MediaType)
-                      )
-                    }
-                    className="bg-card border-border w-full rounded-lg border text-sm transition-all duration-300 focus:border-[var(--electric-green)]/40 focus:outline-none [&>option]:cursor-pointer [&>option]:px-3 [&>option]:py-2 [&>option:checked]:bg-[var(--deep-purple)] [&>option:checked]:text-white"
-                  >
-                    <option value="movie">Movie</option>
-                    <option value="show">TV Show</option>
-                    <option value="documentary">Documentary</option>
-                  </select>
-                  <p className="text-muted-foreground mt-1.5 text-xs">
-                    Hold ⌘/Ctrl to select multiple
-                  </p>
+                  <div className="space-y-2">
+                    {(['movie', 'show', 'documentary'] as MediaType[]).map((type) => (
+                      <label key={type} className="group flex cursor-pointer items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={selectedTypes.includes(type)}
+                          onChange={() => toggleType(type)}
+                          className="border-border h-4 w-4 cursor-pointer rounded accent-[var(--deep-purple)]"
+                        />
+                        <span className="text-sm capitalize transition-colors duration-200 group-hover:text-[var(--deep-purple)] dark:group-hover:text-[var(--neon-cyan)]">
+                          {type === 'show' ? 'TV Show' : type}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Tags Filter */}
@@ -432,44 +383,26 @@ export default function Search() {
                   <h3 className="font-hf-mono mb-3 text-sm font-bold text-[var(--deep-purple)] dark:text-[var(--neon-cyan)]">
                     GENRES
                   </h3>
-                  <div className="relative" ref={genreContainerRef}>
-                    {/* Genre Input with Selected Genres */}
-                    <div className="bg-card border-border flex flex-wrap gap-2 rounded-lg border p-2 transition-all duration-300 focus-within:border-[var(--electric-green)]/40 focus-within:shadow-[0_0_20px_rgba(0,255,170,0.2)]">
-                      {selectedGenres.map((genre) => (
-                        <button
-                          key={genre}
-                          onClick={() => removeGenre(genre)}
-                          className="font-hf-mono flex items-center gap-1 rounded bg-[var(--deep-purple)] px-2 py-1 text-xs font-medium text-white transition-all duration-200 hover:bg-[var(--deep-purple)]/80"
-                        >
-                          {genre}
-                          <X className="h-3 w-3" />
-                        </button>
-                      ))}
-                      <input
-                        type="text"
-                        placeholder={selectedGenres.length === 0 ? 'Type to search genres...' : ''}
-                        value={genreInput}
-                        onChange={handleGenreInputChange}
-                        onKeyDown={handleGenreInputKeyDown}
-                        onFocus={() => genreInput && setShowGenreAutocomplete(true)}
-                        className="min-w-[120px] flex-1 bg-transparent text-sm outline-none"
-                      />
-                    </div>
-                    {/* Genre Autocomplete Dropdown */}
-                    {showGenreAutocomplete && filteredGenreOptions.length > 0 && (
-                      <div className="bg-card border-border absolute top-full right-0 left-0 z-20 mt-1 max-h-64 overflow-y-auto rounded-xl border shadow-lg">
-                        {filteredGenreOptions.map((genre) => (
-                          <button
-                            key={genre}
-                            onClick={() => handleGenreSelect(genre)}
-                            className="hover:bg-muted/80 w-full px-4 py-2 text-left text-sm transition-all duration-200 first:rounded-t-xl last:rounded-b-xl"
-                          >
-                            {genre}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                  <select
+                    multiple
+                    size={6}
+                    value={selectedGenres}
+                    onChange={(e) =>
+                      setSelectedGenres(
+                        Array.from(e.target.selectedOptions).map((o) => o.value)
+                      )
+                    }
+                    className="bg-card border-border w-full rounded-lg border text-sm transition-all duration-300 focus:border-[var(--electric-green)]/40 focus:outline-none [&>option]:cursor-pointer [&>option]:px-3 [&>option]:py-2 [&>option:checked]:bg-[var(--deep-purple)] [&>option:checked]:text-white"
+                  >
+                    {allGenres.map((genre) => (
+                      <option key={genre} value={genre}>
+                        {genre}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-muted-foreground mt-1.5 text-xs">
+                    Hold ⌘/Ctrl to select multiple
+                  </p>
                 </div>
               </div>
             </aside>
