@@ -59,8 +59,15 @@ export interface MediaDetails extends MediaItem {
 
 const CREW_ROLES = new Set(['Director', 'Writer', 'Screenplay', 'Producer', 'Creator']);
 
-// Both functions require keywords and genres to be preloaded: .preload('keywords').preload('genres')
-// When genres are not preloaded, type defaults to 'movie'/'show' and genres defaults to [].
+/**
+ * Serializes a Movie model to a MediaItem for client rendering.
+ *
+ * Sets `type` to `'documentary'` when TMDB genre ID 99 (Documentary) is present;
+ * otherwise `'movie'`. `genres` falls back to `[]` when the relation is not preloaded.
+ *
+ * @param movie - Movie model with `keywords` and `genres` preloaded.
+ * @returns Serialized MediaItem ready for Inertia props.
+ */
 export function serializeMovie(movie: Movie): MediaItem {
   // TMDB genre ID 99 = Documentary
   const isDocumentary = movie.genres?.some((g) => g.id === 99) ?? false;
@@ -80,6 +87,14 @@ export function serializeMovie(movie: Movie): MediaItem {
   };
 }
 
+/**
+ * Serializes a TvSeries model to a MediaItem for client rendering.
+ *
+ * `genres` falls back to `[]` when the relation is not preloaded.
+ *
+ * @param series - TvSeries model with `keywords` and `genres` preloaded.
+ * @returns Serialized MediaItem ready for Inertia props.
+ */
 export function serializeTvSeries(series: TvSeries): MediaItem {
   return {
     id: series.id,
@@ -97,8 +112,15 @@ export function serializeTvSeries(series: TvSeries): MediaItem {
   };
 }
 
-// Requires: .preload('keywords').preload('genres').preload('movieCredits', q => q.preload('person'))
-// Plus separately-queried images and videos.
+/**
+ * Serializes a Movie with its related media into a full MediaDetails object.
+ *
+ * @param movie - Movie model with `keywords`, `genres`, and `movieCredits` (+ `person`) preloaded.
+ * @param images - Separately queried Image records for the movie.
+ * @param videos - Separately queried Video records for the movie.
+ * @param credits - Separately queried MovieCredit records with `person` preloaded.
+ * @returns Full MediaDetails including cast, crew, images, and videos.
+ */
 export function serializeMovieDetails(
   movie: Movie,
   images: Image[],
@@ -158,8 +180,15 @@ export function serializeMovieDetails(
   };
 }
 
-// Requires: .preload('keywords').preload('genres').preload('tvCredits', q => q.preload('person'))
-// Plus separately-queried images and videos.
+/**
+ * Serializes a TvSeries with its related media into a full MediaDetails object.
+ *
+ * @param series - TvSeries model with `keywords`, `genres`, and `tvCredits` (+ `person`) preloaded.
+ * @param images - Separately queried Image records for the series.
+ * @param videos - Separately queried Video records for the series.
+ * @param credits - Separately queried TvCredit records with `person` preloaded.
+ * @returns Full MediaDetails including cast, crew, images, and videos.
+ */
 export function serializeTvSeriesDetails(
   series: TvSeries,
   images: Image[],

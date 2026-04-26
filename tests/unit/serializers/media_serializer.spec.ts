@@ -91,7 +91,22 @@ test.group('serializeMovie', () => {
 
   test('type is "documentary" when genres include TMDB id 99', ({ assert }) => {
     const result = serializeMovie(
-      makeMovie({ genres: [{ id: 99, name: 'Documentary', slug: 'documentary' }] as unknown as Movie['genres'] })
+      makeMovie({
+        genres: [{ id: 99, name: 'Documentary', slug: 'documentary' }] as unknown as Movie['genres'],
+      })
+    );
+    assert.equal(result.type, 'documentary');
+  });
+
+  test('type is "documentary" when id 99 appears among multiple genres', ({ assert }) => {
+    const result = serializeMovie(
+      makeMovie({
+        genres: [
+          { id: 28, name: 'Action', slug: 'action' },
+          { id: 99, name: 'Documentary', slug: 'documentary' },
+          { id: 878, name: 'Science Fiction', slug: 'science-fiction' },
+        ] as unknown as Movie['genres'],
+      })
     );
     assert.equal(result.type, 'documentary');
   });
