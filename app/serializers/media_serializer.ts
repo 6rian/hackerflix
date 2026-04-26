@@ -16,13 +16,14 @@ export interface MediaItem {
   slug: string;
   mediaType: 'movie' | 'tv';
   title: string;
-  type: 'movie' | 'show';
+  type: 'movie' | 'show' | 'documentary';
   year: string;
   rating: number;
   description: string;
   image: string;
   backdrop?: string;
   tags: MediaTag[];
+  genres: MediaTag[];
 }
 
 export interface CastMember {
@@ -58,23 +59,42 @@ export interface MediaDetails extends MediaItem {
 
 const CREW_ROLES = new Set(['Director', 'Writer', 'Screenplay', 'Producer', 'Creator']);
 
-// Both functions require keywords to be preloaded: .preload('keywords')
+/**
+ * Serializes a Movie model to a MediaItem for client rendering.
+ *
+ * Sets `type` to `'documentary'` when TMDB genre ID 99 (Documentary) is present;
+ * otherwise `'movie'`. `genres` falls back to `[]` when the relation is not preloaded.
+ *
+ * @param movie - Movie model with `keywords` and `genres` preloaded.
+ * @returns Serialized MediaItem ready for Inertia props.
+ */
 export function serializeMovie(movie: Movie): MediaItem {
+  // TMDB genre ID 99 = Documentary
+  const isDocumentary = (movie.genres ?? []).some((g) => g.id === 99);
   return {
     id: movie.id,
     slug: movie.slug,
     mediaType: 'movie',
     title: movie.title,
-    type: 'movie',
+    type: isDocumentary ? 'documentary' : 'movie',
     year: movie.releaseDate ? movie.releaseDate.getFullYear().toString() : '',
     rating: movie.voteAverage ?? 0,
     description: movie.overview ?? '',
     image: movie.posterPath ? tmdbConfig.imageBaseUrl + movie.posterPath : '',
     backdrop: movie.backdropPath ? tmdbConfig.backdropBaseUrl + movie.backdropPath : undefined,
     tags: movie.keywords.map((k) => ({ name: k.name, slug: k.slug })),
+    genres: (movie.genres ?? []).map((g) => ({ name: g.name, slug: g.slug })),
   };
 }
 
+/**
+ * Serializes a TvSeries model to a MediaItem for client rendering.
+ *
+ * `genres` falls back to `[]` when the relation is not preloaded.
+ *
+ * @param series - TvSeries model with `keywords` and `genres` preloaded.
+ * @returns Serialized MediaItem ready for Inertia props.
+ */
 export function serializeTvSeries(series: TvSeries): MediaItem {
   return {
     id: series.id,
@@ -88,11 +108,19 @@ export function serializeTvSeries(series: TvSeries): MediaItem {
     image: series.posterPath ? tmdbConfig.imageBaseUrl + series.posterPath : '',
     backdrop: series.backdropPath ? tmdbConfig.backdropBaseUrl + series.backdropPath : undefined,
     tags: series.keywords.map((k) => ({ name: k.name, slug: k.slug })),
+    genres: (series.genres ?? []).map((g) => ({ name: g.name, slug: g.slug })),
   };
 }
 
-// Requires: .preload('keywords').preload('genres').preload('movieCredits', q => q.preload('person'))
-// Plus separately-queried images and videos.
+/**
+ * Serializes a Movie with its related media into a full MediaDetails object.
+ *
+ * @param movie - Movie model with `keywords`, `genres`, and `movieCredits` (+ `person`) preloaded.
+ * @param images - Separately queried Image records for the movie.
+ * @param videos - Separately queried Video records for the movie.
+ * @param credits - Separately queried MovieCredit records with `person` preloaded.
+ * @returns Full MediaDetails including cast, crew, images, and videos.
+ */
 export function serializeMovieDetails(
   movie: Movie,
   images: Image[],
@@ -152,8 +180,15 @@ export function serializeMovieDetails(
   };
 }
 
-// Requires: .preload('keywords').preload('genres').preload('tvCredits', q => q.preload('person'))
-// Plus separately-queried images and videos.
+/**
+ * Serializes a TvSeries with its related media into a full MediaDetails object.
+ *
+ * @param series - TvSeries model with `keywords`, `genres`, and `tvCredits` (+ `person`) preloaded.
+ * @param images - Separately queried Image records for the series.
+ * @param videos - Separately queried Video records for the series.
+ * @param credits - Separately queried TvCredit records with `person` preloaded.
+ * @returns Full MediaDetails including cast, crew, images, and videos.
+ */
 export function serializeTvSeriesDetails(
   series: TvSeries,
   images: Image[],

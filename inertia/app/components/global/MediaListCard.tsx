@@ -51,7 +51,7 @@ export function MediaListCard({ media }: MediaListCardProps) {
           </div>
 
           {/* Synopsis/Description */}
-          <p className="text-foreground/80 mb-4 line-clamp-3 text-sm leading-relaxed">
+          <p className="text-foreground/80 mb-4 line-clamp-4 xl:line-clamp-6 text-sm leading-relaxed">
             {media.description}
           </p>
 
