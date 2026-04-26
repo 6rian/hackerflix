@@ -113,6 +113,11 @@ test.group('serializeMovie', () => {
     assert.equal(result.type, 'documentary');
   });
 
+  test('type is "movie" when genres array is empty', ({ assert }) => {
+    const result = serializeMovie(makeMovie({ genres: [] as unknown as Movie['genres'] }));
+    assert.equal(result.type, 'movie');
+  });
+
   test('genres are mapped to MediaTag shape', ({ assert }) => {
     const result = serializeMovie(
       makeMovie({

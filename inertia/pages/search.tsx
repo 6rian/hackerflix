@@ -171,10 +171,13 @@ export default function Search() {
   const clearFilters = () => {
     setSelectedTypes([]);
     setSelectedTags([]);
+    setTagInput('');
     setSelectedGenres([]);
+    setGenreInput('');
     setSearchQuery('');
     setSearchInput('');
-    setGenreInput('');
+    setShowTagAutocomplete(false);
+    setShowGenreAutocomplete(false);
   };
 
   const hasActiveFilters =
@@ -497,7 +500,7 @@ export default function Search() {
                     <button
                       key={genre}
                       onClick={() => removeGenre(genre)}
-                      className="font-hf-mono flex items-center gap-2 rounded-full bg-[var(--deep-purple)]/70 px-3 py-1 text-xs font-medium text-white transition-all duration-200 hover:bg-[var(--deep-purple)]/50"
+                      className="font-hf-mono flex items-center gap-2 rounded-full bg-[var(--deep-purple)] px-3 py-1 text-xs font-medium text-white transition-all duration-200 hover:bg-[var(--deep-purple)]/80"
                     >
                       {genre.toUpperCase()}
                       <X className="h-3 w-3" />

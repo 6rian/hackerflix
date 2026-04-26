@@ -70,7 +70,7 @@ const CREW_ROLES = new Set(['Director', 'Writer', 'Screenplay', 'Producer', 'Cre
  */
 export function serializeMovie(movie: Movie): MediaItem {
   // TMDB genre ID 99 = Documentary
-  const isDocumentary = movie.genres?.some((g) => g.id === 99) ?? false;
+  const isDocumentary = (movie.genres ?? []).some((g) => g.id === 99);
   return {
     id: movie.id,
     slug: movie.slug,
