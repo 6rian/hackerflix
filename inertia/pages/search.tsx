@@ -252,10 +252,7 @@ export default function Search() {
       if (tagContainerRef.current && !tagContainerRef.current.contains(event.target as Node)) {
         setShowTagAutocomplete(false);
       }
-      if (
-        genreContainerRef.current &&
-        !genreContainerRef.current.contains(event.target as Node)
-      ) {
+      if (genreContainerRef.current && !genreContainerRef.current.contains(event.target as Node)) {
         setShowGenreAutocomplete(false);
       }
     };
@@ -318,7 +315,10 @@ export default function Search() {
               {showFilters ? 'HIDE_FILTERS' : 'SHOW_FILTERS'}
               {hasActiveFilters && (
                 <span className="text-background ml-1 rounded-full bg-[var(--electric-green)] px-2 py-0.5 text-xs">
-                  {selectedTypes.length + selectedTags.length + selectedGenres.length + (searchQuery ? 1 : 0)}
+                  {selectedTypes.length +
+                    selectedTags.length +
+                    selectedGenres.length +
+                    (searchQuery ? 1 : 0)}
                 </span>
               )}
             </button>
